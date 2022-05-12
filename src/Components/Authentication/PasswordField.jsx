@@ -1,35 +1,42 @@
-import React, {useState, useEffect, useRef} from 'react'
+import React, { useState, useEffect, useRef } from 'react';
+import './Css/PasswordField.css';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
-export default function PasswordField() {
-    const [password, setPassword] = React.useState('');
-    const [visibile, setVisibile] = React.useState(false);
-    const passwordRef = useRef();
-    useEffect(() => {
-        console.log(visibile);
-        if(visibile)
-            passwordRef.current.value = password;
-        else
-            passwordRef.current.value = encryptString(password);
-    }
-    , [visibile]);
+export default function PasswordField({ getState, text }) {
+	const passwordRef = useRef();
+	const [password, setPassword] = useState('');
+	const [visibile, setVisibile] = useState(false);
 
-    const savePassword = (e) => {
-        setPassword(prevVal => prevVal + e.nativeEvent.data);
-        const invisiblePassword = encryptString(password); 
-        e.target.value = invisiblePassword;
-    }
+	useEffect(() => {
+		if (visibile) passwordRef.current.type = 'text';
+		else passwordRef.current.type = 'password';
+	}, [visibile]);
 
-    const toggleVisibility = () => {
-        setVisibile(prevVal => !prevVal);
-    }
+	useEffect(() => {
+		getState?.(password);
+	}, [password]);
 
-    const encryptString = (s, what = '•') => s.replace(/./g, what); 
+	const toggleVisibility = () => {
+		setVisibile((prevVal) => !prevVal);
+	};
 
-  return (
-    <>
-     <input type="text" onInput={savePassword} ref={passwordRef}/>
-     <div onClick={toggleVisibility}>o</div>
-    </>
-  )
+	const handleInput = (e) => {
+		e.target.classList.remove('error');
+		setPassword(e.target.value);
+	};
+
+	return (
+		<>
+			<input
+				className="password-field error"
+				type="text"
+				ref={passwordRef}
+				onChange={handleInput}
+				placeholder={text}
+			/>
+			<div className="icon" onClick={toggleVisibility}>
+				{visibile ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+			</div>
+		</>
+	);
 }
-

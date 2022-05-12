@@ -1,0 +1,26 @@
+*{
+    margin: 0rem;
+    padding: 0rem;
+    box-sizing: border-box;
+}
+
+:root{
+    --p-1: 0.2rem;
+    --p-2: 0.5rem;
+
+    --m-1: 0.2rem;
+    --m-2: 0.5rem;
+
+    --b-w: 0.15rem;
+    --b-r: 0.5rem;
+
+    --c-selected: #3a86ff;
+    --c-error: #d90429;
+    --c-font: #15161A;
+}
+
+html, body{
+    height: 100vh;
+    width: 100vw;
+
+}
