@@ -2,20 +2,21 @@ input{
     border: var(--b-w) solid var(--c-font);
     border-radius: var(--b-r);
     padding: var(--p-2);
-    padding-right: 1.2rem;
+    padding-right: 1.8rem;
     margin: var(--m-2);
     display: block;
-    font-size: 1rem;
+    font-size: 1.2rem;
     background-color: transparent;
     transition: all 200ms ease-out;
     font-weight: bold;
+    color: var(--c-font);
 }
 
 input:focus,
 input:hover{
     outline: none;
     border-color: var(--c-selected);
-    box-shadow:0 0 0.5rem -2px var(--c-selected);
+    box-shadow: var(--sh-selected)
 }
 
 input::placeholder{
@@ -37,4 +38,28 @@ input.error{
 }
 
 input[type="text"]{
+}
+
+button{
+    border: var(--b-w) solid var(--c-font);
+    border-radius: var(--b-r);
+    padding: var(--p-2) var(--p-3);
+    margin: var(--m-2) auto;
+    font-size: 1rem;
+    font-weight: bold;
+    background-color: transparent;
+    color: var(--c-font);
+    transition: all 200ms ease-out;
+    display: block;
+    cursor: pointer;
+    user-select: none;
+}
+
+button:focus,
+button:hover{
+    outline: none;
+    background-color: var(--c-selected);
+    border-color: var(--c-selected);
+    color: var(--c-font);
+    box-shadow:0 0 0.5rem -2px var(--c-selected);
 }

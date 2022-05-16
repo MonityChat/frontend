@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './Css/PasswordField.css';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 
-export default function PasswordField({ getState, text }) {
+export default function PasswordField({ getState, text, error }) {
 	const passwordRef = useRef();
 	const [password, setPassword] = useState('');
 	const [visibile, setVisibile] = useState(false);
@@ -26,9 +26,9 @@ export default function PasswordField({ getState, text }) {
 	};
 
 	return (
-		<>
+		<div className="password-field-container">
 			<input
-				className="password-field error"
+				className={'password-field' + (error ? ' error' : '')}
 				type="text"
 				ref={passwordRef}
 				onChange={handleInput}
@@ -37,6 +37,6 @@ export default function PasswordField({ getState, text }) {
 			<div className="icon" onClick={toggleVisibility}>
 				{visibile ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
 			</div>
-		</>
+		</div>
 	);
 }

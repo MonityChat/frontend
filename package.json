@@ -11,7 +11,8 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^4.3.1",
-    "sha1": "^1.1.1"
+    "sha1": "^1.1.1",
+    "sjcl": "^1.0.8"
   },
   "devDependencies": {
     "@types/react": "^18.0.0",

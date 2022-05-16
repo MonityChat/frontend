@@ -1,5 +1,11 @@
 //URL for sign in
-export const SIGNIN_URL_AUTH = 'http://localhost:8808/auth';
+export const AUTH_KEY_URL = 'http://localhost:8808/auth';
+
+//URL for login into your account
+export const LOGIN_URL = "http://localhost:8808/user/login";
+
+//URL for registering a new account
+export const REGISTER_URL = "http://localhost:8808/user/register";
 
 //URL for getting the salt to encrypt the password
 export const SALT_URL = 'http://localhost:8808/user/salt';
@@ -14,7 +20,7 @@ export const SESSION_AUTH = {
 
 //function for getting a basic session key to make requests to the server
 export async function getNewKey() {
-	const res = await fetch(SIGNIN_URL_AUTH, {
+	const res = await fetch(AUTH_KEY_URL, {
 		method: 'GET',
 		headers: {
 			Accept: 'application/json',
