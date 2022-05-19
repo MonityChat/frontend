@@ -1,46 +1,46 @@
-input{
-    border: var(--b-w) solid var(--c-font);
-    border-radius: var(--b-r);
-    padding: var(--p-2);
-    padding-right: 1.8rem;
-    margin: var(--m-2);
-    display: block;
-    font-size: 1.2rem;
-    background-color: transparent;
-    transition: all 200ms ease-out;
-    font-weight: bold;
-    color: var(--c-font);
+input {
+	border: var(--b-w) solid var(--c-font);
+	border-radius: var(--b-r);
+	padding: var(--p-2);
+	padding-right: 1.8rem;
+	margin: var(--m-2);
+	display: block;
+	font-size: 1.2rem;
+	background-color: transparent;
+	transition: all 200ms ease-out;
+	font-weight: bold;
+	color: var(--c-font);
 }
 
 input:focus,
-input:hover{
-    outline: none;
-    border-color: var(--c-selected);
-    box-shadow: var(--sh-selected)
+input:hover {
+	outline: none;
+	border-color: var(--c-selected);
+	box-shadow: var(--sh-selected);
 }
 
-input::placeholder{
-    color: var(--c-font);
-    opacity: 0.8;
-    transform-origin: left center;
-    transition: opacity 200ms ease-out 100ms, transform 200ms ease-out 0ms;
+input::placeholder {
+	color: var(--c-font);
+	opacity: 0.8;
+	transform-origin: left center;
+	transition: opacity 200ms ease-out 100ms, transform 200ms ease-out 0ms;
 }
 
-input:focus::placeholder{
-    opacity: 0;
-    transform: scale(0.5);
-    transition: opacity 200ms ease-out 0ms, transform 200ms ease-out 100ms;
+input:focus::placeholder {
+	opacity: 0;
+	transform: scale(0.5);
+	transition: opacity 200ms ease-out 0ms, transform 200ms ease-out 100ms;
 }
 
-input.error{
-    border-color: var(--c-error);
-    box-shadow:0 0 0.5rem -2px var(--c-error);
+input.error {
+	border-color: var(--c-error);
+	box-shadow: 0 0 0.5rem -2px var(--c-error);
 }
 
-input[type="text"]{
+input[type='text'] {
 }
 
-button{
+/* button{
     border: var(--b-w) solid var(--c-font);
     border-radius: var(--b-r);
     padding: var(--p-2) var(--p-3);
@@ -62,4 +62,70 @@ button:hover{
     border-color: var(--c-selected);
     color: var(--c-font);
     box-shadow:0 0 0.5rem -2px var(--c-selected);
+} */
+
+button {
+	padding: var(--p-2);
+	margin: var(--m-2) auto;
+	border: var(--b-w) solid transparent;
+	border-radius: var(--b-r);
+	transition: box-shadow 500ms ease;
+	color: var(--c-font);
+	font-weight: bolder;
+	display: block;
+    cursor: pointer;
+    user-select: none;
+}
+
+button {
+	background-image: linear-gradient(
+			rgba(153, 153, 255, 0),
+			rgba(255, 255, 255, 0)
+		),
+		var(--g-base);
+	background-origin: border-box;
+	background-clip: content-box, border-box;
+	box-shadow: 2px 1000px 1px #1e1e1e inset;
+}
+
+button:hover {
+	/* background-color: rgba(199, 21, 21, 0); */
+	box-shadow: none;
+}
+
+.link{
+    color: var(--c-font);
+}
+
+.link{
+    font-size: 0.8em;
+    color: var(--c-font);
+    cursor: pointer;
+    opacity: 0.8;
+    font-weight: bolder;
+    transition: opacity 200ms ease-out;
+    position: relative;
+    user-select: none;
+	text-decoration: none;
+}
+
+.link::after{
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    left: 50%;
+    width: 0%;
+    height: 13%;
+    opacity: inherit;
+    background-color: currentColor;
+    transition: width 200ms ease-out, left 200ms ease-out;
+}
+
+.link:hover{
+    opacity: 1;
+}
+
+.link:hover::after{
+    width: 100%;
+    left: 0%;
 }

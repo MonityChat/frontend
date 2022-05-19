@@ -20,6 +20,9 @@
     --c-error: #d90429;
     --c-font: #F9F9F9;
 
+    --g-base: linear-gradient(101deg, #9999ff, #64ffbe);
+    --g-base-reverse: linear-gradient(101deg, #64ffbe, #9999ff);
+
     --c-grey-dark: #0F1016;
     --c-grey-light: #15161A;
 

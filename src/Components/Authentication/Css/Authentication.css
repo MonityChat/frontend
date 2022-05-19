@@ -35,6 +35,11 @@
 .button-switch:first-of-type{
     border-top-right-radius: 0em;
     border-bottom-right-radius: 0em;
+    background-image: linear-gradient(
+        rgba(153, 153, 255, 0),
+        rgba(255, 255, 255, 0)
+    ),
+    var(--g-base-reverse);
 }
 
 .button-switch:last-of-type{

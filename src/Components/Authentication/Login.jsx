@@ -7,8 +7,8 @@ import {
 	SESSION_AUTH,
 } from '../../Util/Auth.js';
 import { hash } from '../../Util/Encrypt';
-import sjcl from 'sjcl';
 import './Css/Login.css';
+import { Link } from 'react-router-dom';
 
 export default function Login() {
 	const [userName, setUserName] = useState('');
@@ -53,7 +53,7 @@ export default function Login() {
 	};
 
 	return (
-		<div className='login'>
+		<div className="login">
 			<div>
 				<input
 					type="text"
@@ -70,7 +70,9 @@ export default function Login() {
 				/>
 				<span>{message}</span>
 				<button onClick={handleLogin}>Login</button>
-				<span className="forgot-password">Forgot Password?</span>
+				<span className="forgot-password">
+					<Link className='link' to="/forgot-password">Forgot Password?</Link>
+				</span>
 			</div>
 		</div>
 	);
