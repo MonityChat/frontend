@@ -4,35 +4,3 @@
     justify-content: center;
     flex-direction: column;
 }
-
-.forgot-password{
-    font-size: 0.8em;
-    color: var(--c-font);
-    cursor: pointer;
-    opacity: 0.8;
-    font-weight: bolder;
-    transition: opacity 200ms ease-out;
-    position: relative;
-    user-select: none;
-}
-
-.forgot-password::after{
-    content: '';
-    position: absolute;
-    bottom: -10%;
-    left: 50%;
-    width: 0%;
-    height: 13%;
-    opacity: inherit;
-    background-color: currentColor;
-    transition: width 200ms ease-out, left 200ms ease-out;
-}
-
-.forgot-password:hover{
-    opacity: 1;
-}
-
-.forgot-password:hover::after{
-    width: 100%;
-    left: 0%;
-}

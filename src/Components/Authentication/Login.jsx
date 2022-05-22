@@ -70,7 +70,7 @@ export default function Login() {
 				/>
 				<span>{message}</span>
 				<button onClick={handleLogin}>Login</button>
-				<span className="forgot-password">
+				<span>
 					<Link className='link' to="/forgot-password">Forgot Password?</Link>
 				</span>
 			</div>

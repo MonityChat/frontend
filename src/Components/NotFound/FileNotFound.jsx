@@ -6,7 +6,7 @@ export default function FileNotFound() {
 	const history = useHistory();
 
 	return (
-		<div className="file-not-found">
+		<div className="file-not-found inset-container">
 			<h1>404</h1>
 			<span>Sorry the page you are looking for doesn't exist</span>
 			<button onClick={() => history.push('/home')}>go back</button>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Globe from './Globe';
 import './Css/Home.css'
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
 			<span>
 				or <a href="https://play.google.com/store/games" className='link'>download the app</a>
 			</span>
+			<Globe />
 		</div>
 	);
 }

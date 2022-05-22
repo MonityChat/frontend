@@ -88,9 +88,10 @@ button {
 	box-shadow: 2px 1000px 1px #1e1e1e inset;
 }
 
-button:hover {
+button:hover, button:focus {
 	/* background-color: rgba(199, 21, 21, 0); */
 	box-shadow: none;
+	outline: none;
 }
 
 .link{
@@ -121,11 +122,15 @@ button:hover {
     transition: width 200ms ease-out, left 200ms ease-out;
 }
 
-.link:hover{
+.link:hover,
+.link:focus {
     opacity: 1;
+	outline: none;
 }
 
-.link:hover::after{
+.link:hover::after,
+.link:focus::after{
     width: 100%;
     left: 0%;
+	outline: none;
 }

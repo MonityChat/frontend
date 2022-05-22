@@ -1,13 +1,3 @@
-.file-not-found {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-    border: var(--b-w) solid var(--c-selected);
-    border-radius: var(--b-r);
-    box-shadow: inset 0em 0em 5em 0 rgb(0 0 0 / 25%), var(--sh-selected);
-}
-
 .file-not-found h1{
     font-size: 8rem;
     font-weight: bolder;

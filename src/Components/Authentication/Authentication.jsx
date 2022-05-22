@@ -14,13 +14,16 @@ export default function Authentication() {
 	const registerRef = useRef();
 
 	useEffect(() => {
-		document.title = 'Monity ' + mode;;
+		document.title = 'Monity ' + mode;
 		logInRef.current.classList.toggle('selected', mode === MODES.LOGIN);
-		registerRef.current.classList.toggle('selected', mode === MODES.REGISTER);
+		registerRef.current.classList.toggle(
+			'selected',
+			mode === MODES.REGISTER
+		);
 	}, [mode, []]);
 
 	return (
-		<div className="authentication">
+		<div className="authentication inset-container">
 			<h1>Monity</h1>
 			<div>
 				<button
