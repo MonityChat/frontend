@@ -14,6 +14,7 @@
 	padding: var(--p-1);
 	transition: width 200ms ease-out;
 	box-shadow: var(--sh-1);
+	z-index: 100;
 }
 
 .sidebar:hover,
@@ -77,6 +78,7 @@
 	height: var(--circle-size);
 	border-radius: 50%;
 	background-image: var(--g-base);
+	transform: scale(0.9);
 }
 
 .sidebar-button .circle img{

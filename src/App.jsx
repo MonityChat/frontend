@@ -5,7 +5,7 @@ import Home from './Components/Home/Home';
 import './Css/Forms.css';
 import './Css/Index.css';
 import ForgotPassword from './Components/Authentication/ForgotPassword';
-import Chat from './Components/Chat/Chat';
+import Messenger from './Components/Chat/Messenger';
 
 function App() {
 	return (
@@ -25,7 +25,7 @@ function App() {
 					/>
 					<Route
 						path="/"
-						component={Chat}
+						component={Messenger}
 						exact
 					/>
 					<Route component={FileNotFound} exact />

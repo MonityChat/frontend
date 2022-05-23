@@ -1,0 +1,25 @@
+.chat-input{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    width: 98%;
+    left: 1%;
+    position: absolute;
+    bottom: 0;
+}
+
+.chat-input .chat-button{
+    cursor: pointer;
+    transition: transform 200ms ease-out;
+}
+
+
+.chat-input .chat-button:hover{
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+.chat-input .message-input{
+    flex: 80% 1 1;
+}
