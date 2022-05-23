@@ -1,10 +1,10 @@
 import React from 'react';
-import { IoSettingsOutline } from 'react-icons/io5';
+import { IoPeopleOutline } from 'react-icons/io5';
 
-export default function SettingsButton({size = '1em'}) {
+export default function GroupsButton({size = '1em'}) {
 	return (
 		<div className="sidebar-button">
-			<IoSettingsOutline
+			<IoPeopleOutline
 				size={size}
 				style={{ stroke: 'url(#base-gradient)' }}
 			/>

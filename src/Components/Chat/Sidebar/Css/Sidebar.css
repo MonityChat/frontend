@@ -1,0 +1,88 @@
+.sidebar {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	position: absolute;
+	top: 1%;
+	left: 0.5em;
+	height: 98%;
+	width: 4.5em;
+	border: var(--b-w) solid var(--c-grey-dark);
+	border-radius: calc(var(--b-r) * 2);
+    background-color: var(--c-grey-dark);
+	padding: var(--p-1);
+	transition: width 200ms ease-out;
+	box-shadow: var(--sh-1);
+}
+
+.sidebar:hover,
+.sidebar:focus{
+	outline: none;
+	width: 20em;
+}
+
+.sidebar .menu {
+	position: absolute;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	gap: 0.4em;
+	margin: var(--m-2);
+	left: 0em;
+}
+
+.sidebar .menu.top {
+	top: 0em;
+}
+
+.sidebar .menu.bottom {
+	bottom: 0em;
+}
+
+.sidebar-button {
+	cursor: pointer;
+	transition: transform 200ms ease-out, opacity 400ms ease-out;
+	position: relative;
+}
+
+.sidebar-button::before {
+	content: '';
+	width: 8%;
+	top: 25%;
+	left: -10%;
+	height: 50%;
+	border-radius: var(--b-r);
+	position: absolute;
+	background-image: var(--g-base);
+	transform: scaleY(0.1);
+	opacity: 0;
+	transition: inherit;
+}
+
+.sidebar-button:hover,
+.sidebar-button:focus {
+	/* transform: scale(1.1); */
+}
+
+.sidebar-button:hover::before,
+.sidebar-button:focus::before {
+	transform: scaleY(1);
+	opacity: 1;
+}
+
+.sidebar-button .circle{
+	width: var(--circle-size);
+	height: var(--circle-size);
+	border-radius: 50%;
+	background-image: var(--g-base);
+}
+
+.sidebar-button .circle img{
+	width: calc(var(--circle-size) * 0.9);
+	height: calc(var(--circle-size) * 0.9);
+	border-radius: 50%;
+	background-image: var(--g-base);
+	transform: translate(calc(var(--circle-size) * 0.05), calc(var(--circle-size) * 0.05));
+}
