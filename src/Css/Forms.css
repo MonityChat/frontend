@@ -1,4 +1,4 @@
-input {
+input, textarea {
 	border: var(--b-w) solid var(--c-font);
 	border-radius: var(--b-r);
 	padding: var(--p-2);
@@ -13,28 +13,32 @@ input {
 }
 
 input:focus,
-input:hover {
+input:hover, textarea:hover {
 	outline: none;
 	border-color: var(--c-selected);
 	box-shadow: var(--sh-selected);
 }
 
-input::placeholder {
+input::placeholder, textarea::placeholder {
 	color: var(--c-font);
 	opacity: 0.8;
 	transform-origin: left center;
 	transition: opacity 200ms ease-out 100ms, transform 200ms ease-out 0ms;
 }
 
-input:focus::placeholder {
+input:focus::placeholder, textarea:focus::placeholder {
 	opacity: 0;
 	transform: scale(0.5);
 	transition: opacity 200ms ease-out 0ms, transform 200ms ease-out 100ms;
 }
 
-input.error {
+input.error, textarea.error {
 	border-color: var(--c-error);
 	box-shadow: 0 0 0.5rem -2px var(--c-error);
+}
+
+textarea{
+	resize: none;
 }
 
 input[type='text'] {

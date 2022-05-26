@@ -8,7 +8,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "drei": "^2.2.21",
     "emoji-picker-react": "^3.5.1",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

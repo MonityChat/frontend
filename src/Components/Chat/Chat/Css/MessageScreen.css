@@ -1,0 +1,28 @@
+.message-screen{
+    flex: 2 2 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+    gap: 0.4em;
+    text-align: center;
+    padding: var(--p-2);
+    overflow: auto;
+}
+
+.message-screen::-webkit-scrollbar{
+    display: none;
+}
+
+.message-screen > div{
+    background-color: red;
+    max-width: 45%;
+}
+
+.message-screen > div:nth-child(even){
+    align-self: flex-start;
+}
+
+.message-screen > div:nth-child(odd),
+.message-screen > div:nth-child(6){
+    align-self: flex-end;
+}

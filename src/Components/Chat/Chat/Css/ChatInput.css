@@ -1,16 +1,16 @@
 .chat-input{
     display: flex;
     align-items: center;
+    align-content: stretch;
     justify-content: center;
     gap: 0.5em;
-    width: 98%;
-    left: 1%;
-    position: absolute;
-    bottom: 0;
+    flex: 0 0 auto;
+    max-height: 4rem;
 }
 
 .chat-input .chat-button{
     cursor: pointer;
+    flex: 1 1 auto;
     transition: transform 200ms ease-out;
 }
 
@@ -21,5 +21,56 @@
 }
 
 .chat-input .message-input{
-    flex: 80% 1 1;
+    flex: 2 2 80%;
+}
+
+.emoji-picker-react{
+    position: absolute !important;
+    top: -600%;
+    left: 0%;
+    border: var(--b-w) solid var(--c-gradient-1) !important;
+    border-radius: var(--b-r) !important;
+    box-shadow: var(--sh-1) !important;
+    color: var(--c-font) !important;
+    background-color: transparent !important;
+    z-index: 100 !important;
+}
+
+.emoji-picker-react .content-wrapper::before{
+    display: none !important;
+}
+
+.content-wrapper{
+    overflow: hidden !important;
+}
+
+.emoji-scroll-wrapper{
+    overflow-x: hidden !important;
+    width: 110%;
+    padding-right: 1rem;
+}
+
+.emoji-group::before{
+    background-color: var(--c-grey-dark) !important;
+    color: var(--c-font) !important;
+}
+
+.emoji-categories button{
+    box-shadow: none !important;
+    background-color: transparent !important;
+    filter: invert(100%) !important;
+}
+
+.active-category-indicator{
+    background-color: initial !important;
+    background-image: var(--g-base) !important;
+}
+
+.skin-tones-list{
+    top: 40% !important;
+}
+
+.emoji-group{
+    gap: var(--p-1);
+    justify-content: flex-start !important;
 }

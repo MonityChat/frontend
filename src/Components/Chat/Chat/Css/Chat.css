@@ -2,7 +2,8 @@
     --chat-size: 0.97;
 
 	display: flex;
-	align-items: center;
+	align-items: stretch;
+    align-content: stretch;
 	justify-content: center;
 	flex-direction: column;
 	position: absolute;
