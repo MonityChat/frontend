@@ -7,13 +7,14 @@
     text-align: center;
     padding: var(--p-2);
     overflow: auto;
+    scrollbar-width: none;
 }
 
 .message-screen::-webkit-scrollbar{
     display: none;
 }
 
-.message-screen > div{
+/* .message-screen > div{
     background-color: red;
     max-width: 45%;
 }
@@ -25,4 +26,4 @@
 .message-screen > div:nth-child(odd),
 .message-screen > div:nth-child(6){
     align-self: flex-end;
-}
+} */

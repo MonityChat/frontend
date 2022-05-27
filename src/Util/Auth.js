@@ -28,5 +28,5 @@ export async function getNewKey() {
 		},
 	});
 	const { uuid } = await res.json();
-	AUTH.key = uuid;
+	SESSION_AUTH.key = uuid;
 }

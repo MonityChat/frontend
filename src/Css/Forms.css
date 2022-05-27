@@ -13,7 +13,9 @@ input, textarea {
 }
 
 input:focus,
-input:hover, textarea:hover {
+input:hover,
+textarea:hover,
+textarea:focus {
 	outline: none;
 	border-color: var(--c-selected);
 	box-shadow: var(--sh-selected);

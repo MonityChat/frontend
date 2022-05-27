@@ -1,0 +1,47 @@
+.message{
+    background-color: rgba(255, 0, 0, 0.5);
+    max-width: 45%;
+}
+
+.message.left{
+    align-self: flex-start;
+}
+
+.message.right{
+    align-self: flex-end;
+}
+
+.message .information{
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 0.5em;
+}
+
+.message.right .author{
+    order: 3;
+}
+
+.message.left .author{
+    order: 1;
+}
+
+.message .author{
+    font-size: .6rem;
+    font-weight: bold;
+    display: flex;
+}
+
+.message .time{
+    opacity: 0.8;
+    font-size: 0.6rem;
+    font-weight: 400;
+}
+
+.message .time::before{
+    content: " • ";
+}
+
+.message .content{
+
+}

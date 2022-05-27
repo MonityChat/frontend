@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import PasswordField from './PasswordField';
-import { REGISTER_URL, SESSION_AUTH } from '../../Util/Auth.js';
+import { REGISTER_URL, SESSION_AUTH, getNewKey } from '../../Util/Auth.js';
 import './Css/Register.css';
 import { generateNewSalt, hash } from '../../Util/Encrypt';
 
@@ -124,6 +124,8 @@ function isValidPassword(password) {
 async function register(userName, email, password) {
 	const salt = generateNewSalt();
 	const hashedPassword = await hash(password, salt);
+	
+	await getNewKey();
 
 	const registerOptions = {
 		method: 'POST',
