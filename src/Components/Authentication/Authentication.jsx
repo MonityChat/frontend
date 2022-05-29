@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Login from './Login';
 import Register from './Register';
 import './Css/Authentication.css';
+import { getNewKey, SESSION_AUTH } from '../../Util/Auth';
 
 const MODES = Object.freeze({
 	LOGIN: 'LOGIN',
@@ -12,6 +13,10 @@ export default function Authentication() {
 	const [mode, setMode] = useState(MODES.LOGIN);
 	const logInRef = useRef();
 	const registerRef = useRef();
+
+	useEffect(() => {
+		if (SESSION_AUTH.key === null) getNewKey();
+	}, []);
 
 	useEffect(() => {
 		document.title = 'Monity ' + mode;

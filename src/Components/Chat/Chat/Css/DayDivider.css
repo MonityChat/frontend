@@ -1,0 +1,46 @@
+.day-divider {
+	position: relative;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.day-divider .date {
+	opacity: 0.8;
+	font-size: 1rem;
+}
+
+.day-divider .gradient-bar {
+	flex: 1 1 auto;
+	height: 0.2em;
+	margin: 0 var(--m-3);
+	border-radius: var(--b-r);
+	position: relative;
+}
+
+.day-divider .gradient-bar::before {
+	content: '';
+	width: 104%;
+	height: 104%;
+	position: absolute;
+	bottom: 2%;
+}
+
+.day-divider .gradient-bar.left {
+	background-image: var(--g-base);
+}
+
+.day-divider .gradient-bar.left::before {
+	left: -2%;
+	background-image: linear-gradient(to right, var(--c-grey-dark), #00000000);
+}
+
+.day-divider .gradient-bar.right {
+	background-image: var(--g-base-reverse);
+}
+
+.day-divider .gradient-bar.right::before {
+	right: -2%;
+	background-image: linear-gradient(to right, #00000000, var(--c-grey-dark));
+}

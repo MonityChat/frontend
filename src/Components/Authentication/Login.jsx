@@ -9,6 +9,7 @@ import {
 import { hash } from '../../Util/Encrypt';
 import './Css/Login.css';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 export default function Login() {
 	const [userName, setUserName] = useState('');
@@ -17,6 +18,8 @@ export default function Login() {
 	const [passwordError, setPasswordError] = useState(false);
 
 	const userNameRef = useRef();
+
+	const history = useHistory();
 
 	const userNameInput = (e) => {
 		e.target.classList.remove('error');
@@ -50,6 +53,12 @@ export default function Login() {
 		// 	return;
 		// }
 		setMessage('Successfully loged in');
+
+		//set new session token
+		// SESSION_AUTH.key = data.authKey;
+		setTimeout(() => {
+			history.push('/');	
+		}, 500);
 	};
 
 	return (

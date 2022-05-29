@@ -21,6 +21,9 @@ export default function ChatInput() {
 	const sendMessage = () => {
 		const message = messageRef.current.value;
 		messageRef.current.value = '';
+
+		if(message.length <= 0) return;
+
 		console.log(`send message ${message}`);
 	};
 
@@ -59,7 +62,7 @@ export default function ChatInput() {
 				className="message-input"
 				ref={messageRef}
 				onKeyDown={(e) => {
-					if (e.key === 'Enter' && e.shiftKey) sendMessage();
+					if (e.key === 'Enter' && e.ctrlKey) sendMessage();
 				}}
 			></textarea>
 

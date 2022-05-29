@@ -1,47 +1,113 @@
-.message{
-    background-color: rgba(255, 0, 0, 0.5);
-    max-width: 45%;
+.message {
+	max-width: 45%;
+	margin: var(--m-2) 0;
+	position: relative;
+	transition: all 200ms ease-out;
 }
 
-.message.left{
-    align-self: flex-start;
+.message.left {
+	align-self: flex-start;
 }
 
-.message.right{
-    align-self: flex-end;
+.message.right {
+	align-self: flex-end;
 }
 
-.message .information{
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    gap: 0.5em;
+.message.left + .message.left,
+.message.right + .message.right {
+	margin: var(--m-1) 0 0 0;
 }
 
-.message.right .author{
-    order: 3;
+.message.left + .message.left .information :is(.author, .dot),
+.message.right + .message.right .information :is(.author, .dot) {
+	display: none;
 }
 
-.message.left .author{
-    order: 1;
+.message .information {
+	margin-left: var(--m-2);
+	margin-right: var(--m-2);
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	gap: 0.5em;
 }
 
-.message .author{
-    font-size: .6rem;
-    font-weight: bold;
-    display: flex;
+.message.right .information {
+	flex-direction: row-reverse;
 }
 
-.message .time{
-    opacity: 0.8;
-    font-size: 0.6rem;
-    font-weight: 400;
+.message.left .read {
+	display: none;
 }
 
-.message .time::before{
-    content: " • ";
+.message .read {
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 
-.message .content{
+.message .author {
+	font-size: 0.8rem;
+	font-weight: bold;
+	display: flex;
+}
 
+.message .dot {
+	position: relative;
+	top: 100%;
+	width: 0.3em;
+	height: 0.3em;
+	border-radius: 50%;
+	background-color: var(--c-font);
+}
+
+.message .time {
+	opacity: 0.8;
+	font-size: 0.7rem;
+	font-weight: 400;
+}
+
+.message .content {
+	background-color: var(--c-grey-light);
+	border-radius: calc(var(--b-r) * 1.5);
+	padding: var(--p-2) var(--p-3);
+	margin: var(--m-1);
+	box-shadow: var(--sh-2);
+	text-align: start;
+	transition: inherit;
+}
+
+.message.left .content {
+	border-top-left-radius: 0em;
+}
+
+.message.right .content {
+	border-top-right-radius: 0em;
+}
+
+.message .more {
+	position: absolute;
+	opacity: 0;
+	bottom: 50%;
+	transition: inherit;
+	cursor: pointer;
+}
+
+.message.left .more {
+	transform: translateY(80%) translateX(-50%);
+	right: -1.5em;
+}
+
+.message.right .more {
+	transform: translateY(80%) translateX(50%);
+	left: -1.5em;
+}
+
+.message:hover .more {
+	opacity: 1;
+	transform: translateY(80%) translateX(0%);
+}
+
+.message .more:hover {
+	opacity: 0.5;
 }

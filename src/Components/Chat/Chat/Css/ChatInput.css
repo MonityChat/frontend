@@ -1,4 +1,5 @@
 .chat-input{
+    position: relative;
     display: flex;
     align-items: center;
     align-content: stretch;
@@ -26,13 +27,13 @@
 
 .emoji-picker-react{
     position: absolute !important;
-    top: -600%;
+    top: -550%;
     left: 0%;
     border: var(--b-w) solid var(--c-gradient-1) !important;
     border-radius: var(--b-r) !important;
     box-shadow: var(--sh-1) !important;
     color: var(--c-font) !important;
-    background-color: transparent !important;
+    background-color: var(--c-grey-dark) !important;
     z-index: 100 !important;
 }
 
