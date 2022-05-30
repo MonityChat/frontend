@@ -43,19 +43,20 @@ export default function Login() {
 			return;
 		}
 
-		const data = await login(userName, password);
+		const result = await login(userName, password);
 
-		console.log(data);
-		//if no login
-		// if (data.error) {
-		// 	setMessage('Invalid password');
-		// 	setPasswordError(true);
-		// 	return;
-		// }
+		if (result === 'INVALID_PASSWORD') {
+			setMessage('Invalid password');
+			setPasswordError(true);
+			return;
+		}
 		setMessage('Successfully loged in');
 
 		//set new session token
 		// SESSION_AUTH.key = data.authKey;
+		SESSION_AUTH.isLogedIn = true;
+		sessionStorage.setItem('SESSION_AUTH', SESSION_AUTH.key);
+		sessionStorage.setItem('LOGGED_IN', SESSION_AUTH.isLogedIn);
 		setTimeout(() => {
 			history.push('/');	
 		}, 500);
@@ -114,11 +115,20 @@ async function getSalt(userName) {
 	return salt;
 }
 
-async function login(userName, password) {
-	const salt = await getSalt(userName);
+async function login(input, password) {
+	const salt = await getSalt(input);
 
 	//hashing password with the salt from the server
 	const hashedPassword = hash(password, salt);
+
+
+	let userName = '';
+	let email = '';
+	if(isValidEmail(input)){
+		email = input;
+	}else{
+		userName = input;
+	}
 
 	const logInOptions = {
 		method: 'POST',
@@ -129,7 +139,7 @@ async function login(userName, password) {
 		},
 		body: JSON.stringify({
 			username: userName,
-			email: '',
+			email: email,
 			password: hashedPassword.toString(),
 			salt: '',
 			uuid: '',
@@ -139,4 +149,10 @@ async function login(userName, password) {
 	const res = await fetch(LOGIN_URL, logInOptions);
 	const data = await res.json();
 	return data;
+}
+
+function isValidEmail(email) {
+	const regExEmail =
+		/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g;
+	return email.match(regExEmail) != null;
 }

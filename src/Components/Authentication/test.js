@@ -1,16 +1,21 @@
-let socket = new WebSocket("ws://localhost:8808/echo");
+import { WEBSOCKET_URL } from '../../Util/Websocket.js';
 
-socket.onopen = () => {
-    console.log("Connected to server");
+export let socket;
+
+export function initSocket() {
+	socket = new WebSocket(WEBSOCKET_URL);
+
+	socket.onopen = () => {
+		console.log('Connected to server');
+	};
+
+	socket.onmessage = (e) => {
+		console.log('Server send ' + e.data);
+	};
 }
-
-socket.onmessage = (event) => {
-    console.log("Server send " + event.data);
-}
-
 
 export function sendMessage(message) {
-    const json = {message};
-    console.log(json);
-    socket.send();
+	console.log("isJson" + message);
+	const json = { message };
+	socket.send(json);
 }

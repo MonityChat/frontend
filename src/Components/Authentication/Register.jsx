@@ -63,17 +63,22 @@ export default function Register() {
 			return;
 		}
 
-		const data = await register(userName, email, password);
+		const result = await register(userName, email, password);
 
-		console.log(data);
-		//if no valid registration
-		// if (data.error) {
-		// 	setMessage('Something went wrong, try again');
-		// 	return;
-		// }
+		if (result === 'USERNAME_TAKEN') {
+			setMessage('Username already taken');
+			userNameRef.current.classList.add('error');
+			return;
+		}
 
-		setMessage('Registration successful');
-		setTimeout(() => window.location.reload(), 1000);
+		if (result === 'EMAIL_NOT_FOUND') {
+			setMessage('Email does not exits');
+			emailRef.current.classList.add('error');
+			return;
+		}
+
+		setMessage('Registration Email sent, open the email to end registration');
+		// setTimeout(() => window.location.reload(), 1000);
 	};
 
 	return (
@@ -124,7 +129,7 @@ function isValidPassword(password) {
 async function register(userName, email, password) {
 	const salt = generateNewSalt();
 	const hashedPassword = await hash(password, salt);
-	
+
 	await getNewKey();
 
 	const registerOptions = {

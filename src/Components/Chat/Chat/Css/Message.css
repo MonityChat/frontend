@@ -29,7 +29,6 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-start;
-	gap: 0.5em;
 }
 
 .message.right .information {
@@ -44,6 +43,10 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+}
+
+.message .information > *{
+	margin: var(--m-1);
 }
 
 .message .author {
@@ -110,4 +113,8 @@
 
 .message .more:hover {
 	opacity: 0.5;
+}
+
+.message .left{
+	
 }

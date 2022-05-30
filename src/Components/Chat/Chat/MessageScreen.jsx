@@ -1,51 +1,60 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Message from './Message';
 import DayDivider from './DayDivider';
 import './Css/MessageScreen.css';
 
 export default function MessageScreen() {
 	const [messages, setMessages] = useState([]);
-	const [you , setYou] = useState('');
-	
+	const [you, setYou] = useState('');
+
+	const messageScreenRef = useRef();
+
 	useEffect(() => {
 		setMessages(fillwithDummyMessages(20));
 		setYou('You');
+		setTimeout(() => {
+			messageScreenRef.current.scrollTop =
+				messageScreenRef.current.scrollHeight;
+		}, 0);
 	}, []);
 
 	return (
-		<div className="message-screen">
-			<DayDivider date={new Date('May 24, 2022 03:24:00').getTime()}/>
+		<div className="message-screen" ref={messageScreenRef}>
+			<DayDivider date={new Date('May 24, 2022 03:24:00').getTime()} />
 			{messages.map((message, index) => (
 				<Message
 					key={index}
 					id={index}
-					you={message.author === you ? true : false }
+					you={message.author === you ? true : false}
 					author={message.author}
 					time={message.time}
 					read={message.read || false}
-					>{message.content}</Message>
+				>
+					{message.content}
+				</Message>
 			))}
-			<DayDivider date={Date.now()}/>
+			<DayDivider date={Date.now()} />
 			{messages.map((message, index) => (
 				<Message
 					key={index}
 					id={index}
-					you={message.author === you ? true : false }
+					you={message.author === you ? true : false}
 					author={message.author}
 					time={message.time}
 					read={message.read || false}
-					>{message.content}</Message>
+				>
+					{message.content}
+				</Message>
 			))}
 		</div>
 	);
 }
 
-
 function fillwithDummyMessages(n) {
 	const dummy = [];
 
-	var sentences= [
-		"orem ipsum dolor sit amet consectetur adipisicing elit. Maiores soluta hic consectetur pariatur recusandae, alias quibusdam iusto dicta, perferendis laudantium delectus deserunt obcaecati excepturi odio doloribus quos. Accusamus, minus. Iste sapiente odio beatae aliquam, voluptate optio blanditiis repellat reiciendis corrupti dignissimos, at iure consectetur laboriosam quis ut autem officia aperiam, libero similique. Modi atque dolor vel deserunt doloremque minus sint, neque quis porro totam dolorem! Magni voluptatem accusantium rerum quam laborum commodi natus cum magnam libero et nemo quasi officia, doloremque cumque culpa atque saepe sequi corrupti non, recusandae id labore, dignissimos voluptate? Ipsum eligendi minus, nesciunt modi nobis dolore.",
+	var sentences = [
+		'orem ipsum dolor sit amet consectetur adipisicing elit. Maiores soluta hic consectetur pariatur recusandae, alias quibusdam iusto dicta, perferendis laudantium delectus deserunt obcaecati excepturi odio doloribus quos. Accusamus, minus. Iste sapiente odio beatae aliquam, voluptate optio blanditiis repellat reiciendis corrupti dignissimos, at iure consectetur laboriosam quis ut autem officia aperiam, libero similique. Modi atque dolor vel deserunt doloremque minus sint, neque quis porro totam dolorem! Magni voluptatem accusantium rerum quam laborum commodi natus cum magnam libero et nemo quasi officia, doloremque cumque culpa atque saepe sequi corrupti non, recusandae id labore, dignissimos voluptate? Ipsum eligendi minus, nesciunt modi nobis dolore.',
 		'so fat not even Dora can explore her',
 		'so  fat I swerved to miss her and ran out of gas',
 		'so smelly she put on Right Guard and it went left',
@@ -61,18 +70,18 @@ function fillwithDummyMessages(n) {
 		'is twice the man you are',
 		'is like Bazooka Joe, 5 cents a blow',
 		'is like an ATM, open 24/7',
-		'is like a championship ring, everybody puts a finger in her'
-	]
+		'is like a championship ring, everybody puts a finger in her',
+	];
 
 	for (let i = 0; i < n; i++) {
 		let message = {
 			author: Math.random() > 0.5 ? 'Someone' : 'You',
 			time: Date.now(),
-			content: sentences[Math.floor(Math.random() * sentences.length)]
-		}
+			content: sentences[Math.floor(Math.random() * sentences.length)],
+		};
 
-		if(message.author === 'You') {
-			if(Math.random() > 0.5) {
+		if (message.author === 'You') {
+			if (Math.random() > 0.5) {
 				message.read = true;
 			}
 		}

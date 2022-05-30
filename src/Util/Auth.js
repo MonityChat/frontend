@@ -16,6 +16,7 @@ export const USER_EXISTS_URL = 'http://localhost:8808/user/exists';
 //Key for making requests to the server
 export const SESSION_AUTH = {
 	key: null,
+	isLogedIn: false,
 };
 
 //function for getting a basic session key to make requests to the server
