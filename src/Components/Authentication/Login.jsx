@@ -10,6 +10,9 @@ import { hash } from '../../Util/Encrypt';
 import './Css/Login.css';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import useAuthentication from '../../Util/UseAuth';
+
+const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 
 export default function Login() {
 	const [userName, setUserName] = useState('');
@@ -53,10 +56,10 @@ export default function Login() {
 		setMessage('Successfully loged in');
 
 		//set new session token
-		// SESSION_AUTH.key = data.authKey;
-		SESSION_AUTH.isLogedIn = true;
-		sessionStorage.setItem('SESSION_AUTH', SESSION_AUTH.key);
-		sessionStorage.setItem('LOGGED_IN', SESSION_AUTH.isLogedIn);
+		
+		// setKey(result.authKey);
+		setLogedIn(true);
+
 		setTimeout(() => {
 			history.push('/');	
 		}, 500);
@@ -130,10 +133,12 @@ async function login(input, password) {
 		userName = input;
 	}
 
+	const [key, , , ,] = useAuthentication();
+
 	const logInOptions = {
 		method: 'POST',
 		headers: {
-			authorization: SESSION_AUTH.key,
+			authorization: key,
 			Accept: 'application/json',
 			'Content-Type': 'application/json',
 		},

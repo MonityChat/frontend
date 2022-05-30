@@ -1,3 +1,5 @@
+import useAuthentication from "./UseAuth";
+
 //URL for sign in
 export const AUTH_KEY_URL = 'http://localhost:8808/auth';
 
@@ -14,10 +16,10 @@ export const SALT_URL = 'http://localhost:8808/user/salt';
 export const USER_EXISTS_URL = 'http://localhost:8808/user/exists';
 
 //Key for making requests to the server
-export const SESSION_AUTH = {
-	key: null,
-	isLogedIn: false,
-};
+// export const SESSION_AUTH = {
+// 	key: null,
+// 	isLogedIn: false,
+// };
 
 //function for getting a basic session key to make requests to the server
 export async function getNewKey() {
@@ -29,5 +31,6 @@ export async function getNewKey() {
 		},
 	});
 	const { uuid } = await res.json();
-	SESSION_AUTH.key = uuid;
+	const [, setKey, , ] = useAuthentication();
+	setKey(uuid);
 }
