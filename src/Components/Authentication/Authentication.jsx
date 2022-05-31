@@ -3,6 +3,7 @@ import Login from './Login';
 import Register from './Register';
 import './Css/Authentication.css';
 import { getNewKey, SESSION_AUTH } from '../../Util/Auth';
+import useAuthentication from '../../Util/UseAuth';
 
 const MODES = Object.freeze({
 	LOGIN: 'LOGIN',
@@ -15,7 +16,9 @@ export default function Authentication() {
 	const registerRef = useRef();
 
 	useEffect(() => {
-		if (SESSION_AUTH.key === null) getNewKey();
+		// if (SESSION_AUTH.key === null) getNewKey();
+		const [key, setKey] = useAuthentication();
+		if(key === null) getNewKey();
 	}, []);
 
 	useEffect(() => {

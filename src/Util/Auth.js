@@ -1,3 +1,5 @@
+import useAuthentication from "./UseAuth";
+
 //URL for sign in
 export const AUTH_KEY_URL = 'http://localhost:8808/auth';
 
@@ -29,5 +31,6 @@ export async function getNewKey() {
 		},
 	});
 	const { uuid } = await res.json();
-	SESSION_AUTH.key = uuid;
+	const [, setKey, , ] = useAuthentication();
+	setKey(uuid);
 }

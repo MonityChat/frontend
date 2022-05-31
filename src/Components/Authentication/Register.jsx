@@ -3,6 +3,9 @@ import PasswordField from './PasswordField';
 import { REGISTER_URL, SESSION_AUTH, getNewKey } from '../../Util/Auth.js';
 import './Css/Register.css';
 import { generateNewSalt, hash } from '../../Util/Encrypt';
+import useAuthentication from '../../Util/UseAuth.js';
+
+const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 
 export default function Register() {
 	const [userName, setUserName] = useState('');
@@ -78,7 +81,6 @@ export default function Register() {
 		}
 
 		setMessage('Registration Email sent, open the email to end registration');
-		// setTimeout(() => window.location.reload(), 1000);
 	};
 
 	return (
@@ -135,7 +137,7 @@ async function register(userName, email, password) {
 	const registerOptions = {
 		method: 'POST',
 		headers: {
-			authorization: SESSION_AUTH.key,
+			authorization: key,
 			Accept: 'application/json',
 			'Content-Type': 'application/json',
 		},
