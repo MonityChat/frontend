@@ -1,13 +1,11 @@
 .sidebar {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
+	--base-width: 4rem;
+	--full-width: 22rem;
 	position: absolute;
 	top: 1%;
 	left: 0.5em;
 	height: 98%;
-	width: 4.5em;
+	width: var(--base-width);
 	border: var(--b-w) solid var(--c-grey-dark);
 	border-radius: calc(var(--b-r) * 2);
     background-color: var(--c-grey-dark);
@@ -15,15 +13,40 @@
 	transition: width 200ms ease-out;
 	box-shadow: var(--sh-1);
 	z-index: 100;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: center;
+	overflow: hidden;
 }
 
 .sidebar:hover,
 .sidebar:focus{
 	outline: none;
-	width: 20em;
+	width: var(--full-width);
 }
 
-.sidebar .menu {
+.sidebar .buttons{
+	width: var(--base-width);
+	height: 100%;
+	position: absolute;
+	left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	flex: 0 0 var(--base-width);
+}
+
+.sidebar .content{
+	position: absolute;
+	left: var(--base-width);
+	width: calc(100% - var(--base-width));
+	height: 100%;
+	padding: var(--p-2);
+}
+
+.buttons .menu {
 	position: absolute;
 	display: flex;
 	align-items: center;
@@ -34,11 +57,11 @@
 	left: 0em;
 }
 
-.sidebar .menu.top {
+.buttons .menu.top {
 	top: 0em;
 }
 
-.sidebar .menu.bottom {
+.buttons .menu.bottom {
 	bottom: 0em;
 }
 
@@ -64,7 +87,7 @@
 
 .sidebar-button:hover,
 .sidebar-button:focus {
-	/* transform: scale(1.1); */
+	transform: scale(1.1);
 }
 
 .sidebar-button:hover::before,
