@@ -11,7 +11,6 @@ export default function Chat() {
 
 	useEffect(() => {
 		const [key,, isLogedIn] = useAuthentication();
-		console.log(key);
 		if (!isLogedIn) {
 			console.log('is not loged in');
 			// history.push('/authentication');

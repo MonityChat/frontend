@@ -3,6 +3,7 @@ import PasswordField from './PasswordField';
 import { REGISTER_URL, SESSION_AUTH, getNewKey } from '../../Util/Auth.js';
 import './Css/Register.css';
 import { generateNewSalt, hash } from '../../Util/Encrypt';
+import useAuthentication from '../../Util/UseAuth.js';
 
 const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 

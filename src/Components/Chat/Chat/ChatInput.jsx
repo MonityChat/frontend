@@ -8,7 +8,7 @@ import { BiMicrophone } from 'react-icons/bi';
 import { BsEmojiSmile } from 'react-icons/bs';
 import './Css/ChatInput.css';
 import Picker from 'emoji-picker-react';
-import { sendMessage } from '../../Authentication/test.js';
+import { sendMessage as sendSocketMessage } from '../../Authentication/test.js';
 
 export default function ChatInput() {
 	const [showEmoji, setShowEmoji] = useState(false);
@@ -26,7 +26,8 @@ export default function ChatInput() {
 		if(message.length <= 0) return;
 
 		console.log(`send message ${message}`);
-		sendMessage(message);
+		
+		sendSocketMessage(message);
 	};
 
 	return (
