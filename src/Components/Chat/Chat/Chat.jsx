@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
 import ChatInput from './ChatInput';
 import MessageScreen from './MessageScreen';
-import { initSocket } from '../../Authentication/test.js';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
 import './Css/Chat.css';
 import useAuthentication from '../../../Util/UseAuth';
+import { WEBSOCKET_URL } from '../../../Util/Websocket';
 
 export default function Chat() {
 	const history = useHistory();
-
+	
+	useWebSocket(WEBSOCKET_URL, {share: true});
+	
 	useEffect(() => {
 		const [key,, isLogedIn] = useAuthentication();
 		if (!isLogedIn) {
@@ -18,7 +21,6 @@ export default function Chat() {
 		}
 		console.log('is loged in');
 
-		initSocket();
 	}, []);
 
 	return (

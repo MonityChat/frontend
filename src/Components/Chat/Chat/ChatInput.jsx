@@ -8,12 +8,15 @@ import { BiMicrophone } from 'react-icons/bi';
 import { BsEmojiSmile } from 'react-icons/bs';
 import './Css/ChatInput.css';
 import Picker from 'emoji-picker-react';
-import { sendMessage as sendSocketMessage } from '../../Authentication/test.js';
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
+import { WEBSOCKET_URL } from '../../../Util/Websocket.js';
 
 export default function ChatInput() {
 	const [showEmoji, setShowEmoji] = useState(false);
 	const messageRef = useRef();
 
+	const { sendJsonMessage } = useWebSocket(WEBSOCKET_URL, { share: true });
+	
 	const onEmojiClicked = (e, emojiObject) => {
 		messageRef.current.value += emojiObject.emoji;
 		setShowEmoji(false);
@@ -22,12 +25,10 @@ export default function ChatInput() {
 	const sendMessage = () => {
 		const message = messageRef.current.value;
 		messageRef.current.value = '';
+		global.test = 'test';
+		if (message.length <= 0) return;
 
-		if(message.length <= 0) return;
-
-		console.log(`send message ${message}`);
-		
-		sendSocketMessage(message);
+		sendJsonMessage({ message });
 	};
 
 	return (

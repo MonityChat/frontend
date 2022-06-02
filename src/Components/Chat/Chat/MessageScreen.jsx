@@ -2,12 +2,16 @@ import React, { useEffect, useState, useRef } from 'react';
 import Message from './Message';
 import DayDivider from './DayDivider';
 import './Css/MessageScreen.css';
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
+import { WEBSOCKET_URL } from '../../../Util/Websocket';
 
 export default function MessageScreen() {
 	const [messages, setMessages] = useState([]);
 	const [you, setYou] = useState('');
 
 	const messageScreenRef = useRef();
+
+	const {lastJsonMessage} = useWebSocket(WEBSOCKET_URL, {share: true});
 
 	useEffect(() => {
 		setMessages(fillwithDummyMessages(20));
@@ -17,6 +21,22 @@ export default function MessageScreen() {
 				messageScreenRef.current.scrollHeight;
 		}, 0);
 	}, []);
+
+	useEffect(() => {
+
+		if(lastJsonMessage === null) return;
+
+		const message = lastJsonMessage.message;
+		setMessages((messages) => [...messages, {
+			author: Math.random() > 0.5 ? 'Someone' : 'You',
+			time: Date.now(),
+			content: message,
+			read: false,
+		}]);
+		
+	},[lastJsonMessage]);
+
+
 
 	return (
 		<div className="message-screen" ref={messageScreenRef}>
