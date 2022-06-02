@@ -7,59 +7,87 @@ import SearchButton from './SearchButton';
 import AddContactsButton from './AddContactsButton';
 import BotsButton from './BotsButton';
 import ProfileButton from './ProfileButton';
+import ContactView from './Contacts/ContactView';
 import './Css/Sidebar.css';
-import Contact from './Contacts/Contact';
 
 export default function Sidebar() {
 	const [size, setSize] = useState('3rem');
+	const [view, setView] = useState(VIEWS.CONTACTS);
 
-	const [contacts, setContacts] = useState(generateDummyContact(4));
+	const handleButtonClick = (e) => {
+		const target = e.target.closest('.sidebar-button');
+		if (target === null) return;
+		setView(target.getAttribute('view'));
+	};
 
 	return (
 		<div className="sidebar" tabIndex={1}>
 			<BaseGradient />
-			<div className="buttons">
+			<div className="buttons" onClick={handleButtonClick}>
 				<div className="menu top">
-					<ProfileButton size={size} />
-					<ContactsButton size={size} />
-					<GroupsButton size={size} />
-					<BotsButton size={size} />
+					<ProfileButton
+						size={size}
+						view={VIEWS.PROFILE}
+						selected={VIEWS.PROFILE === view}
+					/>
+					<ContactsButton
+						size={size}
+						view={VIEWS.CONTACTS}
+						selected={VIEWS.CONTACTS === view}
+					/>
+					<GroupsButton
+						size={size}
+						view={VIEWS.GROUPS}
+						selected={VIEWS.GROUPS === view}
+					/>
+					<BotsButton
+						size={size}
+						view={VIEWS.BOTS}
+						selected={VIEWS.BOTS === view}
+					/>
 				</div>
 				<div className="menu bottom">
-					<AddContactsButton size={size} />
-					<SearchButton size={size} />
-					<SettingsButton size={size} />
+					<AddContactsButton
+						size={size}
+						view={VIEWS.ADD_CONTACT}
+						selected={VIEWS.ADD_CONTACT === view}
+					/>
+					<SearchButton
+						size={size}
+						view={VIEWS.SEARCH}
+						selected={VIEWS.SEARCH === view}
+					/>
+					<SettingsButton
+						size={size}
+						view={VIEWS.SETTINGS}
+						selected={VIEWS.SETTINGS === view}
+					/>
 				</div>
 			</div>
 
 			<div className="content">
-				{contacts.map((contact, i) => (
-					<Contact
-						key={i}
-						name={contact.name}
-						lastOnline={contact.lastOnline}
-						profilPicture={contact.profilPicture}
-						numberOfUnreadMessages={contact.numberOfUnreadMessages}
-					/>
-				))}
+				{
+					{
+						[VIEWS.PROFILE]: <div>Profile</div>,
+						[VIEWS.CONTACTS]: <ContactView />,
+						[VIEWS.GROUPS]: <div>Groups</div>,
+						[VIEWS.BOTS]: <div>Bots</div>,
+						[VIEWS.ADD_CONTACT]: <div>Add contact</div>,
+						[VIEWS.SEARCH]: <div>Search</div>,
+						[VIEWS.SETTINGS]: <div>Settings</div>,
+					}[view]
+				}
 			</div>
 		</div>
 	);
 }
 
-function generateDummyContact(n) {
-	let contacts = [];
-
-	for (let i = 0; i < n; i++) {
-		const contact = {
-			name: 'Fischer Tom',
-			lastOnline: '10days',
-			numberOfUnreadMessages: parseInt(Math.random() * 10 - 5),
-			profilPicture:
-				'https://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=200',
-		};
-		contacts.push(contact);
-	}
-
-	return contacts;
-}
+const VIEWS = Object.freeze({
+	PROFILE: 'PROFILE',
+	CONTACTS: 'CONTACTS',
+	GROUPS: 'GROUPS',
+	BOTS: 'BOTS',
+	ADD_CONTACT: 'ADD_CONTACT',
+	SEARCH: 'SEARCH',
+	SETTINGS: 'SETTINGS',
+});

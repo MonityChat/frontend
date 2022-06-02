@@ -1,77 +1,92 @@
-.contact{
-    border-radius: calc(var(--b-r) * 2);
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: stretch;
-    height: 5rem;
-    background-color: var(--c-grey-light) 'FF';
-    box-shadow: var(--sh-2);
-    position: relative;
-    margin: var(--m-3) 0em ;
-    padding: var(--p-2);
-
+.contact {
+	border-radius: calc(var(--b-r) * 2);
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	justify-content: stretch;
+	height: 5rem;
+	background-color: var(--c-grey-light);
+	box-shadow: var(--sh-2);
+	position: relative;
+	margin: var(--m-2) 0em;
+	padding: var(--p-2);
+	transition: all 200ms ease-out;
+	cursor: pointer;
 }
 
-.contact .profil-picture{
-    flex: 0 0 4rem;
-    border-radius: inherit;
-    overflow: hidden;
+.contact:hover {
+	transform: scale(1.03);
 }
 
-.contact .profil-picture img{
-    width: 100%;
-    height: 100%;
+.contact .profil-picture {
+	flex: 0 0 4rem;
+	border-radius: inherit;
+	overflow: hidden;
 }
 
-.contact .info{
-    flex: 1 1 auto;
-    margin-left: var(--m-2);
-    overflow: hidden;
-    position: relative;
-    height: 100%;
+.contact .profil-picture img {
+	width: 100%;
+	height: 100%;
 }
 
-.info .name{
-    font-size: 1.3rem;
-    font-weight: 900;
-    max-width: 100%;
-    text-overflow: ellipsis;
-    position: absolute;
-    left: 0em;
-    top: 0em;
+.contact .info {
+	flex: 1 1 auto;
+	margin-left: var(--m-2);
+	overflow: hidden;
+	position: relative;
+	height: 100%;
 }
 
-.info .last-online{
-    position: absolute;
-    left: 0em;
-    bottom: 0em;
-    opacity: 0.8;
-    font-size: .8rem;
+.info .name {
+	font-size: 1.3rem;
+	font-weight: bold;
+	max-width: 100%;
+	text-overflow: ellipsis;
+	position: absolute;
+	left: 0em;
+	top: 0em;
+	max-width: 84%;
+	max-height: 80%;
+	overflow: hidden;
+	word-wrap: break-word;
+	word-break: break-all;
+	-ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+	line-height: 120%;
 }
 
-.info .news-status{
-    position: absolute;
-    right: 0em;
-    bottom: 10%;
-    width: 20%;
-    aspect-ratio: 1;
-    -webkit-aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
+.info .last-online {
+	position: absolute;
+	left: 0em;
+	bottom: 0em;
+	opacity: 0.8;
+	font-size: 0.8rem;
 }
 
-.info .news-status.some{
-    background-image: var(--g-base);
+.info .news-status {
+	position: absolute;
+	right: 0em;
+	bottom: 0em;
+	width: 15%;
+	aspect-ratio: 1;
+	-webkit-aspect-ratio: 1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 50%;
 }
 
-.info .news-status.none{
-   display: none;
+.info .news-status.some {
+	background-image: var(--g-base);
 }
 
-.info .news-status.blocked{
-    background-image: none;
- }
+.info .news-status.none {
+	display: none;
+}
+
+.info .news-status.blocked {
+	background-image: none;
+}

@@ -78,6 +78,11 @@
 	box-shadow: var(--sh-2);
 	text-align: start;
 	transition: inherit;
+	word-wrap: break-word;
+	-ms-hyphens: auto;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    hyphens: auto;
 }
 
 .message.left .content {

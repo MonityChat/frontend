@@ -1,6 +1,6 @@
 .sidebar {
 	--base-width: 4rem;
-	--full-width: 22rem;
+	--full-width: 24rem;
 	position: absolute;
 	top: 1%;
 	left: 0.5em;
@@ -8,7 +8,7 @@
 	width: var(--base-width);
 	border: var(--b-w) solid var(--c-grey-dark);
 	border-radius: calc(var(--b-r) * 2);
-    background-color: var(--c-grey-dark);
+	background-color: var(--c-grey-dark);
 	padding: var(--p-1);
 	transition: width 200ms ease-out;
 	box-shadow: var(--sh-1);
@@ -21,12 +21,12 @@
 }
 
 .sidebar:hover,
-.sidebar:focus{
+.sidebar:focus {
 	outline: none;
 	width: var(--full-width);
 }
 
-.sidebar .buttons{
+.sidebar .buttons {
 	width: var(--base-width);
 	height: 100%;
 	position: absolute;
@@ -38,12 +38,11 @@
 	flex: 0 0 var(--base-width);
 }
 
-.sidebar .content{
+.sidebar .content {
 	position: absolute;
 	left: var(--base-width);
 	width: calc(100% - var(--base-width));
 	height: 100%;
-	padding: var(--p-2);
 }
 
 .buttons .menu {
@@ -85,6 +84,11 @@
 	transition: inherit;
 }
 
+.sidebar-button.selected::before {
+	transform: scaleY(0.7);
+	opacity: 1;
+}
+
 .sidebar-button:hover,
 .sidebar-button:focus {
 	transform: scale(1.1);
@@ -96,7 +100,7 @@
 	opacity: 1;
 }
 
-.sidebar-button .circle{
+.sidebar-button .circle {
 	width: var(--circle-size);
 	height: var(--circle-size);
 	border-radius: 50%;
@@ -104,10 +108,13 @@
 	transform: scale(0.9);
 }
 
-.sidebar-button .circle img{
+.sidebar-button .circle img {
 	width: calc(var(--circle-size) * 0.9);
 	height: calc(var(--circle-size) * 0.9);
 	border-radius: 50%;
 	background-image: var(--g-base);
-	transform: translate(calc(var(--circle-size) * 0.05), calc(var(--circle-size) * 0.05));
+	transform: translate(
+		calc(var(--circle-size) * 0.05),
+		calc(var(--circle-size) * 0.05)
+	);
 }

@@ -1,0 +1,20 @@
+.contact-view{
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: scroll;
+    scrollbar-width: 0rem;
+    padding: 0em var(--p-3);
+}
+
+.contact-view::-webkit-scrollbar{
+    width: 0rem;
+}
+
+.contact-view .title{
+    margin: var(--m-2) 0;
+    font-size: 1.5rem;
+    font-weight: 900;
+}
