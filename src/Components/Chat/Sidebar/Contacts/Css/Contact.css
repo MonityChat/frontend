@@ -52,9 +52,9 @@
 	word-wrap: break-word;
 	word-break: break-all;
 	-ms-hyphens: auto;
-    -moz-hyphens: auto;
-    -webkit-hyphens: auto;
-    hyphens: auto;
+	-moz-hyphens: auto;
+	-webkit-hyphens: auto;
+	hyphens: auto;
 	line-height: 120%;
 }
 
@@ -71,8 +71,7 @@
 	right: 0em;
 	bottom: 0em;
 	width: 15%;
-	aspect-ratio: 1;
-	-webkit-aspect-ratio: 1;
+	height: 45%;
 	display: flex;
 	align-items: center;
 	justify-content: center;

@@ -5,6 +5,7 @@ import Home from './Components/Home/Home';
 import './Css/Forms.css';
 import './Css/Index.css';
 import ForgotPassword from './Components/Authentication/ForgotPassword';
+import ResetPassword from './Components/Authentication/ResetPassword';
 import Messenger from './Components/Chat/Messenger';
 
 function App() {
@@ -17,17 +18,18 @@ function App() {
 						component={ForgotPassword}
 						exact
 					/>
+					<Route
+						path="/reset-password"
+						component={ResetPassword}
+						exact
+					/>
 					<Route path="/home" component={Home} exact />
 					<Route
 						path="/authentication"
 						component={Authentication}
 						exact
 					/>
-					<Route
-						path="/"
-						component={Messenger}
-						exact
-					/>
+					<Route path="/" component={Messenger} exact />
 					<Route component={FileNotFound} exact />
 				</Switch>
 			</div>

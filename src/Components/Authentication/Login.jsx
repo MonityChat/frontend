@@ -55,13 +55,12 @@ export default function Login() {
 		}
 		setMessage('Successfully loged in');
 
-		//set new session token
-		
-		// setKey(result.authKey);
+		//still use old key
+		// setKey(result.uuid);
 		setLogedIn(true);
 
 		setTimeout(() => {
-			history.push('/');	
+			history.push('/');
 		}, 500);
 	};
 
@@ -84,7 +83,9 @@ export default function Login() {
 				<span>{message}</span>
 				<button onClick={handleLogin}>Login</button>
 				<span>
-					<Link className='link' to="/forgot-password">Forgot Password?</Link>
+					<Link className="link" to="/forgot-password">
+						Forgot Password?
+					</Link>
 				</span>
 			</div>
 		</div>
@@ -124,12 +125,11 @@ async function login(input, password) {
 	//hashing password with the salt from the server
 	const hashedPassword = hash(password, salt);
 
-
 	let userName = '';
 	let email = '';
-	if(isValidEmail(input)){
+	if (isValidEmail(input)) {
 		email = input;
-	}else{
+	} else {
 		userName = input;
 	}
 

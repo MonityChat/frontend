@@ -25,9 +25,8 @@ export default function ChatInput() {
 	const sendMessage = () => {
 		const message = messageRef.current.value;
 		messageRef.current.value = '';
-		global.test = 'test';
+		
 		if (message.length <= 0) return;
-
 		sendJsonMessage({ message });
 	};
 

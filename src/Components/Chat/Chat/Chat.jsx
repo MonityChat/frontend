@@ -9,11 +9,11 @@ import { WEBSOCKET_URL } from '../../../Util/Websocket';
 
 export default function Chat() {
 	const history = useHistory();
-	
-	useWebSocket(WEBSOCKET_URL, {share: true});
-	
+
+	const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, { share: true });
+
 	useEffect(() => {
-		const [key,, isLogedIn] = useAuthentication();
+		const [key, , isLogedIn] = useAuthentication();
 		if (!isLogedIn) {
 			console.log('is not loged in');
 			// history.push('/authentication');
@@ -21,7 +21,21 @@ export default function Chat() {
 		}
 		console.log('is loged in');
 
+		sendJsonMessage({ auth: key });
 	}, []);
+
+	useEffect(() => {
+		if(lastJsonMessage === null) return;
+
+		if(lastJsonMessage.error){
+			console.log("doesn't has the permission");
+			history.push('/authentication');
+			return;
+		}
+
+		console.log(lastJsonMessage);
+
+	}, [lastJsonMessage])
 
 	return (
 		<div className="chat">
