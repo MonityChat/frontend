@@ -16,9 +16,8 @@ export default function Authentication() {
 	const registerRef = useRef();
 
 	useEffect(() => {
-		// if (SESSION_AUTH.key === null) getNewKey();
 		const [key, setKey] = useAuthentication();
-		if(key === null) getNewKey();
+		getNewKey();
 	}, []);
 
 	useEffect(() => {

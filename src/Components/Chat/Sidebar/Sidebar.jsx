@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import SettingsButton from './SettingsButton';
-import GroupsButton from './GroupsButton';
-import BaseGradient from './BaseGradient';
+import SettingsButton from './Settings/SettingsButton';
+import SettingsView from './Settings/SettingsView';
 import ContactsButton from './Contacts/ContactsButton';
+import ContactView from './Contacts/ContactView';
+import GroupsButton from './GroupsButton';
+import AddContactsButton from './AddContact/AddContactsButton';
+import AddContactView from './AddContact/AddContactView';
+import BaseGradient from './BaseGradient';
 import SearchButton from './SearchButton';
-import AddContactsButton from './AddContactsButton';
 import BotsButton from './BotsButton';
 import ProfileButton from './ProfileButton';
-import ContactView from './Contacts/ContactView';
 import './Css/Sidebar.css';
 
 export default function Sidebar() {
@@ -72,9 +74,9 @@ export default function Sidebar() {
 						[VIEWS.CONTACTS]: <ContactView />,
 						[VIEWS.GROUPS]: <div>Groups</div>,
 						[VIEWS.BOTS]: <div>Bots</div>,
-						[VIEWS.ADD_CONTACT]: <div>Add contact</div>,
+						[VIEWS.ADD_CONTACT]: <AddContactView />,
 						[VIEWS.SEARCH]: <div>Search</div>,
-						[VIEWS.SETTINGS]: <div>Settings</div>,
+						[VIEWS.SETTINGS]: <SettingsView />,
 					}[view]
 				}
 			</div>

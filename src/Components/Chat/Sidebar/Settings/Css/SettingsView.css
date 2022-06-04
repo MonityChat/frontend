@@ -1,0 +1,29 @@
+.settings-view{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.settings-view .list{
+    align-self: flex-start;
+    padding-left: calc(var(--p-3) * 2);
+}
+
+.settings-view .list > li{
+    margin: calc(var(--m-3) * 2) 0;
+}
+
+.list .item{
+    display: block;
+}
+
+.list input[type="radio"]{
+    display: inline;
+}
+
+.list .item .label{
+    font-size: 1.1rem;
+    font-weight: 500;
+}

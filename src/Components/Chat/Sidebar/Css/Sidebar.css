@@ -45,6 +45,22 @@
 	height: 100%;
 }
 
+.sidebar .content .title{
+	margin: var(--m-2) 0;
+    font-size: 1.5rem;
+    font-weight: 900;
+}
+
+.sidebar .content{
+	opacity: 0;
+	transition: opacity 200ms ease-out;
+}
+
+.sidebar:hover .content,
+.sidebar:focus .content{
+	opacity: 1;
+}
+
 .buttons .menu {
 	position: absolute;
 	display: flex;

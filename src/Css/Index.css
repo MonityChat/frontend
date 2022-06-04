@@ -21,7 +21,6 @@
 	--c-font: #f9f9f9;
 	--c-gradient-1: #FF7A00;
 	--c-gradient-2: #FF00C7;	
-	/* --c-gradinet-2: #64ffbe;	 */
 
 	--g-base: linear-gradient(101deg, var(--c-gradient-1), var(--c-gradient-2));
 	--g-base-reverse: linear-gradient(101deg, var(--c-gradient-2), var(--c-gradient-1));
@@ -36,6 +35,31 @@
 	--sh-selected: 0 0 0.5rem 1px var(--c-selected);
 	--sh-gradient-1: 0 0 0.5rem 1px var(--c-gradient-1);
 	--sh-gradient-2: 0 0 0.5rem 1px var(--c-gradient-2);
+
+
+	/* COLOR SCHEME GRADIENT*/
+	--scheme-icy-1: #595cff;
+	--scheme-icy-2: #c6f8ff;
+
+	--scheme-sunshine-1: #ff930f;
+	--scheme-sunshine-2: #fff95b;
+
+	--scheme-neon-1: #00ff87;
+	--scheme-neon-2: #60efff;
+
+	--scheme-sunset-1: #FF7A00;
+	--scheme-sunset-2: #FF00C7;
+
+	--scheme-underwater-1: #456fe8;
+	--scheme-underwater-2: #19b0ec;
+
+
+
+	/* COLOR SCHEME SINGLE COLOR*/
+	--scheme-red-1: red;
+	--scheme-grey-1: rgb(173, 173, 173);
+	--scheme-blue-1: blue;
+	--scheme-green-1: green;
 }
 
 html,

@@ -22,6 +22,8 @@ export default function Chat() {
 		console.log('is loged in');
 
 		sendJsonMessage({ auth: key });
+
+		document.title = 'Monity | Chat';	
 	}, []);
 
 	useEffect(() => {

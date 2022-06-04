@@ -1,4 +1,4 @@
-.contact-view{
+.add-contact-view{
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -9,6 +9,10 @@
     padding: 0em var(--p-3);
 }
 
-.contact-view::-webkit-scrollbar{
+.add-contact-view::-webkit-scrollbar{
     width: 0rem;
+}
+
+.add-contact-view .search{
+    max-width: 90%;
 }

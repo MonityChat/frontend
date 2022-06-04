@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useContext } from 'react';
 import {
 	IoSendOutline,
 	IoDocumentTextOutline,
@@ -10,13 +10,16 @@ import './Css/ChatInput.css';
 import Picker from 'emoji-picker-react';
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
 import { WEBSOCKET_URL } from '../../../Util/Websocket.js';
+import { SettingsContext, MESSAGE_MODES } from '../../../App';
 
 export default function ChatInput() {
 	const [showEmoji, setShowEmoji] = useState(false);
 	const messageRef = useRef();
 
 	const { sendJsonMessage } = useWebSocket(WEBSOCKET_URL, { share: true });
-	
+
+	const { messageMode } = useContext(SettingsContext);
+
 	const onEmojiClicked = (e, emojiObject) => {
 		messageRef.current.value += emojiObject.emoji;
 		setShowEmoji(false);
@@ -25,9 +28,28 @@ export default function ChatInput() {
 	const sendMessage = () => {
 		const message = messageRef.current.value;
 		messageRef.current.value = '';
-		
+
 		if (message.length <= 0) return;
 		sendJsonMessage({ message });
+	};
+
+	const handleMessageInput = (e) => {
+		if (e.key === 'Enter') {
+			if (e.ctrlKey && messageMode === MESSAGE_MODES.ENTER_CTRL) {
+				sendMessage();
+			} else if (
+				e.shiftKey &&
+				messageMode === MESSAGE_MODES.ENTER_SHIFT
+			) {
+				sendMessage();
+			} else if (
+				messageMode === MESSAGE_MODES.ENTER &&
+				!e.ctrlKey &&
+				!e.shiftKey
+			) {
+				sendMessage();
+			}
+		}
 	};
 
 	return (
@@ -64,9 +86,7 @@ export default function ChatInput() {
 				rows={1}
 				className="message-input"
 				ref={messageRef}
-				onKeyDown={(e) => {
-					if (e.key === 'Enter' && e.ctrlKey) sendMessage();
-				}}
+				onKeyDown={handleMessageInput}
 			></textarea>
 
 			<IoSendOutline

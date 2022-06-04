@@ -132,8 +132,6 @@ async function register(userName, email, password) {
 	const salt = generateNewSalt();
 	const hashedPassword = await hash(password, salt);
 
-	await getNewKey();
-
 	const registerOptions = {
 		method: 'POST',
 		headers: {
