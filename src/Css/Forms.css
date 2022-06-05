@@ -140,3 +140,57 @@ button:hover, button:focus {
     left: 0%;
 	outline: none;
 }
+
+select{
+	background-color: var(--c-grey-light);
+	border: var(--b-w) solid var(--c-font);
+	border-radius: var(--b-r);
+	display: block;
+	margin: var(--m-2);
+	margin-left: calc(var(--m-3) * 2);
+	padding: var(--p-1) var(--p-2);
+	color: var(--c-font);
+	text-transform: capitalize;
+	font-size: 1rem;
+	font-weight: 100;
+	cursor: pointer;
+}
+
+select:disabled{
+	opacity: 0.5;
+}
+
+select:hover:not(:disabled),
+select:focus:not(:disabled){
+	outline: none;
+	border-color: var(--c-selected);
+	box-shadow: var(--sh-selected);
+}
+
+input[type='radio']{
+	margin: var(--m-2);
+	margin-right: var(--m-3);
+	cursor: pointer;
+	box-shadow: none;
+	position: relative;
+}
+
+input[type='radio']::before{
+	content: '';
+	position: absolute;
+	inset: -0.25em;
+	background-color: var(--c-grey-light);
+	border-radius: 50%;
+	border: calc(var(--b-w) * 2) solid var(--c-grey-light);
+	filter: drop-shadow(.1rem 0.1rem 0.5rem black);
+	transition: all 200ms ease-out;
+}
+
+input[type='radio']:hover::before{
+	/* border-color: var(--c-selected); */
+	box-shadow: var(--sh-selected);
+}
+
+input[type='radio']:checked::before{
+	background-color: var(--c-gradient-1);
+}

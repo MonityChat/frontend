@@ -16,7 +16,8 @@
 	--b-w: 0.15rem;
 	--b-r: 0.5rem;
 
-	--c-selected: #ff7b00a9;
+	/* --c-selected: #ff7b00a9; */
+	--c-selected: var(--c-gradient-1);
 	--c-error: #d90429;
 	--c-font: #f9f9f9;
 	--c-gradient-1: #FF7A00;

@@ -48,7 +48,10 @@ export default function SettingsView() {
 							}
 						/>
 						<span className="label">Gradient</span>
-						<select onChange={handleGradientSchemeChange}>
+						<select
+							onChange={handleGradientSchemeChange}
+							disabled={colorMode !== COLOR_MODES.GRADIENT_COLOR}
+						>
 							{Object.keys(GRADIENT_SCHEME).map((keyName, i) => (
 								<option
 									key={i}
@@ -75,7 +78,10 @@ export default function SettingsView() {
 							}
 						/>
 						<span className="label">Single color</span>
-						<select onChange={handleColorSchemeChange}>
+						<select
+							onChange={handleColorSchemeChange}
+							disabled={colorMode !== COLOR_MODES.SINGLE_COLOR}
+						>
 							{Object.keys(COLOR_SCHEME).map((keyName, i) => (
 								<option
 									key={i}

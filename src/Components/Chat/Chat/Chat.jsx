@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import ChatInput from './ChatInput';
-import MessageScreen from './MessageScreen';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
-import './Css/Chat.css';
 import useAuthentication from '../../../Util/UseAuth';
 import { WEBSOCKET_URL } from '../../../Util/Websocket';
+import ChatInput from './ChatInput';
+import MessageScreen from './MessageScreen';
+import './Css/Chat.css';
 
 export default function Chat() {
 	const history = useHistory();
