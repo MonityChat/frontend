@@ -3,11 +3,13 @@ import SettingsButton from './Settings/SettingsButton';
 import SettingsView from './Settings/SettingsView';
 import ContactsButton from './Contacts/ContactsButton';
 import ContactView from './Contacts/ContactView';
-import GroupsButton from './GroupsButton';
+import GroupsButton from './Groups/GroupsButton';
+import GroupView from './Groups/GroupView';
 import AddContactsButton from './AddContact/AddContactsButton';
 import AddContactView from './AddContact/AddContactView';
 import BaseGradient from './BaseGradient';
-import SearchButton from './SearchButton';
+import SearchButton from './Search/SearchButton';
+import SearchView from './Search/SearchView';
 import BotsButton from './BotsButton';
 import ProfileButton from './ProfileButton';
 import './Css/Sidebar.css';
@@ -72,10 +74,10 @@ export default function Sidebar() {
 					{
 						[VIEWS.PROFILE]: <div>Profile</div>,
 						[VIEWS.CONTACTS]: <ContactView />,
-						[VIEWS.GROUPS]: <div>Groups</div>,
+						[VIEWS.GROUPS]: <GroupView />,
 						[VIEWS.BOTS]: <div>Bots</div>,
 						[VIEWS.ADD_CONTACT]: <AddContactView />,
-						[VIEWS.SEARCH]: <div>Search</div>,
+						[VIEWS.SEARCH]: <SearchView />,
 						[VIEWS.SETTINGS]: <SettingsView />,
 					}[view]
 				}

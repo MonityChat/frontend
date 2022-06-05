@@ -49,6 +49,7 @@
 	margin: var(--m-2) 0;
     font-size: 1.5rem;
     font-weight: 900;
+	user-select: all;
 }
 
 .sidebar .content{
