@@ -1,0 +1,37 @@
+.statusbar {
+	position: relative;
+	flex: 0 0 1.5rem;
+	height: 98%;
+	margin-left: var(--m-2);
+	border: var(--b-w) solid var(--c-grey-dark);
+	border-radius: calc(var(--b-r) * 2);
+	border-top-right-radius: 0em;
+	border-bottom-right-radius: 0em;
+	background-color: var(--c-grey-dark);
+	padding: var(--p-2);
+	transition: flex 200ms ease-out;
+	box-shadow: var(--sh-1);
+	z-index: 10;
+}
+
+.statusbar.opened{
+    flex: 0 0 20rem;
+}
+
+.statusbar .line {
+	--height: 20%;
+
+	position: absolute;
+	height: var(--height);
+	width: 0.2em;
+	left: 0.5em;
+	top: calc(50% - var(--height) / 2);
+	background-image: var(--g-base);
+	border-radius: var(--b-r);
+	transition: transform 200ms ease-out;
+    cursor: pointer;
+}
+
+.statusbar:hover .line {
+	transform: scale(1.1);
+}

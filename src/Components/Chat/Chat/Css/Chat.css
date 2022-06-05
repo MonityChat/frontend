@@ -1,16 +1,14 @@
 .chat{
-    --chat-size: 0.97;
-
+	position: relative;
+	margin: 0 var(--m-2);
+	flex: 10 10 auto;
+	min-width: 0px;
+	height: 98%;
 	display: flex;
 	align-items: stretch;
     align-content: stretch;
 	justify-content: center;
 	flex-direction: column;
-	position: absolute;
-	top: 1%;
-	left: 6em;
-	height: 98%;
-	width: calc((100% - 6em) * var(--chat-size));
 	border: var(--b-w) solid var(--c-grey-dark);
 	border-radius: calc(var(--b-r) * 2);
     background-color: var(--c-grey-dark);
