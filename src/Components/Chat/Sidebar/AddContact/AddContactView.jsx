@@ -1,40 +1,52 @@
-import React, { useState } from 'react';
-import AddContact from './AddContact';
-import './Css/AddContactView.css';
+import React, { useState, useEffect } from "react";
+import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
+import { WEBSOCKET_URL } from "../../../../Util/Websocket";
+import AddContact from "./AddContact";
+import "./Css/AddContactView.css";
+
+const ACTION_SEARCH_CONTACT = "contact:search";
 
 export default function AddContactView() {
-	const [searchedContacts, setSearchedContacts] = useState([
-		{
-			name: 'lorem ipsum',
-			shortStatus: 'Crypto for life is best of the strongfsd Crypto for life is best of the strongfsdCrypto for life is best of the strongfsd Crypto for life is best of the strongfsd',
-			profilPicture: 'https://i.pravatar.cc/300',
-			uuid: '1234-213-123',
-		},
-		{
-			name: 'lorem ipsum',
-			shortStatus: 'ngfsd Crypto for life is best of the strongfsdCrypto for life is best of the strongfsd Crypto for life is best of the strongfsd',
-			profilPicture: 'https://i.pravatar.cc/300',
-			uuid: '1234-213-123',
-		},
-	]);
+  const [searchedContacts, setSearchedContacts] = useState([]);
 
-	return (
-		<div className="add-contact-view">
-			<h2 className="title">Add contact</h2>
-			<input
-				type="text"
-				className="search"
-				placeholder="Search contact"
-			/>
-			{searchedContacts.map((contact, i) => (
-				<AddContact
-					name={contact.name}
-					shortStatus={contact.shortStatus}
-					profilPicture={contact.profilPicture}
-					uuid={contact.uuid}
-					key={i}
-				/>
-			))}
-		</div>
-	);
+  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
+    share: true,
+  });
+
+  const searchInput = (e) => {
+    if (e.key !== "Enter") return;
+    console.log("enter pressed");
+    sendJsonMessage({
+      action: ACTION_SEARCH_CONTACT,
+      keyword: e.target.value,
+    });
+  };
+
+  useEffect(() => {
+    if (lastJsonMessage === null) return;
+    if (lastJsonMessage.action !== ACTION_SEARCH_CONTACT) return;
+
+    setSearchedContacts(lastJsonMessage.content.users);
+  }, [lastJsonMessage]);
+
+  return (
+    <div className="add-contact-view">
+      <h2 className="title">Add contact</h2>
+      <input
+        type="text"
+        className="search"
+        placeholder="Search contact"
+        onKeyDown={searchInput}
+      />
+      {searchedContacts.map((contact, i) => (
+        <AddContact
+          name={"Test"}
+          shortStatus={contact.shortStatus}
+          profilePicture={contact.profileImageLocation}
+          uuid={contact.uuid}
+          key={i}
+        />
+      ))}
+    </div>
+  );
 }

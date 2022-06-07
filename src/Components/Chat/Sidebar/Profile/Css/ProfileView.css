@@ -1,0 +1,14 @@
+.profile-view {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-y: scroll;
+  scrollbar-width: 0rem;
+  padding: 0em var(--p-3);
+}
+
+.profile-view::-webkit-scrollbar {
+  width: 0rem;
+}
