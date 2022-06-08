@@ -1,18 +1,3 @@
-.add-contact-view{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    overflow-y: scroll;
-    scrollbar-width: 0rem;
-    padding: 0em var(--p-3);
-}
-
-.add-contact-view::-webkit-scrollbar{
-    width: 0rem;
-}
-
-.add-contact-view .search{
-    max-width: 90%;
+.add-contact-view .search {
+	max-width: 90%;
 }

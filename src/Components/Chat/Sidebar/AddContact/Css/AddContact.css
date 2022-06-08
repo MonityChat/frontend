@@ -5,7 +5,7 @@
 	flex-direction: row;
 	align-items: center;
 	justify-content: stretch;
-	height: 5rem;
+	min-height: 5rem;
 	background-color: var(--c-grey-light);
 	box-shadow: var(--sh-2);
 	position: relative;
@@ -21,6 +21,7 @@
 
 .add-contact .profil-picture {
 	flex: 0 0 4rem;
+	aspect-ratio: 1 / 1;
 	border-radius: inherit;
 	overflow: hidden;
 }
@@ -68,13 +69,3 @@
     white-space: nowrap;
     display: inline-block;
 }
-
-.add-contact:hover .info .short-status.ticker{
-    animation: marquee 3s ease-in-out infinite;
-}
-
-
-@keyframes marquee {
-    0%, 30% { transform: translate(0, 0); left: 0%; }
-    70%, 100% { transform: translate(-100%, 0); left: 100%; }
-    }

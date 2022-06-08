@@ -1,0 +1,75 @@
+.profile-picture {
+	width: 15rem;
+	aspect-ratio: 1 / 1;
+	position: relative;
+	margin: var(--m-2);
+	user-select: none;
+}
+
+.profile-picture .img-container {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	overflow: hidden;
+	filter: drop-shadow(0.2em 0.2em 0.4rem black);
+}
+
+.profile-picture .img-container img {
+	width: 100%;
+	height: 100%;
+	background-color: var(--c-grey-light);
+}
+
+.profile-picture .status {
+	position: absolute;
+	bottom: 5%;
+	right: 5%;
+	width: 20%;
+	aspect-ratio: 1 / 1;
+	z-index: -10;
+	filter: drop-shadow(0.2em 0.2em 0.3rem black);
+}
+
+.profile-picture .status .outer {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	position: absolute;
+	background-color: var(--color, white);
+}
+
+.profile-picture .status .middle {
+	width: 80%;
+	height: 80%;
+	left: 10%;
+	top: 10%;
+	border-radius: 50%;
+	position: absolute;
+	background-color: var(--c-grey-dark);
+}
+
+.profile-picture .status .inner {
+	width: 50%;
+	height: 50%;
+	left: 25%;
+	top: 25%;
+	border-radius: 50%;
+	position: absolute;
+	background-color: var(--color, white);
+}
+
+.status.online {
+	--color: #00b828;
+}
+
+.status.offline {
+	--color: #616161;
+}
+
+.status.away {
+	--color: #f1c40f;
+}
+
+.status.do-not-disturb {
+	--color: #e53935;
+}

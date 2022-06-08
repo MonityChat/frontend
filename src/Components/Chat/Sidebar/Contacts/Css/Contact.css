@@ -21,6 +21,7 @@
 
 .contact .profil-picture {
 	flex: 0 0 4rem;
+	aspect-ratio: 1 / 1;
 	border-radius: inherit;
 	overflow: hidden;
 }

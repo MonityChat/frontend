@@ -32,7 +32,7 @@ export default function ChatInput() {
     messageRef.current.value = "";
 
     if (message.length <= 0) return;
-    sendJsonMessage({ message });
+    
   };
 
   const handleMessageInput = (e) => {

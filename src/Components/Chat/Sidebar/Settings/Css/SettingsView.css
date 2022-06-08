@@ -1,11 +1,3 @@
-.settings-view{
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-}
-
 .settings-view .list{
     align-self: flex-start;
     padding-left: calc(var(--p-3) * 2);
