@@ -1,169 +1,169 @@
 .sidebar {
-	--base-width: 4rem;
-	--full-width: 24rem;
-	position: absolute;
-	top: 1%;
-	left: 0.5em;
-	height: 98%;
-	width: var(--base-width);
-	border: var(--b-w) solid var(--c-grey-dark);
-	border-radius: calc(var(--b-r) * 2);
-	background-color: var(--c-grey-dark);
-	padding: var(--p-1);
-	transition: width 200ms ease-out;
-	box-shadow: var(--sh-1);
-	z-index: 100;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
-	overflow: hidden;
+  --base-width: 4rem;
+  --full-width: 24rem;
+  position: absolute;
+  top: 1%;
+  left: 0.5em;
+  height: 98%;
+  width: var(--base-width);
+  border: var(--b-w) solid var(--c-grey-dark);
+  border-radius: calc(var(--b-r) * 2);
+  background-color: var(--c-grey-dark);
+  padding: var(--p-1);
+  transition: width 200ms ease-out;
+  box-shadow: var(--sh-1);
+  z-index: 100;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
 .sidebar:hover,
 .sidebar:focus {
-	outline: none;
-	width: var(--full-width);
+  outline: none;
+  width: var(--full-width);
 }
 
 .sidebar .buttons {
-	width: var(--base-width);
-	height: 100%;
-	position: absolute;
-	left: 0;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	flex: 0 0 var(--base-width);
+  width: var(--base-width);
+  height: 100%;
+  position: absolute;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex: 0 0 var(--base-width);
 }
 
 .sidebar .content {
-	position: absolute;
-	left: var(--base-width);
-	width: calc(100% - var(--base-width));
-	height: 100%;
+  position: absolute;
+  left: var(--base-width);
+  width: calc(100% - var(--base-width));
+  height: 100%;
 }
 
 .sidebar .content .view {
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
-	position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
 }
 
 .sidebar .content .title {
-	margin: var(--m-2) 0;
-	font-size: 1.5rem;
-	font-weight: 900;
-	user-select: all;
+  margin: var(--m-2) 0;
+  font-size: 1.5rem;
+  font-weight: 900;
+  user-select: all;
 }
 
 .sidebar .content .scrollable {
-	overflow-y: scroll;
-	scrollbar-width: 0rem;
-	padding: 0em var(--p-3);
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: flex-start;
-	position: relative;
-	width: 100%;
-	flex: 1 1 auto;
-	overflow-x: hidden;
+  overflow-y: scroll;
+  scrollbar-width: 0rem;
+  padding: 0em var(--p-3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  position: relative;
+  width: 100%;
+  flex: 1 1 auto;
+  overflow-x: hidden;
 }
 
 .scrollable::-webkit-scrollbar {
-	width: 0rem;
+  width: 0rem;
 }
 
-.sidebar .content .placeholder{
-	font-size: 1.2rem;
-	opacity: 0.8;
+.sidebar .content .placeholder {
+  font-size: 1.2rem;
+  opacity: 0.8;
 }
 
 .sidebar .content {
-	opacity: 0;
-	transition: opacity 200ms ease-out;
+  opacity: 0;
+  transition: opacity 200ms ease-out;
 }
 
 .sidebar:hover .content,
 .sidebar:focus .content {
-	opacity: 1;
+  opacity: 1;
 }
 
 .buttons .menu {
-	position: absolute;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	flex-direction: column;
-	gap: 0.4em;
-	margin: var(--m-2);
-	left: 0em;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 0.4em;
+  margin: var(--m-2);
+  left: 0em;
 }
 
 .buttons .menu.top {
-	top: 0em;
+  top: 0em;
 }
 
 .buttons .menu.bottom {
-	bottom: 0em;
+  bottom: 0em;
 }
 
 .sidebar-button {
-	cursor: pointer;
-	transition: transform 200ms ease-out, opacity 400ms ease-out;
-	position: relative;
+  cursor: pointer;
+  transition: transform 200ms ease-out, opacity 400ms ease-out;
+  position: relative;
 }
 
 .sidebar-button::before {
-	content: '';
-	width: 8%;
-	top: 25%;
-	left: -10%;
-	height: 50%;
-	border-radius: var(--b-r);
-	position: absolute;
-	background-image: var(--g-base);
-	transform: scaleY(0.1);
-	opacity: 0;
-	transition: inherit;
+  content: "";
+  width: 8%;
+  top: 25%;
+  left: -10%;
+  height: 50%;
+  border-radius: var(--b-r);
+  position: absolute;
+  background-image: var(--g-base);
+  transform: scaleY(0.1);
+  opacity: 0;
+  transition: inherit;
 }
 
 .sidebar-button.selected::before {
-	transform: scaleY(0.7);
-	opacity: 1;
+  transform: scaleY(0.7);
+  opacity: 1;
 }
 
 .sidebar-button:hover,
 .sidebar-button:focus {
-	transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .sidebar-button:hover::before,
 .sidebar-button:focus::before {
-	transform: scaleY(1);
-	opacity: 1;
+  transform: scaleY(1);
+  opacity: 1;
 }
 
 .sidebar-button .circle {
-	width: var(--circle-size);
-	height: var(--circle-size);
-	border-radius: 50%;
-	background-image: var(--g-base);
-	transform: scale(0.9);
+  width: var(--circle-size);
+  height: var(--circle-size);
+  border-radius: 50%;
+  background-image: var(--g-base);
+  transform: scale(0.9);
 }
 
 .sidebar-button .circle img {
-	width: calc(var(--circle-size) * 0.9);
-	height: calc(var(--circle-size) * 0.9);
-	border-radius: 50%;
-	background-image: var(--g-base);
-	transform: translate(
-		calc(var(--circle-size) * 0.05),
-		calc(var(--circle-size) * 0.05)
-	);
+  width: calc(var(--circle-size) * 0.9);
+  height: calc(var(--circle-size) * 0.9);
+  border-radius: 50%;
+  background-image: var(--g-base);
+  transform: translate(
+    calc(var(--circle-size) * 0.05),
+    calc(var(--circle-size) * 0.05)
+  );
 }

@@ -79,6 +79,9 @@ export default function Login() {
           getState={setPassword}
           text="Password"
           error={passwordError}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") handleLogin();
+          }}
         />
         <span>{message}</span>
         <button onClick={handleLogin}>Login</button>

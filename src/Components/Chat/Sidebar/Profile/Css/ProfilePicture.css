@@ -1,75 +1,87 @@
 .profile-picture {
-	width: 15rem;
-	aspect-ratio: 1 / 1;
-	position: relative;
-	margin: var(--m-2);
-	user-select: none;
+  width: 15rem;
+  height: 15rem;
+  aspect-ratio: 1 / 1;
+  position: relative;
+  margin: var(--m-2);
+  user-select: none;
 }
 
 .profile-picture .img-container {
-	width: 100%;
-	height: 100%;
-	border-radius: 50%;
-	overflow: hidden;
-	filter: drop-shadow(0.2em 0.2em 0.4rem black);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  filter: drop-shadow(0.2em 0.2em 0.4rem black);
+  display: grid;
+  place-items: center;
 }
 
-.profile-picture .img-container img {
-	width: 100%;
-	height: 100%;
-	background-color: var(--c-grey-light);
+.profile-picture .img-container .normal {
+  width: 100%;
+  height: auto;
+  background-color: var(--c-grey-light);
+  position: relative;
+  z-index: 100;
+}
+
+.profile-picture .img-container .blur {
+  position: absolute;
+  inset: 0rem;
+  filter: blur(0.5rem);
+  background-color: var(--c-grey-light);
 }
 
 .profile-picture .status {
-	position: absolute;
-	bottom: 5%;
-	right: 5%;
-	width: 20%;
-	aspect-ratio: 1 / 1;
-	z-index: -10;
-	filter: drop-shadow(0.2em 0.2em 0.3rem black);
+  position: absolute;
+  bottom: 5%;
+  right: 5%;
+  width: 20%;
+  aspect-ratio: 1 / 1;
+  z-index: 100;
+  filter: drop-shadow(0.2em 0.2em 0.3rem black);
 }
 
 .profile-picture .status .outer {
-	width: 100%;
-	height: 100%;
-	border-radius: 50%;
-	position: absolute;
-	background-color: var(--color, white);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: absolute;
+  background-color: var(--color, white);
 }
 
 .profile-picture .status .middle {
-	width: 80%;
-	height: 80%;
-	left: 10%;
-	top: 10%;
-	border-radius: 50%;
-	position: absolute;
-	background-color: var(--c-grey-dark);
+  width: 80%;
+  height: 80%;
+  left: 10%;
+  top: 10%;
+  border-radius: 50%;
+  position: absolute;
+  background-color: var(--c-grey-dark);
 }
 
 .profile-picture .status .inner {
-	width: 50%;
-	height: 50%;
-	left: 25%;
-	top: 25%;
-	border-radius: 50%;
-	position: absolute;
-	background-color: var(--color, white);
+  width: 50%;
+  height: 50%;
+  left: 25%;
+  top: 25%;
+  border-radius: 50%;
+  position: absolute;
+  background-color: var(--color, white);
 }
 
 .status.online {
-	--color: #00b828;
+  --color: #00b828;
 }
 
 .status.offline {
-	--color: #616161;
+  --color: #616161;
 }
 
 .status.away {
-	--color: #f1c40f;
+  --color: #f1c40f;
 }
 
 .status.do-not-disturb {
-	--color: #e53935;
+  --color: #e53935;
 }
