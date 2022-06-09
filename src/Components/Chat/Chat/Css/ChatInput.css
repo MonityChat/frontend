@@ -23,6 +23,7 @@
 
 .chat-input .message-input{
     flex: 2 2 80%;
+    font-size: 1rem;
 }
 
 .emoji-picker-react{

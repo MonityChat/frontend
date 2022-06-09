@@ -1,7 +1,7 @@
 import React from 'react';
 import './Css/ProfilePicture.css';
 
-export default function ProfilePicture({ path, status }) {
+export default function ProfilePicture({ path, status, children }) {
 	return (
 		<div className="profile-picture">
 			<div className="img-container">
@@ -16,6 +16,7 @@ export default function ProfilePicture({ path, status }) {
 				<div className="middle"></div>
 				<div className="inner"></div>
 			</div>
+			{children}
 		</div>
 	);
 }

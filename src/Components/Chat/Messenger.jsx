@@ -29,6 +29,28 @@ export default function Messenger() {
 		});
 
 		document.title = 'Monity | Chat';
+		setProfile({
+			userName: 'Simon Devi',
+			status: 'DO_NOT_DISTURB',
+			description: 'SIMON is nice',
+			lastSeen: Date.now(),
+			uuid: '93489c5f-ff17-4e8d-b892-e572170c604a',
+			shortStatus: 'Goat for gold',
+			profileImageLocation: '/src/image/default.png',
+		});
+
+		setTimeout(() => {
+			console.log("changing profile");
+			setProfile({
+				userName: 'Simon Braunschwieg',
+				status: 'OFFLINE',
+				description: 'SIMON is nice as ASS',
+				lastSeen: Date.now(),
+				uuid: '93489c5f-ff17-4e8d-b892-e572170c604a',
+				shortStatus: 'Goat for silver',
+				profileImageLocation: '/src/image/Icon.png',
+			});
+		}, 5000);
 	}, []);
 
 	useEffect(() => {

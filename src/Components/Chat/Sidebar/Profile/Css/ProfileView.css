@@ -1,36 +1,48 @@
-.change-profile-picture{
+.change-profile-picture {
 	align-items: flex-start;
 	width: 3rem;
 	height: 3rem;
+	left: -0.5rem;
+	bottom: 0rem;
 	align-self: flex-start;
-	position: relative;
+	position: absolute;
 }
 
-.change-profile-picture input{
+.change-profile-picture input {
 	position: absolute;
 	opacity: 0;
 	inset: 0rem;
+	margin: 0rem;
+	padding: 0rem;
+	border: none;
 }
 
-.change-profile-picture svg{
+.change-profile-picture svg {
 	width: 100%;
 	height: 100%;
+	transition: transform 200ms ease-out;
+}
+
+.change-profile-picture:hover svg {
+	transform: scale(1.1);
+	pointer-events: none;
 }
 
 .profile-view .user-name {
 	font-size: 2rem;
+	text-align: center;
 	font-weight: bolder;
 	position: relative;
 	padding: var(--p-2);
 	max-width: 100%;
-	overflow-x: hidden;
+	/* overflow: hidden; */
 	white-space: nowrap;
 }
 
 .profile-view .user-name::after {
 	content: '';
 	position: absolute;
-	bottom: 0;	
+	bottom: 0;
 	left: -5%;
 	width: 110%;
 	height: 0.1em;
@@ -54,10 +66,80 @@
 }
 
 .profile-view .short-status-container,
-.profile-view .description-container {
+.profile-view .description-container,
+.profile-view .status-container {
 	text-align: center;
 	margin: var(--m-2);
 	position: relative;
+}
+
+.status-container .circles {
+	display: flex;
+	flex-direction: row;
+}
+
+.status-container .circle {
+	cursor: pointer;
+	width: 2rem;
+	aspect-ratio: 1 / 1;
+	position: relative;
+	--color: white;
+	margin: var(--m-1) var(--m-2);
+	opacity: 0.5;
+	transition: opacity 200ms ease-out, transform 200ms ease-out;
+}
+
+.status-container .circle:hover {
+	opacity: 0.8;
+	transform: scale(1.1);
+}
+
+.status-container .circle.online {
+	--color: #00b828;
+}
+
+.status-container .circle.offline {
+	--color: #616161;
+}
+
+.status-container .circle.away {
+	--color: #f1c40f;
+}
+
+.status-container .circle.do-not-disturb {
+	--color: #e53935;
+}
+
+.status-container .circle.selected {
+	opacity: 1;
+}
+
+.status-container .circle .outer {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	position: absolute;
+	background-color: var(--color, white);
+}
+
+.status-container .circle .middle {
+	width: 80%;
+	height: 80%;
+	left: 10%;
+	top: 10%;
+	border-radius: 50%;
+	position: absolute;
+	background-color: var(--c-grey-dark);
+}
+
+.status-container .circle .inner {
+	width: 50%;
+	height: 50%;
+	left: 25%;
+	top: 25%;
+	border-radius: 50%;
+	position: absolute;
+	background-color: var(--color, white);
 }
 
 .profile-view .edit-icon {
@@ -68,6 +150,7 @@
 	cursor: pointer;
 	transition: opacity 200ms ease-out;
 	opacity: 0;
+	pointer-events: initial;
 }
 
 .profile-view .edit-icon.top {

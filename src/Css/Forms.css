@@ -46,6 +46,22 @@ input.error, textarea.error {
 
 textarea{
 	resize: none;
+	scrollbar-width: none;
+}
+
+textarea::-webkit-scrollbar{
+	width: 0.5rem;
+}
+
+textarea::-webkit-resizer{
+	border-top: 8px solid var(--c-font);
+	border-left: 8px solid transparent;
+	border-right: 8px solid transparent;
+}
+
+textarea::-webkit-scrollbar-thumb{
+	background-color: var(--c-font);
+	border-radius: var(--b-r);
 }
 
 input[type='text'] {
