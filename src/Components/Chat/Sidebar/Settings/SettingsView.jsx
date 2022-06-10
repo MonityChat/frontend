@@ -6,6 +6,7 @@ import {
 	COLOR_SCHEME,
 	SettingsContext,
 } from '../../../../App';
+import AppleSwitch from './AppleSwitch';
 import './Css/SettingsView.css';
 
 export default function SettingsView() {

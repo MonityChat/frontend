@@ -6,12 +6,14 @@ export default function Contact({
 	name,
 	lastOnline,
 	numberOfUnreadMessages,
+	isBlocked,
 	profilPicture,
+	onClick,
 }) {
 	return (
-		<div className="contact">
+		<div className="contact" onClick={() => onClick(name)}>
 			<div className="profil-picture">
-				<img src={profilPicture} alt="contact" />
+				<img src={profilPicture} alt="PB" />
 			</div>
 			<div className="info">
 				<h2 className="name">{name}</h2>
@@ -23,14 +25,24 @@ export default function Contact({
 				<div
 					className={
 						'news-status ' +
-						(numberOfUnreadMessages > 0 ? 'some' : numberOfUnreadMessages < 0 ? 'blocked' : 'none' )
+						(isBlocked
+							? 'blocked'
+							: numberOfUnreadMessages > 0
+							? 'some'
+							: 'none')
 					}
 				>
-					{numberOfUnreadMessages < 0 ? (
-						<ImBlocked 	size={'100%'}
-						style={{ fill: 'url(#base-gradient)'}}/>
+					<div className="circle"></div>
+					{isBlocked ? (
+						<ImBlocked
+							className="blocked-icon"
+							size={'100%'}
+							style={{ fill: 'url(#base-gradient)' }}
+						/>
+					) : numberOfUnreadMessages >= 100 ? (
+						<span>99+</span>
 					) : (
-						numberOfUnreadMessages
+						<span>{numberOfUnreadMessages}</span>
 					)}
 				</div>
 			</div>

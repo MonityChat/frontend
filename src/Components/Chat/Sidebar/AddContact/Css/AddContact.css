@@ -6,6 +6,7 @@
 	align-items: center;
 	justify-content: stretch;
 	min-height: 5rem;
+	height: 5rem;
 	background-color: var(--c-grey-light);
 	box-shadow: var(--sh-2);
 	position: relative;
@@ -13,10 +14,12 @@
 	padding: var(--p-2);
 	transition: all 200ms ease-out;
 	cursor: pointer;
+	-webkit-font-smoothing: antialiased;
 }
 
 .add-contact:hover {
 	transform: scale(1.03);
+
 }
 
 .add-contact .profil-picture {
@@ -24,6 +27,7 @@
 	aspect-ratio: 1 / 1;
 	border-radius: inherit;
 	overflow: hidden;
+	background-color: var(--c-grey-dark);
 }
 
 .add-contact .profil-picture img {
@@ -65,7 +69,8 @@
 	bottom: 0em;
 	opacity: 0.8;
 	font-size: 0.8rem;
-    min-width: 100%;
     white-space: nowrap;
-    display: inline-block;
+	max-width: 100%;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }

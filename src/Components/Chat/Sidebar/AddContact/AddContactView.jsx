@@ -31,7 +31,10 @@ export default function AddContactView() {
   };
 
   const searchInput = debunce((keyword) => {
-    if (keyword.length < 3) return;
+    if (keyword.length < 3){
+      setSearchedContacts([]);
+      return;
+    }
 
     sendJsonMessage({
       action: ACTION_CONTACT_SEARCH,
@@ -74,6 +77,12 @@ export default function AddContactView() {
               uuid={contact.uuid}
               onClick={sendFriendRequest}
               key={i}
+              // name={"Simon"}
+              // shortStatus={"Crypto for life is Crypt for people who have "}
+              // profilePicture={'/src/image/default.png'}
+              // uuid={"123"}
+              // onClick={sendFriendRequest}
+              // key={i}
             />
           ))
         )}

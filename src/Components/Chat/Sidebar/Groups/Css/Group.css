@@ -38,7 +38,7 @@
 	height: 100%;
 }
 
-.info .name {
+/* .info .name {
 	font-size: 1.3rem;
 	font-weight: bold;
 	max-width: 100%;
@@ -64,9 +64,9 @@
 	bottom: 0em;
 	opacity: 0.8;
 	font-size: 0.8rem;
-}
+} */
 
-.info .news-status {
+/* .info .news-status {
 	position: absolute;
 	right: 0em;
 	bottom: 0em;
@@ -76,16 +76,16 @@
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
-}
+} */
 
-.info .news-status.some {
+/* .info .news-status.some .circle {
 	background-image: var(--g-base);
 }
 
-.info .news-status.none {
+.info .news-status.none .circle{
 	display: none;
 }
 
-.info .news-status.blocked {
+.info .news-status.blocked .circle{
 	background-image: none;
-}
+} */

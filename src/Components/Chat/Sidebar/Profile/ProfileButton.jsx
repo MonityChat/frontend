@@ -11,7 +11,7 @@ export default function ProfileButton({
       <div className="circle" style={{ "--circle-size": size }}>
         <img
           src={
-            picture || `http://localhost:8808/assets/images/monity/default.png`
+            `http://localhost:8808/assets${picture}?${Date().now()}` || `http://localhost:8808/assets/images/monity/default.png`
           }
         />
       </div>

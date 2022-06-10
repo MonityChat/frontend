@@ -47,15 +47,9 @@
 	position: absolute;
 	left: 0em;
 	top: 0em;
-	max-width: 84%;
+	max-width: 85%;
 	max-height: 80%;
 	overflow: hidden;
-	word-wrap: break-word;
-	word-break: break-all;
-	-ms-hyphens: auto;
-	-moz-hyphens: auto;
-	-webkit-hyphens: auto;
-	hyphens: auto;
 	line-height: 120%;
 }
 
@@ -65,6 +59,10 @@
 	bottom: 0em;
 	opacity: 0.8;
 	font-size: 0.8rem;
+	white-space: nowrap;
+	max-width: 85%;
+	text-overflow: ellipsis;
+	overflow: hidden;
 }
 
 .info .news-status {
@@ -77,16 +75,35 @@
 	align-items: center;
 	justify-content: center;
 	border-radius: 50%;
+	z-index: 0;
 }
 
-.info .news-status.some {
+.info .news-status .circle{
+	position: absolute;
+	inset: 0rem;
+	border-radius: 50%;
+	opacity: .7;
+	z-index: -1;
+}
+
+.info .news-status .blocked-icon{
+	opacity: .7;
+}
+
+.info .news-status span{
+	font-weight: bolder;
+	font-size: .8rem;
+	
+}
+
+.info .news-status.some .circle {
 	background-image: var(--g-base);
 }
 
-.info .news-status.none {
+.info .news-status.none .circle {
 	display: none;
 }
 
-.info .news-status.blocked {
+.info .news-status.blocked .circle {
 	background-image: none;
 }
