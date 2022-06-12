@@ -111,8 +111,8 @@ export default function ProfileView() {
     if (!res.ok) return;
 
     const newImageURL = await res.text();
-    console.log(profileImageRef.current);
-    profileImageRef.current.src = `http://localhost:8808/assets${newImageURL}?t=${Date.now()}`;
+
+    profileImageRef.current.src = `http://localhost:8808/assets${newImageURL}?${Date.now()}`;
   };
 
   return (
