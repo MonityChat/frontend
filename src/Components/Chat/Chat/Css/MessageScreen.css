@@ -7,8 +7,36 @@
     padding: var(--p-2);
     overflow: auto;
     scrollbar-width: none;
+    scroll-behavior: initial;
+    position: relative;
 }
 
 .message-screen::-webkit-scrollbar{
     display: none;
+}
+
+.message-screen .scroll-down{
+    position: absolute;
+    right: 1rem;
+    bottom: 1rem;
+    width: 2rem;
+    height: 2rem;
+    z-index: 100;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 200ms ease-out;
+    border-radius: calc(var(--b-r) * 1);
+    overflow: hidden;
+}
+
+.message-screen .scroll-down:hover{
+    transform: scale(1.1);
+}
+
+.message-screen .scroll-down svg{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(17, 17, 17, 0.712);
 }

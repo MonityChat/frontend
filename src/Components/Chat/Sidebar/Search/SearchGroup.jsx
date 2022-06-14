@@ -1,7 +1,7 @@
 import React from 'react';
-import './Css/AddContact.css';
+import './Css/SearchGroup.css';
 
-export default function AddContact({
+export default function SearchGroup({
 	name,
 	shortStatus,
 	profilePicture,
@@ -9,17 +9,20 @@ export default function AddContact({
 	onClick,
 }) {
 	return (
-		<div className="add-contact sidebar-item" onClick={() => onClick(uuid)}>
+		<div
+			className="search-group sidebar-item"
+			onClick={() => onClick(uuid)}
+		>
 			<div className="profile-picture">
 				<img
-					src={`http://localhost:8808/assets${profilePicture}`}
-					// src={'/src/image/Donut.png'}
+					// src={`http://localhost:8808/assets${profilePicture}`}
+					src={'/src/image/Donut.png'}
 					alt="PB"
 					className="blur"
 				/>
 				<img
-					src={`http://localhost:8808/assets${profilePicture}`}
-					// src={'/src/image/Donut.png'}
+					// src={`http://localhost:8808/assets${profilePicture}`}
+					src={'/src/image/Donut.png'}
 					alt="PB"
 					className="normal"
 				/>

@@ -1,56 +1,15 @@
-.contact {
-	border-radius: calc(var(--b-r) * 2);
-	width: 100%;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: stretch;
-	height: 5rem;
-	background-color: var(--c-grey-light);
-	box-shadow: var(--sh-2);
-	position: relative;
-	margin: var(--m-2) 0em;
-	padding: var(--p-2);
-	transition: all 200ms ease-out;
-	cursor: pointer;
-}
-
-.contact:hover {
-	transform: scale(1.03);
-}
-
-.contact .profil-picture {
-	flex: 0 0 4rem;
-	aspect-ratio: 1 / 1;
-	border-radius: inherit;
-	overflow: hidden;
-}
-
-.contact .profil-picture img {
-	width: 100%;
-	height: 100%;
-}
-
-.contact .info {
-	flex: 1 1 auto;
-	margin-left: var(--m-2);
-	overflow: hidden;
-	position: relative;
-	height: 100%;
-}
-
 .info .name {
-	font-size: 1.3rem;
+	font-size: 1.1rem;
 	font-weight: bold;
-	max-width: 100%;
 	text-overflow: ellipsis;
+	text-align: left;
 	position: absolute;
 	left: 0em;
 	top: 0em;
+	width: 85%;
 	max-width: 85%;
-	max-height: 80%;
+	white-space: nowrap;
 	overflow: hidden;
-	line-height: 120%;
 }
 
 .info .last-online {
@@ -69,8 +28,8 @@
 	position: absolute;
 	right: 0em;
 	bottom: 0em;
-	width: 15%;
-	height: 45%;
+	width: 2rem;
+	height: 2rem;
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -78,22 +37,21 @@
 	z-index: 0;
 }
 
-.info .news-status .circle{
+.info .news-status .circle {
 	position: absolute;
 	inset: 0rem;
 	border-radius: 50%;
-	opacity: .7;
+	opacity: 0.7;
 	z-index: -1;
 }
 
-.info .news-status .blocked-icon{
-	opacity: .7;
+.info .news-status .blocked-icon {
+	opacity: 0.7;
 }
 
-.info .news-status span{
+.info .news-status span {
 	font-weight: bolder;
-	font-size: .8rem;
-	
+	font-size: 0.8rem;
 }
 
 .info .news-status.some .circle {

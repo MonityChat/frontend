@@ -83,7 +83,7 @@ export default function Login() {
             if (e.key === "Enter") handleLogin();
           }}
         />
-        <span>{message}</span>
+        <span className="information">{message}</span>
         <button onClick={handleLogin}>Login</button>
         <span>
           <Link className="link" to="/forgot-password">

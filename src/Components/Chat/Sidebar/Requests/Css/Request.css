@@ -1,0 +1,58 @@
+.request .info .name {
+	font-size: 1.1rem;
+	font-weight: bold;
+	text-overflow: ellipsis;
+	text-align: left;
+	position: absolute;
+	left: 0em;
+	top: 0em;
+	width: 65%;
+	max-width: 65%;
+	white-space: nowrap;
+	overflow: hidden;
+}
+
+.request .info .type {
+	position: absolute;
+	right: 0rem;
+	top: 0rem;
+	opacity: 0.8;
+	font-size: 0.8rem;
+	white-space: nowrap;
+	width: 35%;
+	text-align: right;
+	padding-right: 1%;
+	overflow: hidden;
+}
+
+.request .info .controll {
+	position: absolute;
+	bottom: 0rem;
+	left: 0rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
+	width: 100%;
+}
+
+.request .info .controll button {
+	margin: 0rem;
+	width: 50%;
+}
+
+.request .info .confirm {
+	border-color: var(--c-confirm);
+}
+
+.request .info .confirm:hover {
+	background-color: var(--c-confirm);
+}
+
+.request .info .decline {
+	border-color: var(--c-decline);
+}
+
+.request .info .decline:hover {
+	background-color: var(--c-decline);
+}

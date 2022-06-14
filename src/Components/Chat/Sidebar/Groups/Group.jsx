@@ -5,37 +5,46 @@ import './Css/Group.css';
 export default function Group({
 	name,
 	shortStatus,
-	profilPicture,
+	profilePicture,
 	numberOfUnreadMessages,
+	uuid,
+	onClick,
 }) {
 	return (
-		<div>
-			<div className="group">
-				<div className="profil-picture">
-					<img src={profilPicture} alt="contact" />
-				</div>
-				<div className="info">
-					<h2 className="name">{name}</h2>
-					<span className="short-status">{shortStatus}</span>
-					<div
-						className={
-							'news-status ' +
-							(numberOfUnreadMessages > 0
-								? 'some'
-								: numberOfUnreadMessages < 0
-								? 'blocked'
-								: 'none')
-						}
-					>
-						{numberOfUnreadMessages < 0 ? (
-							<ImBlocked
-								size={'100%'}
-								style={{ fill: 'url(#base-gradient)' }}
-							/>
-						) : (
-							numberOfUnreadMessages
-						)}
-					</div>
+		<div className="group sidebar-item" onClick={onClick(uuid)}>
+			<div className="profile-picture">
+				<img
+					src={`http://localhost:8808/assets${profilePicture}`}
+					alt="PB"
+					className="blur"
+				/>
+				<img
+					src={`http://localhost:8808/assets${profilePicture}`}
+					alt="PB"
+					className="normal"
+				/>
+			</div>
+			<div className="info">
+				<h2 className="name" title={name}>{name}</h2>
+				<span className="short-status" title={shortStatus}>{shortStatus}</span>
+				<div
+					className={
+						'news-status ' +
+						(numberOfUnreadMessages > 0
+							? 'some'
+							: numberOfUnreadMessages < 0
+							? 'blocked'
+							: 'none')
+					}
+				>
+					{numberOfUnreadMessages < 0 ? (
+						<ImBlocked
+							size={'100%'}
+							style={{ fill: 'url(#base-gradient)' }}
+						/>
+					) : (
+						numberOfUnreadMessages
+					)}
 				</div>
 			</div>
 		</div>

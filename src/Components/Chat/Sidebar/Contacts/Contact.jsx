@@ -9,18 +9,26 @@ export default function Contact({
 	isBlocked,
 	profilPicture,
 	onClick,
+	uuid,
 }) {
 	return (
-		<div className="contact" onClick={() => onClick(name)}>
-			<div className="profil-picture">
-				<img src={profilPicture} alt="PB" />
+		<div className="contact sidebar-item" onClick={() => onClick(uuid)}>
+			<div className="profile-picture">
+				<img src={profilPicture} alt="PB" className="blur" />
+				<img src={profilPicture} alt="PB" className="normal" />
 			</div>
 			<div className="info">
-				<h2 className="name">{name}</h2>
+				<h2 className="name" title={name}>
+					{name}
+				</h2>
 				<span className="last-online">
 					{lastOnline === 'online'
 						? 'online'
-						: `last online: ${lastOnline}`}
+						: `last online: ${
+								new Date(lastOnline)
+									.toLocaleString()
+									.split(',')[0]
+						  }`}
 				</span>
 				<div
 					className={
@@ -42,7 +50,11 @@ export default function Contact({
 					) : numberOfUnreadMessages >= 100 ? (
 						<span>99+</span>
 					) : (
-						<span>{numberOfUnreadMessages}</span>
+						<span>
+							{numberOfUnreadMessages > 0
+								? numberOfUnreadMessages
+								: ''}
+						</span>
 					)}
 				</div>
 			</div>

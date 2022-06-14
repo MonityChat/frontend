@@ -1,4 +1,4 @@
-.add-contact .info .name {
+.search-group .info .name {
 	font-size: 1.1rem;
 	font-weight: bold;
 	text-overflow: ellipsis;
@@ -10,7 +10,7 @@
 	white-space: nowrap;
 }
 
-.add-contact .info .short-status {
+.search-group .info .short-status {
 	position: absolute;
 	left: 0em;
 	bottom: 0em;

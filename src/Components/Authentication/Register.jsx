@@ -112,7 +112,7 @@ export default function Register() {
             if (e.key === "Enter") handleRegister();
           }}
         />
-        <span>{message}</span>
+        <span className="information">{message}</span>
         <button onClick={handleRegister}>Sign up</button>
       </div>
     </div>

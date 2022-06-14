@@ -154,16 +154,6 @@
   height: var(--circle-size);
   border-radius: 50%;
   background-image: var(--g-base);
+  position: relative;
   transform: scale(0.9);
-}
-
-.sidebar-button .circle img {
-  width: calc(var(--circle-size) * 0.9);
-  height: calc(var(--circle-size) * 0.9);
-  border-radius: 50%;
-  background-image: var(--g-base);
-  transform: translate(
-    calc(var(--circle-size) * 0.05),
-    calc(var(--circle-size) * 0.05)
-  );
 }
