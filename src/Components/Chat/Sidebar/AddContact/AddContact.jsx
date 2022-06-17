@@ -25,7 +25,7 @@ export default function AddContact({
 				/>
 			</div>
 			<div className="info">
-				<h2 className="name" title={name}>
+				<h2 className="name" title={`${name} | ${uuid}`}>
 					{name}
 				</h2>
 				<span className="short-status" title={shortStatus}>

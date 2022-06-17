@@ -126,6 +126,7 @@
 	bottom: 50%;
 	transition: inherit;
 	cursor: pointer;
+	fill: url('#base-gradient');
 }
 
 .message.left .more {
@@ -138,7 +139,8 @@
 	left: -1.5em;
 }
 
-.message:hover .more {
+.message:hover .more,
+.message:focus .more {
 	opacity: 1;
 	transform: translateY(80%) translateX(0%);
 }

@@ -1,14 +1,15 @@
 .message-screen{
-    flex: 2 2 auto;
+    flex: 1 1 100%;
     display: flex;
     flex-direction: column;
     justify-content: stretch;
     text-align: center;
     padding: var(--p-2);
-    overflow: auto;
+    overflow: scroll;
     scrollbar-width: none;
     scroll-behavior: initial;
     position: relative;
+    height: 100%;
 }
 
 .message-screen::-webkit-scrollbar{

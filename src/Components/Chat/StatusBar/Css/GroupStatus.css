@@ -1,0 +1,74 @@
+.group-status {
+	position: absolute;
+	inset: 0rem;
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+	flex-direction: column;
+	overflow: hidden;
+}
+
+.group-status > .group-name {
+	font-size: 2rem;
+	text-align: center;
+	font-weight: bolder;
+	position: relative;
+	padding: var(--p-1);
+	max-width: 100%;
+	overflow: hidden;
+	white-space: nowrap;
+}
+
+.group-status > .group-name::after {
+	content: '';
+	position: absolute;
+	bottom: 0;
+	left: -5%;
+	width: 110%;
+	height: 0.1em;
+	background-color: var(--c-font);
+	border-radius: var(--b-r);
+}
+
+.group-status > .uuid {
+	font-size: 0.7rem;
+	font-weight: lighter;
+	max-width: 60%;
+	overflow: hidden;
+	white-space: nowrap;
+	padding: var(--p-1);
+	opacity: 0;
+	transition: opacity 200ms ease-out;
+}
+
+.group-status > .group-name:hover ~ .uuid {
+	opacity: 0.8;
+}
+
+.group-status > .short-status {
+	font-size: 1.2rem;
+	line-height: 120%;
+	text-align: center;
+	margin: var(--m-1);
+	position: relative;
+	font-family: 'Permanent Marker', cursive;
+	margin-bottom: var(--m-3);
+}
+
+.group-status > .short-status::before,
+.group-status > .short-status::after {
+	content: '"';
+	font: inherit;
+	padding: var(--p-1);
+}
+
+.group-status > .members {
+	max-height: 50%;
+	overflow: scroll;
+	height: 50%;
+	scrollbar-width: 0rem;
+}
+
+.group-status > .members::-webkit-scrollbar {
+	width: 0rem;
+}

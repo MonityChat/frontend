@@ -85,3 +85,7 @@
 .status.do-not-disturb {
   --color: #e53935;
 }
+
+.status.none{
+  display: none;
+}

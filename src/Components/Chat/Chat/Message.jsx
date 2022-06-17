@@ -53,7 +53,7 @@ export default React.forwardRef(function Message(
 			{moreOptions && !showMoreOptions ? (
 				<IoMdMore
 					className="more"
-					size={'1.5rem'}
+					size={'2rem'}
 					onClick={() => setShowMoreOptions(true)}
 				/>
 			) : (

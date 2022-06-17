@@ -4,7 +4,6 @@
 	align-items: center;
 	align-content: stretch;
 	justify-content: center;
-	gap: 0.5em;
 	flex: 0 0 auto;
 	max-height: 7rem;
 	height: 4rem;
@@ -13,6 +12,7 @@
 .chat-input .chat-button {
 	cursor: pointer;
 	flex: 1 1 auto;
+	margin: 0 var(--m-1);
 	transition: transform 200ms ease-out;
 }
 
