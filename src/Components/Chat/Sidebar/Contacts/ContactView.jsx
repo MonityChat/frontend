@@ -1,84 +1,91 @@
-import React, { useEffect, useState } from 'react';
-import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
-import Contact from './Contact.jsx';
+import React, { useEffect, useState, useContext } from "react";
+import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
+import Contact from "./Contact.jsx";
 import {
-	WEBSOCKET_URL,
-	ACTION_CONTACT_GET,
-	ACTION_MESSAGE_GET,
-} from '../../../../Util/Websocket.js';
-import './Css/ContactView.css';
+  WEBSOCKET_URL,
+  ACTION_CONTACT_GET,
+  ACTION_GET_MESSAGE_LATEST,
+} from "../../../../Util/Websocket.js";
+import { ChatContext } from "../../Messenger";
+import "./Css/ContactView.css";
 
 export default function ContactView() {
-	const [contacts, setContacts] = useState(null);
+  const [contacts, setContacts] = useState(null);
 
-	const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-		share: true,
-	});
+  const selectedChat = useContext(ChatContext);
 
-	useEffect(() => {
-		sendJsonMessage({
-			action: ACTION_CONTACT_GET,
-		});
-	}, []);
+  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
+    share: true,
+  });
 
-	useEffect(() => {
-		if (lastJsonMessage === null) return;
-		if (lastJsonMessage.action !== ACTION_CONTACT_GET) return;
+  useEffect(() => {
+    sendJsonMessage({
+      action: ACTION_CONTACT_GET,
+    });
+  }, []);
 
-		const incomingContacts = lastJsonMessage.content.contacts;
+  useEffect(() => {
+    if (lastJsonMessage === null) return;
+    if (lastJsonMessage.action !== ACTION_CONTACT_GET) return;
 
-		if (incomingContacts.length === 0) {
-			setContacts([]);
-		} else {
-			incomingContacts
-				.sort((a, b) => {
-					return a.numberOfUnreadMessages - b.numberOfUnreadMessages;
-				})
-				.reverse();
+    const incomingContacts = lastJsonMessage.content.contacts;
 
-			setContacts(incomingContacts);
-		}
-	}, [lastJsonMessage]);
+    if (incomingContacts.length === 0) {
+      setContacts([]);
+    } else {
+      incomingContacts
+        .sort((a, b) => {
+          return a.numberOfUnreadMessages - b.numberOfUnreadMessages;
+        })
+        .reverse();
 
-	const onContactClick = (uuid) => {
-		console.log('requesting messages for: ' + uuid);
-		sendJsonMessage({
-			action: ACTION_MESSAGE_GET,
-			target: uuid,
-		});
-	};
+      setContacts(incomingContacts);
+    }
+  }, [lastJsonMessage]);
 
-	return (
-		<div className="contact-view view">
-			<h2 className="title">Contacts</h2>
-			<div className="scrollable">
-				{contacts === null ? (
-					<span className="placeholder">Loading data...</span>
-				) : contacts.length === 0 ? (
-					<></>
-				) : (
-					contacts.map((contact, i) => (
-						<Contact
-							key={i}
-							// uuid={contact.uuid}
-							// name={contact.name}
-							// lastOnline={contact.lastOnline}
-							// profilPicture={contact.profilPicture}
-							// numberOfUnreadMessages={
-							// 	contact.numberOfUnreadMessages
-							// }
-							// isBlocked={contact.isBlocked}
-							uuid={'12345'}
-							name={'Tom'}
-							lastOnline={Date.now()}
-							profilPicture={'src/image/Donut.png'}
-							numberOfUnreadMessages={10}
-							isBlocked={false}
-							onClick={onContactClick}
-						/>
-					))
-				)}
-			</div>
-		</div>
-	);
+  const onContactClick = (uuid) => {
+    const chatId =
+      contacts.find((contact) => contact.uuid === uuid).chatID || "";
+    sendJsonMessage({
+      action: ACTION_GET_MESSAGE_LATEST,
+      chatID: chatId,
+    });
+
+    selectedChat.chatId = chatId;
+    selectedChat.targetId = uuid;
+  };
+
+  return (
+    <div className="contact-view view">
+      <h2 className="title">Contacts</h2>
+      <div className="scrollable">
+        {contacts === null ? (
+          <span className="placeholder">Loading data...</span>
+        ) : contacts.length === 0 ? (
+          <></>
+        ) : (
+          contacts.map((contact, i) => (
+            <Contact
+              key={i}
+              uuid={contact.uuid}
+              name={contact.userName}
+              lastOnline={contact.lastSeen}
+              profilPicture={contact.profileImageLocation}
+              numberOfUnreadMessages={contact.unreadMessages}
+              isBlocked={contact.isBlocked}
+              lastMessage={contact.lastUnread.content}
+              onClick={onContactClick}
+              // uuid={'12345'}
+              // name={'Tom'}
+              // lastOnline={Date.now()}
+              // profilPicture={'src/image/Donut.png'}
+              // numberOfUnreadMessages={10}
+              // isBlocked={false}
+              // onClick={onContactClick}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  );
 }

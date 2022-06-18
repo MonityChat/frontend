@@ -5,6 +5,11 @@
   position: relative;
   margin: var(--m-2);
   user-select: none;
+  cursor: zoom-in;
+}
+
+.profile-picture :fullscreen {
+  cursor: zoom-out;
 }
 
 .profile-picture .img-container {
@@ -86,6 +91,6 @@
   --color: #e53935;
 }
 
-.status.none{
+.status.none {
   display: none;
 }

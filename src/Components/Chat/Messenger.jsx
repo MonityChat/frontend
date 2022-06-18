@@ -13,10 +13,12 @@ import {
 } from "../../Util/Websocket";
 
 export const ProfileContext = createContext();
+export const ChatContext = createContext();
 
 export default function Messenger() {
   const [logedIn, setLogedIn] = useState(false);
   const [profile, setProfile] = useState();
+  const [selectedChat, setSelectedChat] = useState({});
 
   const history = useHistory();
 
@@ -61,12 +63,14 @@ export default function Messenger() {
 
   return (
     <ProfileContext.Provider value={profile}>
-      <div className="messenger">
-        <Sidebar />
-        <div className="placeholder"></div>
-        <Chat />
-        <StatusBar />
-      </div>
+      <ChatContext.Provider value={selectedChat}>
+        <div className="messenger">
+          <Sidebar />
+          <div className="placeholder"></div>
+          <Chat />
+          <StatusBar />
+        </div>
+      </ChatContext.Provider>
     </ProfileContext.Provider>
   );
 }
