@@ -8,7 +8,7 @@ function ProfilePicture({ path, status, children }, ref) {
 
   return (
     <div className="profile-picture">
-      <div className="img-container">
+      <div className="img-container" onClick={reqeustFullScreen}>
         <img
           src={`http://localhost:8808/assets${path}`}
           //   src={path}
@@ -28,7 +28,7 @@ function ProfilePicture({ path, status, children }, ref) {
           }}
         />
       </div>
-      <div className={`status ${status.toLowerCase().replaceAll("_", "-")}`}>
+      <div className={`status ${status?.toLowerCase().replaceAll("_", "-")}`}>
         <div className="outer"></div>
         <div className="middle"></div>
         <div className="inner"></div>

@@ -7,7 +7,7 @@ import "./Css/Chat.css";
 export const RelatedContext = createContext();
 
 export default function Chat() {
-  const [related, setRelated] = useState(-1);
+  const [related, setRelated] = useState(null);
 
   return (
     <div className="chat">

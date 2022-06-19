@@ -11,6 +11,7 @@ export default function Contact({
   onClick,
   uuid,
   lastMessage,
+  status,
 }) {
   return (
     <div className="contact sidebar-item" onClick={() => onClick(uuid)}>
@@ -31,11 +32,11 @@ export default function Contact({
           {name}
         </h2>
         <span className="last-online">
-          {lastOnline === "online"
-            ? "online"
-            : `last online: ${
+          {status === "OFFLINE"
+            ? `last online: ${
                 new Date(lastOnline).toLocaleString().split(",")[0]
-              }`}
+              }`
+            : status}
         </span>
         <div
           className={

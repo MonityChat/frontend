@@ -1,45 +1,64 @@
-import React, { useEffect, useRef, useState } from 'react';
-import ContactStatus from './ContactStatus';
-import GroupStatus from './GroupStatus';
-import './Css/StatusBar.css';
+import React, { useEffect, useRef, useState } from "react";
+import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
+import ContactStatus from "./ContactStatus";
+import GroupStatus from "./GroupStatus";
+import {
+  WEBSOCKET_URL,
+  ACTION_PROFILE_GET_OTHER,
+  NOTIFICATION_USER_ONLINE,
+  NOTIFICATION_USER_UPDATE_PROFILE,
+} from "../../../Util/Websocket";
+import "./Css/StatusBar.css";
 
 export default function StatusBar() {
-	const [opened, setOpened] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const [currentContactStatus, setCurrentContactStatus] = useState(null);
+  const [currentGroupStatus, setCurrentGroupStatus] = useState(null);
 
-	const statusBarRef = useRef();
+  const statusBarRef = useRef();
 
-	useEffect(() => {
-		statusBarRef.current.classList.toggle('opened', opened);
-	}, [opened]);
+  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
+    share: true,
+  });
 
-	return (
-		<div className="statusbar" ref={statusBarRef}>
-			<div
-				className="line"
-				onClick={() => setOpened((prev) => !prev)}
-			></div>
-			<div className="content">
-				{/* <ContactStatus
-					profileImage={'/src/image/Donut.png'}
-					userName={'Mike von den'}
-					uuid={'1213-12424-214124-24wf2'}
-					status={'away'}
-					shortStatus={'Away from my Keyboard'}
-					description={`A paragraph  [Link text Here](https://google.com)
-					#H1* Follows [CommonMark](https://commonmark.org)
-					 with *emphasis* and **strong importance**. 
-					 ![alt text](https://www.w3schools.com/howto/img_paris.jpg)
-					 ![alt text](https://www.w3schools.com/howto/img_paris.jpg)
-					 ![alt text](https://www.w3schools.com/howto/img_paris.jpg)
-					 ![alt text](https://www.w3schools.com/howto/img_paris.jpg)`}
-				/> */}
-				<GroupStatus
-					groupName={'Best group from SW'}
-					profileImage={'/src/image/Donut.png'}
-					uuid={'1213-12424-214124-24wf2'}
-					shortStatus={'Away from my Keyboard'}
-				/>
-			</div>
-		</div>
-	);
+  useEffect(() => {
+    statusBarRef.current.classList.toggle("opened", opened);
+  }, [opened]);
+
+  useEffect(() => {
+    if (lastJsonMessage === null) return;
+    if (lastJsonMessage.action === ACTION_PROFILE_GET_OTHER) {
+      setCurrentContactStatus(lastJsonMessage.content);
+    }
+
+    switch (lastJsonMessage.notification) {
+      case NOTIFICATION_USER_ONLINE: {
+        setCurrentContactStatus(lastJsonMessage.content.from);
+      }
+      case NOTIFICATION_USER_UPDATE_PROFILE: {
+        setCurrentContactStatus(lastJsonMessage.content.from);
+      }
+    }
+  }, [lastJsonMessage]);
+
+  return (
+    <div className="statusbar" ref={statusBarRef}>
+      <div className="line" onClick={() => setOpened((prev) => !prev)}></div>
+      <div className="content">
+        {!currentContactStatus ? (
+          <div className="placeholder">Currently nothing selected</div>
+        ) : (
+          <ContactStatus
+            profileImage={currentContactStatus.profileImageLocation}
+            userName={currentContactStatus.userName}
+            uuid={currentContactStatus.uuid}
+            status={currentContactStatus.status}
+            lastOnline={currentContactStatus.lastSeen}
+            shortStatus={currentContactStatus.shortStatus}
+            description={currentContactStatus.description}
+          />
+        )}
+      </div>
+    </div>
+  );
 }

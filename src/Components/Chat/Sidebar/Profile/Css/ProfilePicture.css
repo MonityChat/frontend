@@ -5,7 +5,6 @@
   position: relative;
   margin: var(--m-2);
   user-select: none;
-  cursor: zoom-in;
 }
 
 .profile-picture :fullscreen {
@@ -20,6 +19,7 @@
   filter: drop-shadow(0.2em 0.2em 0.4rem black);
   display: grid;
   place-items: center;
+  cursor: zoom-in;
 }
 
 .profile-picture .img-container .normal {

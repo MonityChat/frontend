@@ -5,6 +5,10 @@ import {
   WEBSOCKET_URL,
   ACTION_CONTACT_GET,
   ACTION_GET_MESSAGE_LATEST,
+  NOTIFICATION_MESSAGE_INCOMING,
+  ACTION_PROFILE_GET_OTHER,
+  NOTIFICATION_USER_ONLINE,
+  NOTIFICATION_USER_UPDATE_PROFILE,
 } from "../../../../Util/Websocket.js";
 import { ChatContext } from "../../Messenger";
 import "./Css/ContactView.css";
@@ -12,7 +16,7 @@ import "./Css/ContactView.css";
 export default function ContactView() {
   const [contacts, setContacts] = useState(null);
 
-  const setSelectedChat = useContext(ChatContext);
+  const { selectedChat, setSelectedChat } = useContext(ChatContext);
 
   const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
     share: true,
@@ -26,20 +30,55 @@ export default function ContactView() {
 
   useEffect(() => {
     if (lastJsonMessage === null) return;
-    if (lastJsonMessage.action !== ACTION_CONTACT_GET) return;
+    if (lastJsonMessage.action === ACTION_CONTACT_GET) {
+      const incomingContacts = lastJsonMessage.content.contacts;
 
-    const incomingContacts = lastJsonMessage.content.contacts;
+      if (incomingContacts.length === 0) {
+        setContacts([]);
+      } else {
+        incomingContacts
+          .sort((a, b) => {
+            return a.numberOfUnreadMessages - b.numberOfUnreadMessages;
+          })
+          .reverse();
 
-    if (incomingContacts.length === 0) {
-      setContacts([]);
-    } else {
-      incomingContacts
-        .sort((a, b) => {
-          return a.numberOfUnreadMessages - b.numberOfUnreadMessages;
-        })
-        .reverse();
+        setContacts(incomingContacts);
+      }
+    }
 
-      setContacts(incomingContacts);
+    switch (lastJsonMessage.notification) {
+      case NOTIFICATION_MESSAGE_INCOMING: {
+        const inChatID = lastJsonMessage.content.chatID;
+        if (inChatID === selectedChat.chatId) return;
+        setContacts((prev) =>
+          prev.map((contact) =>
+            contact.chatID === inChatID
+              ? {
+                  ...contact,
+                  unreadMessages: contact.unreadMessages + 1,
+                }
+              : contact
+          )
+        );
+        break;
+      }
+      case NOTIFICATION_USER_ONLINE: {
+        console.log(NOTIFICATION_USER_ONLINE === lastJsonMessage.notification);
+        const newUser = lastJsonMessage.content.from;
+        setContacts((prev) => [
+          ...prev.filter((contact) => contact.uuid !== newUser.uuid),
+          newUser,
+        ]);
+        break;
+      }
+      case NOTIFICATION_USER_UPDATE_PROFILE: {
+        const newUser = lastJsonMessage.content.from;
+        setContacts((prev) => [
+          ...prev.filter((contact) => contact.uuid !== newUser.uuid),
+          newUser,
+        ]);
+        break;
+      }
     }
   }, [lastJsonMessage]);
 
@@ -51,8 +90,22 @@ export default function ContactView() {
       chatID: chatId,
     });
 
-    setSelectedChat(prev => ({...prev, chatId: chatId}));
-    setSelectedChat(prev => ({...prev, targetId: uuid}));
+    sendJsonMessage({
+      action: ACTION_PROFILE_GET_OTHER,
+      target: uuid,
+    });
+
+    setContacts((prev) => {
+      prev.forEach((contact) => {
+        if (contact.uuid === uuid) {
+          contact.unreadMessages = 0;
+        }
+      });
+      return prev;
+    });
+
+    setSelectedChat((prev) => ({ ...prev, chatId: chatId }));
+    setSelectedChat((prev) => ({ ...prev, targetId: uuid }));
   };
 
   return (
@@ -73,7 +126,8 @@ export default function ContactView() {
               profilPicture={contact.profileImageLocation}
               numberOfUnreadMessages={contact.unreadMessages}
               isBlocked={contact.isBlocked}
-              lastMessage={contact.lastUnread.content}
+              lastMessage={contact.lastUnread?.content}
+              status={contact.preferredStatus}
               onClick={onContactClick}
               // uuid={'12345'}
               // name={'Tom'}

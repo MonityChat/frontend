@@ -1,53 +1,59 @@
 .statusbar {
-	position: relative;
-	flex: 0 0 1.5rem;
-	height: 98%;
-	margin-left: var(--m-2);
-	border: var(--b-w) solid var(--c-grey-dark);
-	border-radius: calc(var(--b-r) * 2);
-	border-top-right-radius: 0em;
-	border-bottom-right-radius: 0em;
-	background-color: var(--c-grey-dark);
-	padding: var(--p-2);
-	transition: flex 200ms ease-out;
-	box-shadow: var(--sh-1);
-	z-index: 10;
-	overflow: hidden;
+  position: relative;
+  flex: 0 0 1.5rem;
+  height: 98%;
+  margin-left: var(--m-2);
+  border: var(--b-w) solid var(--c-grey-dark);
+  border-radius: calc(var(--b-r) * 2);
+  border-top-right-radius: 0em;
+  border-bottom-right-radius: 0em;
+  background-color: var(--c-grey-dark);
+  padding: var(--p-2);
+  transition: flex 200ms ease-out;
+  box-shadow: var(--sh-1);
+  z-index: 10;
+  overflow: hidden;
 }
 
 .statusbar.opened {
-	flex: 0 0 20rem;
+  flex: 0 0 20rem;
 }
 
 .statusbar .line {
-	--height: 20%;
+  --height: 20%;
 
-	position: absolute;
-	height: var(--height);
-	width: 0.2em;
-	left: 0.5em;
-	top: calc(50% - var(--height) / 2);
-	background-image: var(--g-base);
-	border-radius: var(--b-r);
-	transition: transform 200ms ease-out;
-	cursor: pointer;
-	box-shadow: var(--sh-2);
+  position: absolute;
+  height: var(--height);
+  width: 0.2em;
+  left: 0.5em;
+  top: calc(50% - var(--height) / 2);
+  background-image: var(--g-base);
+  border-radius: var(--b-r);
+  transition: transform 200ms ease-out;
+  cursor: pointer;
+  box-shadow: var(--sh-2);
+}
+
+.statusbar > .content > .placeholder {
+  font-size: 1.3rem;
+  text-align: center;
+  margin: var(--m-2);
 }
 
 .statusbar:hover .line {
-	transform: scale(1.1);
+  transform: scale(1.1);
 }
 
 .statusbar.opened .content {
-	opacity: 1;
+  opacity: 1;
 }
 
 .statusbar .content {
-	position: relative;
-	z-index: -10;
-	opacity: 0;
-	height: 98%;
-	width: 90%;
-	margin: auto;
-	transition: opacity 200ms ease-out;
+  position: relative;
+  z-index: -10;
+  opacity: 0;
+  height: 98%;
+  width: 90%;
+  margin: auto;
+  transition: opacity 200ms ease-out;
 }
