@@ -47,7 +47,7 @@ export default function MessageScreen() {
 				break;
 			}
 		}
-    
+
 		switch (lastJsonMessage.notification) {
 			case NOTIFICATION_MESSAGE_INCOMING: {
 				console.log('incoming message');
@@ -86,7 +86,7 @@ export default function MessageScreen() {
 	}, [lastJsonMessage]);
 
 	const jumpToMessage = (uuid) => {
-		messageRefs.current[uuid].scrollIntoView();
+		messageRefs.current[uuid].scrollIntoView({behavior: 'smooth'});
 		messageRefs.current[uuid].classList.add('highlighted');
 		messageRefs.current[uuid].addEventListener('animationend', () =>
 			messageRefs.current[uuid].classList.remove('highlighted')
@@ -131,7 +131,26 @@ export default function MessageScreen() {
 						moreOptions
 					>
 						<>
-							{message.related && <div>is related</div>}
+							{message.related && (
+								<div className="answer">
+									<Message
+										uuid={3}
+										you={
+											messages[3].author === you
+												? true
+												: false
+										}
+										author={messages[3].author}
+										time={messages[3].sent}
+										read={messages[3].read || false}
+										onClick={jumpToMessage}
+									>
+										<>
+											<div>{messages[3].content}</div>
+										</>
+									</Message>
+								</div>
+							)}
 							{message.attachedMedia.length !== 0 && (
 								<img
 									src="/src/image/Donut.png"
@@ -208,6 +227,7 @@ function fillwithDummyMessages(n) {
 			sent: Date.now() + (i + 1) * 10000000,
 			content: sentences[Math.floor(Math.random() * sentences.length)],
 			attachedMedia: [],
+			related: false,
 		};
 
 		if (message.author === 'You') {
@@ -215,6 +235,9 @@ function fillwithDummyMessages(n) {
 				message.read = true;
 			}
 		}
+
+		if(i == 8)
+		message.related = true;
 
 		dummy.push(message);
 	}

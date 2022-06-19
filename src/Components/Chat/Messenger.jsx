@@ -82,7 +82,7 @@ export default function Messenger() {
 						<div className="frame">
 							<div className="dot-spin"></div>
 						</div>
-					</div>
+					</div>m
 				)} */}
 				<div className="messenger">
 					<Sidebar />
