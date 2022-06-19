@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
+import { useLocation } from 'react-router-dom';
 import { RESET_PASSWORD_URL } from '../../Util/Auth';
 import PasswordField from './PasswordField';
 import './CSS/ResetPassword.css';
@@ -11,8 +12,10 @@ export default function ResetPassword() {
 	const [message, setMessage] = useState('');
 	const [password, setPassword] = useState('');
 	const [passwordConfirm, setPasswordConfirm] = useState('');
-    const [passwordError, setPasswordError] = useState(false);
+	const [passwordError, setPasswordError] = useState(false);
 	const [passwordConfirmError, setPasswordConfirmError] = useState(false);
+
+	const query = useQuery();
 
 	//still needs key for changing password from url
 
@@ -27,14 +30,12 @@ export default function ResetPassword() {
 	};
 
 	const handlePasswordReset = () => {
-
-		if(password.length < 1 || passwordConfirm.length < 1) {
+		if (password.length < 1 || passwordConfirm.length < 1) {
 			setMessage('Please fill out all fields');
 			setPasswordError(true);
 			setPasswordConfirmError(true);
 			return;
 		}
-
 
 		if (!isValidPassword(password)) {
 			setMessage('Enter a valid Password');
@@ -42,14 +43,19 @@ export default function ResetPassword() {
 			return;
 		}
 
-        if (password !== passwordConfirm) {
+		if (password !== passwordConfirm) {
 			setMessage('Passwords do not match');
 			setPasswordConfirmError(true);
 			return;
 		}
 
 		// const result = await resetPassword(password);
-
+		const key = query.get('key');
+		
+		if(key === null){
+			setMessage('No key provided, not able to reset password for current email');
+			return;
+		}
 		// if(result === 'ERROR'){
 		// 	setMessage('Error while changing password');
 		// 	passwordError(true);
@@ -64,8 +70,16 @@ export default function ResetPassword() {
 		<div className="forgot-password inset-container">
 			<h1>Password reset</h1>
 			<p>Enter your new Password below</p>
-			<PasswordField getState={setPassword}text="New Password" error={passwordError}/>
-			<PasswordField getState={setPasswordConfirm} text="Confirm new Password" error={passwordConfirmError}/>
+			<PasswordField
+				getState={setPassword}
+				text="New Password"
+				error={passwordError}
+			/>
+			<PasswordField
+				getState={setPasswordConfirm}
+				text="Confirm new Password"
+				error={passwordConfirmError}
+			/>
 			<span>{message}</span>
 			<button onClick={handlePasswordReset}>Change password</button>
 		</div>
@@ -78,7 +92,7 @@ function isValidPassword(password) {
 	return password.match(regExPassword) != null;
 }
 
-async function resetPassword(password){
+async function resetPassword(password) {
 	const salt = generateNewSalt();
 	const hashedPassword = await hash(password, salt);
 
@@ -98,4 +112,10 @@ async function resetPassword(password){
 	const res = await fetch(RESET_PASSWORD_URL, resetOptions);
 	const data = await res.json();
 	return data;
+}
+
+function useQuery() {
+	const { search } = useLocation();
+
+	return useMemo(() => new URLSearchParams(search), [search]);
 }

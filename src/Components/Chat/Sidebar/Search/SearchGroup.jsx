@@ -15,14 +15,14 @@ export default function SearchGroup({
 		>
 			<div className="profile-picture">
 				<img
-					// src={`http://localhost:8808/assets${profilePicture}`}
-					src={'/src/image/Donut.png'}
+					src={`http://localhost:8808/assets${profilePicture}`}
+					// src={'/src/image/Donut.png'}
 					alt="PB"
 					className="blur"
 				/>
 				<img
-					// src={`http://localhost:8808/assets${profilePicture}`}
-					src={'/src/image/Donut.png'}
+					src={`http://localhost:8808/assets${profilePicture}`}
+					// src={'/src/image/Donut.png'}
 					alt="PB"
 					className="normal"
 				/>

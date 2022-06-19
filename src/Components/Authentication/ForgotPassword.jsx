@@ -12,7 +12,6 @@ export default function ForgotPassword() {
 	};
 
 	const handlePasswordReset = () => {
-
 		if (email.length < 1) {
 			setMessage('Please enter your email');
 			emailRef.current.classList.add('error');
@@ -26,7 +25,7 @@ export default function ForgotPassword() {
 			emailRef.current.classList.add('error');
 			return;
 		}
-
+		
 		setMessage('Password reset email sent');
 	};
 
@@ -34,8 +33,8 @@ export default function ForgotPassword() {
 		<div className="forgot-password inset-container">
 			<h1>Forgot password?</h1>
 			<p>
-				Enter your email below, you will receive an email with
-				instructions on how to reset your password in a few minutes.
+				Enter your email below and you will shortly receive an email
+				with instructions on how to reset your password.
 			</p>
 			<input
 				type="text"

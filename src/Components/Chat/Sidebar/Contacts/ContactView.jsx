@@ -12,7 +12,7 @@ import "./Css/ContactView.css";
 export default function ContactView() {
   const [contacts, setContacts] = useState(null);
 
-  const selectedChat = useContext(ChatContext);
+  const setSelectedChat = useContext(ChatContext);
 
   const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
     share: true,
@@ -51,8 +51,8 @@ export default function ContactView() {
       chatID: chatId,
     });
 
-    selectedChat.chatId = chatId;
-    selectedChat.targetId = uuid;
+    setSelectedChat(prev => ({...prev, chatId: chatId}));
+    setSelectedChat(prev => ({...prev, targetId: uuid}));
   };
 
   return (

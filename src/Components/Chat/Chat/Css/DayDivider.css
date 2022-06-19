@@ -4,6 +4,7 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	margin-block: var(--m-2);
 }
 
 .day-divider .date {

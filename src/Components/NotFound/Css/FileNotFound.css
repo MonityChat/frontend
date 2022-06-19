@@ -21,4 +21,5 @@
     color: var(--c-font); 
     text-transform: uppercase;
     min-width: 10em;
+    display: inline-block;
 }
