@@ -1,43 +1,70 @@
-.message-screen{
-    flex: 1 1 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: stretch;
-    text-align: center;
-    padding: var(--p-2);
-    overflow: scroll;
-    scrollbar-width: none;
-    scroll-behavior: initial;
-    position: relative;
-    height: 100%;
+.message-screen {
+	flex: 1 1 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: stretch;
+	text-align: center;
+	padding: var(--p-2);
+	position: relative;
+	height: 100%;
+	overflow: hidden;
 }
 
-.message-screen::-webkit-scrollbar{
-    display: none;
+.message-screen .scroll {
+	overflow-y: scroll;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	justify-content: stretch;
+	overflow-x: hidden;
+	scroll-behavior: initial;
+	scrollbar-width: 0.5rem;
+}
+.message-screen .scroll::-webkit-scrollbar {
+	background-color: transparent;
+	width: 0.5rem;
+}
+.message-screen .scroll::-webkit-scrollbar-thumb {
+	background-color: var(--c-grey-light);
+	border-radius: var(--b-r);
 }
 
-.message-screen .scroll-down{
-    position: absolute;
-    right: 1rem;
-    bottom: 1rem;
-    width: 2rem;
-    height: 2rem;
-    z-index: 100;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 200ms ease-out;
-    border-radius: calc(var(--b-r) * 1);
-    overflow: hidden;
+.message-screen .typing {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	opacity: 0.8;
+	user-select: none;
+	padding-block-start: var(--p-3);
+	z-index: 100;
+	font-size: 0.8rem;
+	background-image: linear-gradient(to top, #0f1016, rgba(0, 0, 0, 0));
 }
 
-.message-screen .scroll-down:hover{
-    transform: scale(1.1);
+.message-screen .scroll-down {
+	position: absolute;
+	right: 1rem;
+	bottom: 1rem;
+	width: 2rem;
+	height: 2rem;
+	z-index: 100;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: transform 200ms ease-out;
+	border-radius: calc(var(--b-r) * 1);
+	overflow: hidden;
 }
 
-.message-screen .scroll-down svg{
-    width: 100%;
-    height: 100%;
-    background-color: rgba(17, 17, 17, 0.712);
+.message-screen .scroll-down:hover {
+	transform: scale(1.1);
+}
+
+.message-screen .scroll-down svg {
+	width: 100%;
+	height: 100%;
+	pointer-events: none;
+	background-color: black;
 }

@@ -1,21 +1,22 @@
-import React, { useEffect, useState, createContext } from "react";
-import Sidebar from "./Sidebar/Sidebar";
-import Chat from "./Chat/Chat";
-import StatusBar from "./StatusBar/StatusBar";
-import "./Css/Messenger.css";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
-import useAuthentication from "../../Util/UseAuth";
+import React, { useEffect, useState, createContext, useContext } from 'react';
+import Sidebar from './Sidebar/Sidebar';
+import Chat from './Chat/Chat';
+import StatusBar from './StatusBar/StatusBar';
+import './Css/Messenger.css';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
+import useAuthentication from '../../Util/UseAuth';
+import { NotificationContext, TOAST_TYPE } from './Notification/Notification';
 import {
-  WEBSOCKET_URL,
-  ACTION_GET_SELF,
-  ACTION_PROFILE_UPDATE,
-} from "../../Util/Websocket";
+	WEBSOCKET_URL,
+	ACTION_GET_SELF,
+	ACTION_PROFILE_UPDATE,
+} from '../../Util/Websocket';
 
 export const ProfileContext = createContext();
 export const ChatContext = createContext({
-  selectedChat: "",
-  setSelectedChat: () => {},
+	selectedChat: '',
+	setSelectedChat: () => {},
 });
 
 /**
@@ -31,70 +32,70 @@ export const ChatContext = createContext({
  * be displayed and the user will be able to use the chat application.
  */
 export default function Messenger() {
-  const [logedIn, setLogedIn] = useState(false);
-  const [profile, setProfile] = useState();
-  const [selectedChat, setSelectedChat] = useState({});
+	const [logedIn, setLogedIn] = useState(false);
+	const [profile, setProfile] = useState();
+	const [selectedChat, setSelectedChat] = useState({});
 
-  const history = useHistory();
+	const history = useHistory();
+	const showToast = useContext(NotificationContext);
 
-  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-    share: true,
-  });
+	const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
+		share: true,
+	});
 
-  useEffect(() => {
-    const [key, , isLogedIn] = useAuthentication();
+	useEffect(() => {
+		const [key, , isLogedIn] = useAuthentication();
 
-    sendJsonMessage({
-      auth: key,
-      user: localStorage.getItem("userName"),
-    });
+		sendJsonMessage({
+			auth: key,
+			user: localStorage.getItem('userName'),
+		});
+		document.title = 'Monity | Chat';
+	}, []);
 
-    document.title = "Monity | Chat";
-  }, []);
+	useEffect(() => {
+		if (lastJsonMessage === null) return;
 
-  useEffect(() => {
-    if (lastJsonMessage === null) return;
+		if (logedIn) {
+			if (lastJsonMessage.action !== ACTION_GET_SELF) return;
+			setProfile(lastJsonMessage.content);
+			localStorage.setItem('userName', lastJsonMessage.content.userName);
+		} else {
+			if (lastJsonMessage.error !== 'NONE') {
+				showToast(TOAST_TYPE.ERROR, "Error","You're not logged in");
+				// console.log(useHistory);
+				return;
+			}
+			setLogedIn(true);
+			sendJsonMessage({ action: ACTION_GET_SELF });
+		}
+	}, [lastJsonMessage]);
 
-    if (logedIn) {
-      if (lastJsonMessage.action !== ACTION_GET_SELF) return;
-      setProfile(lastJsonMessage.content);
-      localStorage.setItem("userName", lastJsonMessage.content.userName);
-    } else {
-      if (lastJsonMessage.error !== "NONE") {
-        console.log("doesn't has the permission");
-        // console.log(useHistory);
-        return;
-      }
-      setLogedIn(true);
-      sendJsonMessage({ action: ACTION_GET_SELF });
-    }
-  }, [lastJsonMessage]);
+	useEffect(() => {
+		if (lastJsonMessage === null) return;
+		if (lastJsonMessage.action !== ACTION_PROFILE_UPDATE) return;
 
-  useEffect(() => {
-    if (lastJsonMessage === null) return;
-    if (lastJsonMessage.action !== ACTION_PROFILE_UPDATE) return;
+		setProfile(lastJsonMessage.content);
+	}, [lastJsonMessage]);
 
-    setProfile(lastJsonMessage.content);
-  }, [lastJsonMessage]);
-
-  return (
-    <ProfileContext.Provider value={profile}>
-      <ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
-        {!logedIn && (
+	return (
+		<ProfileContext.Provider value={profile}>
+			<ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
+				{/* {!logedIn && (
           <div className="loading-screen">
             <img src="/src/image/logo.png" alt="Monity Logo" />
             <div className="frame">
               <div className="dot-spin"></div>
             </div>
           </div>
-        )}
-        <div className="messenger">
-          <Sidebar />
-          <div className="placeholder"></div>
-          <Chat />
-          <StatusBar />
-        </div>
-      </ChatContext.Provider>
-    </ProfileContext.Provider>
-  );
+        )} */}
+				<div className="messenger">
+					<Sidebar />
+					<div className="placeholder"></div>
+					<Chat />
+					<StatusBar />
+				</div>
+			</ChatContext.Provider>
+		</ProfileContext.Provider>
+	);
 }

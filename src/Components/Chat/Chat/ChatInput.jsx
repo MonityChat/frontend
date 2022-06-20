@@ -19,6 +19,7 @@ import useAuthentication from "../../../Util/UseAuth";
 import { SettingsContext, MESSAGE_MODES } from "../../../App";
 import { ChatContext } from "../Messenger";
 import { RelatedContext } from "./Chat";
+import { NotificationContext, TOAST_TYPE } from "../Notification/Notification";
 
 export default function ChatInput() {
   const [showEmoji, setShowEmoji] = useState(false);
@@ -29,6 +30,7 @@ export default function ChatInput() {
 
   const { selectedChat } = useContext(ChatContext);
   const { related, setRelated } = useContext(RelatedContext);
+  const showToast = useContext(NotificationContext);
 
   const { sendJsonMessage } = useWebSocket(WEBSOCKET_URL, {
     share: true,
@@ -98,9 +100,9 @@ export default function ChatInput() {
         embedID: embedID,
         content: message,
         sent: Date.now(),
-        related: related !== null ? related : "",
+        related: related,
       });
-      setRelated(null);
+      setRelated("");
       setImages([]);
     }, 0);
   };
@@ -111,6 +113,7 @@ export default function ChatInput() {
   };
 
   const handleMessageInput = (e) => {
+
     if (selectedChat.chatId !== undefined) {
       sendJsonMessage({
         action: ACTION_USER_TYPING,
