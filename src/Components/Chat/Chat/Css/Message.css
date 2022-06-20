@@ -165,12 +165,27 @@
 
 .message > .content > .more-options-menu {
   position: absolute;
-  opacity: 1;
+  /* opacity: 1; */
   bottom: 50%;
   transition: inherit;
   display: flex;
   transform: translateY(60%);
-  padding: var(--p-3);
+  padding: var(--p-2);
+  border: calc(var(--b-w) * 1) solid var(--c-gradient-2);
+  border-radius: var(--b-r);
+  animation-name: fadeIn;
+  animation-duration: 240ms;
+  animation-fill-mode: forwards;
+  animation-timing-function: ease-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .message.left > .content > .more-options-menu {
@@ -235,14 +250,14 @@
   border-top-left-radius: var(--b-r);
 }
 
-.message.left > .answer {
+.message.left .answer {
   justify-content: flex-start;
   border-left-width: 0.3rem;
   border-left-style: solid;
   border-left-color: var(--c-gradient-1);
 }
 
-.message.right > .answer {
+.message.right .answer {
   justify-content: flex-end;
   border-right-width: 0.3rem;
   border-right-color: var(--c-gradient-2);

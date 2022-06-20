@@ -63,10 +63,9 @@ export default function ContactView() {
         break;
       }
       case NOTIFICATION_USER_ONLINE: {
-        console.log(NOTIFICATION_USER_ONLINE === lastJsonMessage.notification);
         const newUser = lastJsonMessage.content.from;
         setContacts((prev) => [
-          ...prev.filter((contact) => contact.uuid !== newUser.uuid),
+          ...prev?.filter((contact) => contact.uuid !== newUser.uuid),
           newUser,
         ]);
         break;
@@ -74,7 +73,7 @@ export default function ContactView() {
       case NOTIFICATION_USER_UPDATE_PROFILE: {
         const newUser = lastJsonMessage.content.from;
         setContacts((prev) => [
-          ...prev.filter((contact) => contact.uuid !== newUser.uuid),
+          ...prev?.filter((contact) => contact.uuid !== newUser.uuid),
           newUser,
         ]);
         break;

@@ -1,22 +1,11 @@
 import React, { useState, useContext } from "react";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
-import "./Css/Message.css";
 import { IoCheckmarkDone, IoBookmarkOutline } from "react-icons/io5";
 import { IoMdHourglass, IoMdMore } from "react-icons/io";
 import { BsReply } from "react-icons/bs";
-import {
-  WEBSOCKET_URL,
-  ACTION_MESSAGE_DELETE,
-  ACTION_MESSAGE_REACT,
-  ACTION_MESSAGE_EDIT,
-} from "../../../Util/Websocket";
-import {
-  AiOutlineLike,
-  AiOutlineDislike,
-  AiOutlineDelete,
-  AiOutlineEye,
-} from "react-icons/ai";
+import { MdOutlineAddReaction } from "react-icons/md";
+import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import { RelatedContext } from "./Chat";
+import "./Css/Message.css";
 
 export default React.forwardRef(function Message(
   {
@@ -28,7 +17,7 @@ export default React.forwardRef(function Message(
     children,
     moreOptions,
     reactions,
-    onClick,
+    onClicks,
     index,
   },
   ref
@@ -37,33 +26,17 @@ export default React.forwardRef(function Message(
 
   const { setRelated } = useContext(RelatedContext);
 
-  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-    share: true,
-  });
-
   const handleAnswerClick = () => {
     setRelated(uuid);
   };
 
-  const handleLikeClick = () => {
-    console.log("like");
-  };
-
-  const handleDislikeClick = () => {
-    console.log("dislike");
-  };
-
   const handleBookmarkClick = () => {};
-
-  const handleDeleteClick = () => {
-    // sendJsonMessage({action: ACTION_MESSAGE_DELETE, })
-  };
 
   return (
     <div
       className={"message " + (you ? "right" : "left")}
-      onClick={() => onClick && onClick(index)}
-      onMouseLeave={(e) => setTimeout(() => setShowMoreOptions(false), 300)}
+      onClick={() => onClicks.onMessage && onClicks.onMessage(index)}
+      onMouseLeave={(e) => setShowMoreOptions(false)}
       ref={ref}
     >
       <div className="information">
@@ -101,10 +74,17 @@ export default React.forwardRef(function Message(
             onClick={() => setShowMoreOptions(false)}
           >
             <BsReply size={"2rem"} onClick={handleAnswerClick} />
-            <AiOutlineLike size={"2rem"} onClick={handleLikeClick} />
-            <AiOutlineDislike size={"2rem"} onClick={handleDislikeClick} />
-            <IoBookmarkOutline size={"2rem"} onClick={handleBookmarkClick} />
-            <AiOutlineDelete size={"2rem"} onClick={handleDeleteClick} />
+            <MdOutlineAddReaction
+              size={"2rem"}
+              onClick={() => onClicks.onReact && onClicks.onReact(uuid)}
+            />
+            {/* <IoBookmarkOutline size={"2rem"} onClick={handleBookmarkClick} /> */}
+            {you && (
+              <AiOutlineDelete
+                size={"2rem"}
+                onClick={() => onClicks.onDelete && onClicks.onDelete(uuid)}
+              />
+            )}
           </div>
         ) : (
           ""

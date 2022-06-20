@@ -1,73 +1,74 @@
 .authentication {
-	text-align: center;
-	padding: calc(var(--p-3) * 2) 6em;
-	position: absolute;
-	left: 50%;
-	top: 15%;
-	transform: translate(-50%);
+  text-align: center;
+  padding: calc(var(--p-3) * 2) 6em;
+  position: absolute;
+  left: 50%;
+  top: 15%;
+  transform: translate(-50%);
+  background-color: var(--c-grey-light);
 }
 
 .authentication > h1 {
-	font-size: 5rem;
-	font-weight: 800;
-	margin: var(--m-2);
-	background-image: var(--g-base);
-	background-clip: text;
-	-webkit-background-clip: text;
-	color: transparent;
+  font-size: 5rem;
+  font-weight: 800;
+  margin: var(--m-2);
+  background-image: var(--g-base);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
-.authentication .information{
-	display: block;
-	max-width: 15rem;
-	margin: auto;
+.authentication .information {
+  display: block;
+  max-width: 15rem;
+  margin: auto;
 }
 
 .button-switch {
-	display: inline-block;
-	width: 10em;
-	transition: background-color 400ms ease-out, box-shadow 200ms ease-out;
+  display: inline-block;
+  width: 10em;
+  transition: background-color 400ms ease-out, box-shadow 200ms ease-out;
 }
 
 .button-switch:hover:first-of-type,
 .button-switch:focus:first-of-type {
-	/* box-shadow: var(--sh-gradient-1) !important; */
-	background-color: var(--c-gradient-1);
+  /* box-shadow: var(--sh-gradient-1) !important; */
+  background-color: var(--c-gradient-1);
 }
 
 .button-switch:hover:last-of-type,
 .button-switch:focus:last-of-type {
-	background-color: var(--c-gradient-2);
+  background-color: var(--c-gradient-2);
 }
 
 .button-switch:first-of-type {
-	border-top-right-radius: 0em;
-	border-bottom-right-radius: 0em;
-	border-color: var(--c-gradient-1);
-	box-shadow: none;
-	background-color: transparent;
-	background-image: none;
-	background-clip: border-box;
+  border-top-right-radius: 0em;
+  border-bottom-right-radius: 0em;
+  border-color: var(--c-gradient-1);
+  box-shadow: none;
+  background-color: transparent;
+  background-image: none;
+  background-clip: border-box;
 }
 
 .button-switch:last-of-type {
-	border-top-left-radius: 0em;
-	border-bottom-left-radius: 0em;
-	border-color: var(--c-gradient-2);
-	box-shadow: none;
-	background-color: transparent;
-	background-image: none;
-	background-clip: border-box;
+  border-top-left-radius: 0em;
+  border-bottom-left-radius: 0em;
+  border-color: var(--c-gradient-2);
+  box-shadow: none;
+  background-color: transparent;
+  background-image: none;
+  background-clip: border-box;
 }
 
 .button-switch:first-of-type.selected {
-	background-color: var(--c-gradient-1);
+  background-color: var(--c-gradient-1);
 }
 
 .button-switch:last-of-type.selected {
-	background-color: var(--c-gradient-2);
+  background-color: var(--c-gradient-2);
 }
 
 .authentication button {
-	min-width: 10em;
+  min-width: 10em;
 }

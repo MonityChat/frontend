@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import {
   COLOR_MODES,
   MESSAGE_MODES,
@@ -7,6 +7,12 @@ import {
   SettingsContext,
 } from "../../../../App";
 import AppleSwitch from "./AppleSwitch";
+import {
+  WEBSOCKET_URL,
+  ACTION_SETTINGS_CHANGE_SELF,
+  ACTION_SETTINGS_GET_SELF,
+} from "../../../../Util/Websocket";
+import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import "./Css/SettingsView.css";
 
 export default function SettingsView() {
@@ -21,6 +27,66 @@ export default function SettingsView() {
     setColorScheme,
   } = useContext(SettingsContext);
 
+  const [requestMode, setRequestMode] = useState(REQUEST_MODE.EVERYONE);
+  const [dataOption, setDataOption] = useState(DATA_OPTION.EVERYONE);
+
+  const requestModeRef = useRef(new Array(3));
+  const dataOptionRef = useRef(new Array(3));
+
+  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
+    share: true,
+  });
+
+  useEffect(() => {
+    sendJsonMessage({
+      action: ACTION_SETTINGS_GET_SELF,
+    });
+  }, []);
+
+  useEffect(() => {
+    if (lastJsonMessage === null) return;
+    if (lastJsonMessage.action !== ACTION_SETTINGS_GET_SELF) return;
+    setRequestMode(lastJsonMessage.content.friendRequestLevel);
+    setDataOption(lastJsonMessage.content.dataOptions);
+    switch (lastJsonMessage.content.friendRequestLevel) {
+      case REQUEST_MODE.EVERYONE:
+        requestModeRef.current[0].checked = true;
+        requestModeRef.current[1].checked = false;
+        requestModeRef.current[2].checked = false;
+
+        break;
+      case REQUEST_MODE.FRIENDS_OF_FRIENDS:
+        requestModeRef.current[0].checked = false;
+        requestModeRef.current[1].checked = true;
+        requestModeRef.current[2].checked = false;
+        break;
+      case REQUEST_MODE.NONE:
+        requestModeRef.current[0].checked = false;
+        requestModeRef.current[1].checked = false;
+        requestModeRef.current[2].checked = true;
+        break;
+    }
+
+    switch (lastJsonMessage.content.dataOptions) {
+      case DATA_OPTION.EVERYONE:
+        dataOptionRef.current[0].checked = true;
+        dataOptionRef.current[1].checked = false;
+        dataOptionRef.current[2].checked = false;
+
+        break;
+      case DATA_OPTION.ONLY_CONTACTS:
+        dataOptionRef.current[0].checked = false;
+        dataOptionRef.current[1].checked = true;
+        dataOptionRef.current[2].checked = false;
+        break;
+      case DATA_OPTION.NONE:
+        dataOptionRef.current[0].checked = false;
+        dataOptionRef.current[1].checked = false;
+        dataOptionRef.current[2].checked = true;
+        break;
+    }
+  }, [lastJsonMessage]);
+
   const handleGradientSchemeChange = (e) => {
     const theme = e.target.value;
     setGradientScheme(theme);
@@ -29,6 +95,24 @@ export default function SettingsView() {
   const handleColorSchemeChange = (e) => {
     const theme = e.target.value;
     setColorScheme(theme);
+  };
+
+  const handleFriendRequestChange = (newRequestMode) => {
+    setRequestMode(newRequestMode);
+    sendJsonMessage({
+      action: ACTION_SETTINGS_CHANGE_SELF,
+      setting: "friendRequestLevel",
+      value: newRequestMode,
+    });
+  };
+
+  const handleDataOptionChange = (newDataOption) => {
+    setDataOption(newDataOption);
+    sendJsonMessage({
+      action: ACTION_SETTINGS_CHANGE_SELF,
+      setting: "dataOption",
+      value: newDataOption,
+    });
   };
 
   return (
@@ -125,30 +209,74 @@ export default function SettingsView() {
             <div className="item">
               <input
                 type="radio"
-                defaultChecked={messageMode === MESSAGE_MODES.ENTER}
-                value={MESSAGE_MODES.ENTER}
-                name="message-mode"
-                onClick={() => setMessageMode(MESSAGE_MODES.ENTER)}
+                defaultChecked={requestMode === REQUEST_MODE.EVERYONE}
+                value={REQUEST_MODE.EVERYONE}
+                name="request-mode"
+                onClick={() => handleFriendRequestChange(REQUEST_MODE.EVERYONE)}
+                ref={(el) => (requestModeRef.current[0] = el)}
               />
               <span className="label">everyone</span>
             </div>
             <div className="item">
               <input
                 type="radio"
-                defaultChecked={messageMode === MESSAGE_MODES.ENTER_CTRL}
-                value={MESSAGE_MODES.ENTER_CTRL}
-                name="message-mode"
-                onClick={() => setMessageMode(MESSAGE_MODES.ENTER_CTRL)}
+                defaultChecked={requestMode === REQUEST_MODE.FRIENDS_OF_FRIENDS}
+                value={REQUEST_MODE.FRIENDS_OF_FRIENDS}
+                name="request-mode"
+                onClick={() =>
+                  handleFriendRequestChange(REQUEST_MODE.FRIENDS_OF_FRIENDS)
+                }
+                ref={(el) => (requestModeRef.current[1] = el)}
               />
               <span className="label">friend of friends</span>
             </div>
             <div className="item">
               <input
                 type="radio"
-                defaultChecked={messageMode === MESSAGE_MODES.ENTER_SHIFT}
-                value={MESSAGE_MODES.ENTER_SHIFT}
-                name="message-mode"
-                onClick={() => setMessageMode(MESSAGE_MODES.ENTER_SHIFT)}
+                defaultChecked={requestMode === REQUEST_MODE.NONE}
+                value={REQUEST_MODE.NONE}
+                name="request-mode"
+                onClick={() => handleFriendRequestChange(REQUEST_MODE.NONE)}
+                ref={(el) => (requestModeRef.current[2] = el)}
+              />
+              <span className="label">none</span>
+            </div>
+          </li>
+
+          <li>
+            <h3>Allow User to see status</h3>
+            <div className="item">
+              <input
+                type="radio"
+                defaultChecked={dataOption === DATA_OPTION.EVERYONE}
+                value={DATA_OPTION.EVERYONE}
+                name="data-mode"
+                onClick={() => handleDataOptionChange(DATA_OPTION.EVERYONE)}
+                ref={(el) => (dataOptionRef.current[0] = el)}
+              />
+              <span className="label">everyone</span>
+            </div>
+            <div className="item">
+              <input
+                type="radio"
+                defaultChecked={dataOption === DATA_OPTION.ONLY_CONTACTS}
+                value={DATA_OPTION.ONLY_CONTACTS}
+                name="data-mode"
+                onClick={() =>
+                  handleDataOptionChange(DATA_OPTION.ONLY_CONTACTS)
+                }
+                ref={(el) => (dataOptionRef.current[1] = el)}
+              />
+              <span className="label">only contacts</span>
+            </div>
+            <div className="item">
+              <input
+                type="radio"
+                defaultChecked={dataOption === DATA_OPTION.NONE}
+                value={DATA_OPTION.NONE}
+                name="data-mode"
+                onClick={() => handleDataOptionChange(DATA_OPTION.NONE)}
+                ref={(el) => (dataOptionRef.current[2] = el)}
               />
               <span className="label">none</span>
             </div>
@@ -158,3 +286,15 @@ export default function SettingsView() {
     </div>
   );
 }
+
+const REQUEST_MODE = Object.freeze({
+  EVERYONE: "ALL",
+  FRIENDS_OF_FRIENDS: "FRIENDS_OF_FRIENDS",
+  NONE: "NONE",
+});
+
+const DATA_OPTION = Object.freeze({
+  EVERYONE: "ALL",
+  ONLY_CONTACTS: "ONLY_CONTACTS",
+  NONE: "NONE",
+});

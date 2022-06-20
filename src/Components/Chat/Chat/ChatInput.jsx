@@ -6,6 +6,7 @@ import {
 } from "react-icons/io5";
 import { BiMicrophone } from "react-icons/bi";
 import { BsEmojiSmile } from "react-icons/bs";
+import { BsReply } from "react-icons/bs";
 import "./Css/ChatInput.css";
 import Picker from "emoji-picker-react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
@@ -108,12 +109,10 @@ export default function ChatInput() {
   };
 
   const handleImageSelected = (e) => {
-    const file = e.target.files[0];
-    setImages((prev) => [...prev, file]);
+    setImages((prev) => [...prev, ...e.target.files]);
   };
 
   const handleMessageInput = (e) => {
-
     if (selectedChat.chatId !== undefined) {
       sendJsonMessage({
         action: ACTION_USER_TYPING,
@@ -156,6 +155,7 @@ export default function ChatInput() {
         <input
           type="file"
           className="file-select-input"
+          multiple="multiple"
           accept=".txt, .docx, .pdf"
         />
       </div>
@@ -173,6 +173,7 @@ export default function ChatInput() {
           type="file"
           className="image-select-input"
           accept=".png, .jpeg, .jpg, .gif, .mp4"
+          multiple="multiple"
           onChange={handleImageSelected}
         />
       </div>
@@ -195,6 +196,13 @@ export default function ChatInput() {
         style={{ stroke: "url(#base-gradient)" }}
         onClick={sendMessage}
       />
+      {related && (
+        <BsReply
+          className="chat-button"
+          size={"3em"}
+          style={{ fill: "url(#base-gradient)" }}
+        />
+      )}
     </div>
   );
 }

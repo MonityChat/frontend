@@ -28,6 +28,7 @@ export const ACTION_USER_TYPING = "user:action:typing";
 export const NOTIFICATION_FRIEND_REQUEST_INCOME = "friend:request:income";
 export const NOTIFICATION_MESSAGE_INCOMING = "chat:private:message:income";
 export const NOTIFICATION_MESSAGE_READ = "chat:private:message:read";
+export const NOTIFICATION_MESSAGE_DELETE = "chat:private:message:deleted";
 export const NOTIFICATION_MESSAGE_RECEIVED = "chat:private:message:received";
 export const NOTIFICATION_USER_ONLINE = "user:action:online";
 export const NOTIFICATION_USER_UPDATE_PROFILE = "user:action:update:profile";
