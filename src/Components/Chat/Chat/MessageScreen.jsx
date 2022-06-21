@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import { IoArrowDown } from 'react-icons/io5';
+import { toast } from 'react-toastify';
 import Message from './Message';
 import DayDivider from './DayDivider';
 import './Css/MessageScreen.css';
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
 import { ChatContext } from '../Messenger';
 import { ReactContext, RelatedContext } from './Chat';
+import { AiOutlineFileText } from 'react-icons/ai';
 import {
 	WEBSOCKET_URL,
 	ACTION_GET_MESSAGE_LATEST,
@@ -20,7 +22,11 @@ import {
 	ACTION_GET_MESSAGE,
 	NOTIFICATION_MESSAGE_DELETE,
 	NOTIFICATION_MESSAGE_REACTED,
+	ACTION_MESSAGE_EDIT,
+	NOTIFICATION_MESSAGE_EDITED,
+	ACTION_MESSAGE_REACT,
 } from '../../../Util/Websocket';
+import Audio from './Audio';
 
 export default function MessageScreen() {
 	const [messages, setMessages] = useState(fillwithDummyMessages(10));
@@ -72,6 +78,7 @@ export default function MessageScreen() {
 				break;
 			}
 			case ACTION_MESSAGE_DELETE: {
+				//chekc if in this chat
 				setMessages((prev) => {
 					const deleted = prev.filter(
 						(message) =>
@@ -93,31 +100,39 @@ export default function MessageScreen() {
 				});
 				break;
 			}
+			case ACTION_MESSAGE_REACT: {
+				console.log('REact to message');
+				//check if in this chat
+			}
+			case ACTION_MESSAGE_EDIT: {
+				console.log('edit to message');
+				//check if in this chat
+			}
 		}
 
 		switch (lastJsonMessage.notification) {
 			case NOTIFICATION_MESSAGE_INCOMING: {
 				if (
-					selectedChat.chatId === lastJsonMessage.content.message.chat
+					selectedChat.chatId !== lastJsonMessage.content.message.chat
 				) {
-					setMessages((prev) => [
-						...prev,
-						{
-							...lastJsonMessage.content.message,
-							author: lastJsonMessage.content.from,
-						},
-					]);
-
-					bottomRef.current.scrollIntoView();
-
-					sendJsonMessage({
-						action: ACTION_MESSAGE_READ,
-						chatID: selectedChat.chatId,
-						target: selectedChat.targetId,
-					});
-				} else {
-					console.log('not in this chat, show a toast');
+					toast.info('new Message');
+					break;
 				}
+				setMessages((prev) => [
+					...prev,
+					{
+						...lastJsonMessage.content.message,
+						author: lastJsonMessage.content.from,
+					},
+				]);
+
+				bottomRef.current.scrollIntoView();
+
+				sendJsonMessage({
+					action: ACTION_MESSAGE_READ,
+					chatID: selectedChat.chatId,
+					target: selectedChat.targetId,
+				});
 				break;
 			}
 			case NOTIFICATION_MESSAGE_READ: {
@@ -196,6 +211,24 @@ export default function MessageScreen() {
 					return prev;
 				});
 			}
+			case NOTIFICATION_MESSAGE_EDITED: {
+				console.log('a message was edited');
+				//check if in this chat
+				// if (selectedChat.chatId !== lastJsonMessage.content.chat)
+				// 	return;
+				// setMessages((prev) => {
+				// 	prev.forEach((message, i) => {
+				// 		if (
+				// 			message.messageID ===
+				// 			lastJsonMessage.content.message.messageID
+				// 		) {
+				// 			prev[i] = lastJsonMessage.content.message;
+				// 		}
+				// 	});
+
+				// 	return prev;
+				// });
+			}
 		}
 	}, [lastJsonMessage]);
 
@@ -214,6 +247,16 @@ export default function MessageScreen() {
 
 	const relateToMessage = (uuid) => {
 		setRelated(uuid);
+	};
+
+	const editMessage = (uuid, newText) => {
+		console.log('edit ' + newText);
+		sendJsonMessage({
+			action: ACTION_MESSAGE_EDIT,
+			chatID: selectedChat.chatId,
+			messageID: uuid,
+			newContent: newText,
+		});
 	};
 
 	const deleteMessage = (uuid) => {
@@ -288,7 +331,9 @@ export default function MessageScreen() {
 								onDelete: deleteMessage,
 								onReact: reactToMessage,
 								onRelate: relateToMessage,
+								onEdit: editMessage,
 							}}
+							message={message.content}
 							moreOptions
 						>
 							<>
@@ -314,6 +359,7 @@ export default function MessageScreen() {
 											onClicks={{
 												onMessage: jumpToMessage,
 											}}
+											message={message.relatedTo.content}
 										>
 											<>
 												{message.relatedTo.attachedMedia
@@ -327,9 +373,6 @@ export default function MessageScreen() {
 															/>
 														)
 													)}
-												<div>
-													{message.relatedTo.content}
-												</div>
 											</>
 										</Message>
 									</div>
@@ -337,13 +380,27 @@ export default function MessageScreen() {
 
 								{message.attachedMedia?.length !== 0 &&
 									message.attachedMedia.map((media) => (
-										<img
-											src={`http://localhost:8808/assets${media.filePath}`}
-											alt={media.id}
-											className="image-media"
-										/>
+										<>
+											{/* images and gifs */}
+											<img
+												src={`http://localhost:8808/assets${media.filePath}`}
+												alt={media.id}
+												className="image-media"
+											/>
+											{/* <div className="file">
+									<AiOutlineFileText
+										size={'clamp(2rem, 10vw ,5rem)'}
+										fill="url(#base-gradient)"
+									/>
+									<div className="file-name">SIMON IST COOL</div>
+								</div> */}
+											{/* <div className="video">
+								<video controls src='/src/image/Musicvideo.mp4'>
+								</video>
+								</div> */}
+											{/* <Audio src={"/src/image/Aufnahme.mp3"}/> */}
+										</>
 									))}
-								<div>{message.content}</div>
 							</>
 						</Message>
 					</>

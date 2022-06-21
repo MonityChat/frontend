@@ -31,7 +31,9 @@ export const NOTIFICATION_MESSAGE_READ = "chat:private:message:read";
 export const NOTIFICATION_MESSAGE_DELETE = "chat:private:message:deleted";
 export const NOTIFICATION_MESSAGE_REACTED = "chat:private:message:reacted";
 export const NOTIFICATION_MESSAGE_RECEIVED = "chat:private:message:received";
+export const NOTIFICATION_MESSAGE_EDITED = "chat:private:message:edited";
 export const NOTIFICATION_USER_ONLINE = "user:action:online";
+// OFFLINE missing
 export const NOTIFICATION_USER_UPDATE_PROFILE = "user:action:update:profile";
 export const NOTIFICATION_USER_STARTED_TYPING = "user:action:started:typing";
 export const NOTIFICATION_USER_STOPPED_TYPING = "user:action:stopped:typing";

@@ -22,7 +22,7 @@ import { SettingsContext, MESSAGE_MODES } from '../../../App';
 import { ChatContext } from '../Messenger';
 import { RelatedContext, ReactContext } from './Chat';
 
-export default function ChatInput() {
+export default function ChatInput({jumpToMessage}) {
 	const [showEmoji, setShowEmoji] = useState(false);
 	const [height, setHeight] = useState('4rem');
 	const [images, setImages] = useState([]);

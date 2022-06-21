@@ -5,7 +5,6 @@
   left: 50%;
   top: 15%;
   transform: translate(-50%);
-  background-color: var(--c-grey-light);
 }
 
 .authentication > h1 {

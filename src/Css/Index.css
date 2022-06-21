@@ -67,18 +67,32 @@
   --scheme-green-1: green;
 }
 
+html{
+    background-color: #15161a;
+}
+
 html,
 body {
   height: 100vh;
   width: 100vw;
-  background-color: #15161a;
   color: var(--c-font);
-  background-image: url("http://localhost:8808/assets/images/monity/background.svg");
-  background-position: bottom;
-  background-repeat: repeat-x;
-  background-size: cover;
   display: grid;
   place-items: center;
+  overflow: hidden;
+}
+
+.background{
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+}
+
+.background svg{
+  width: 100%;
+  height: 100%;
 }
 
 body {
@@ -102,6 +116,7 @@ code {
   border: var(--b-w) solid var(--c-selected);
   border-radius: var(--b-r);
   box-shadow: inset 0em 0em 5em 0 rgb(0 0 0 / 30%), var(--sh-selected);
+  background-color: var(--c-grey-light);
 }
 
 .sidebar-item {

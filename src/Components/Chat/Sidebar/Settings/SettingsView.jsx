@@ -6,7 +6,6 @@ import {
   COLOR_SCHEME,
   SettingsContext,
 } from "../../../../App";
-import AppleSwitch from "./AppleSwitch";
 import {
   WEBSOCKET_URL,
   ACTION_SETTINGS_CHANGE_SELF,

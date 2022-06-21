@@ -1,0 +1,39 @@
+.message > .content > .audio {
+	max-width: 100%;
+	background-color: var(--c-grey-dark);
+	border-radius: var(--b-r);
+	display: flex;
+	width: 20rem;
+	flex-direction: row;
+	align-items: center;
+	padding-inline: var(--p-1);
+}
+
+.audio svg {
+	cursor: pointer;
+	transition: transform 200ms ease-out;
+}
+
+.audio svg:hover {
+	transform: scale(1.1);
+}
+
+.audio .progress-container {
+	width: max(10rem, 100%);
+	height: 0.8rem;
+	border-radius: var(--b-r);
+	background-color: var(--c-grey-light);
+	overflow: hidden;
+	margin-inline: var(--m-2);
+}
+
+.audio .progress-container .progress {
+	height: 100%;
+	width: 0%;
+	background-color: var(--c-gradient-1);
+	transition: width 255ms;
+}
+
+.message.right > .content > .audio .progress {
+	background-color: var(--c-gradient-2);
+}

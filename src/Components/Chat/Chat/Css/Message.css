@@ -132,6 +132,47 @@
 	width: auto;
 	border-radius: var(--b-r);
 	margin-bottom: var(--m-2);
+	background-color: var(--c-grey-dark);
+}
+
+.message > .content > .file {
+	max-width: 100%;
+	border-radius: var(--b-r);
+	margin: var(--m-1);
+	padding: var(--p-1);
+	background-color: var(--c-grey-dark);
+	display: inline-flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	text-align: start;
+}
+
+.message.right > .content > .file {
+	flex-direction: row-reverse;
+	text-align: end;
+}
+
+.message > .content > .file > .file-name {
+	margin: var(--m-2);
+	opacity: 0.8;
+	font-size: 0.8rem;
+}
+
+.message > .content > .file > svg {
+	cursor: pointer;
+}
+
+.message > .content > .video {
+	max-width: 100%;
+	height: auto;
+	border-radius: var(--b-r);
+	overflow: hidden;
+}
+
+.message > .content > .video > video {
+	width: 100%;
+	height: auto;
 }
 
 .message > .content > .reaction-container {
@@ -139,10 +180,10 @@
 	flex-direction: row;
 	margin-top: var(--m-2);
 	flex-wrap: wrap;
-  row-gap: var(--m-1);
-  -webkit-row-gap: var(--m-1);
-  -moz-row-gap: var(--m-1);
-  -ms-row-gap: var(--m-1);
+	row-gap: var(--m-1);
+	-webkit-row-gap: var(--m-1);
+	-moz-row-gap: var(--m-1);
+	-ms-row-gap: var(--m-1);
 	max-width: 100%;
 }
 
@@ -157,6 +198,12 @@
 	padding-inline: var(--p-1);
 	opacity: 0.8;
 	font-weight: bolder;
+}
+
+.message > .content > .save {
+	right: 2rem;
+	bottom: 2rem;
+	cursor: pointer;
 }
 
 .message > .content > .more {

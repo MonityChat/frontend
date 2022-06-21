@@ -1,9 +1,10 @@
-import React, { useState, useContext } from 'react';
-import { IoCheckmarkDone, IoBookmarkOutline } from 'react-icons/io5';
+import React, { useState, useRef, useEffect } from 'react';
+import { IoCheckmarkDone } from 'react-icons/io5';
 import { IoMdHourglass, IoMdMore } from 'react-icons/io';
 import { BsReply } from 'react-icons/bs';
 import { MdOutlineAddReaction } from 'react-icons/md';
-import { AiOutlineDelete, AiOutlineEye } from 'react-icons/ai';
+import { FaRegSave } from 'react-icons/fa';
+import { AiOutlineDelete, AiOutlineEye, AiOutlineEdit } from 'react-icons/ai';
 import './Css/Message.css';
 
 /**
@@ -28,10 +29,27 @@ export default React.forwardRef(function Message(
 		reactions,
 		onClicks,
 		index,
+		message,
 	},
 	ref
 ) {
 	const [showMoreOptions, setShowMoreOptions] = useState(false);
+	const [editing, setEditing] = useState(false);
+
+	const textRef = useRef();
+	const editRef = useRef();
+
+	useEffect(() => {
+		if (editing) {
+		} else {
+		}
+	}, [editing]);
+
+	const saveEdit = () =>{
+		const newText = editRef.current.value;
+		setEditing(false);
+		onClicks.onEdit && onClicks.onEdit(uuid, newText)
+	}
 
 	return (
 		<div
@@ -60,6 +78,13 @@ export default React.forwardRef(function Message(
 
 			<div className="content">
 				{children}
+				{editing ? (
+					<>
+						<textarea ref={editRef}>{message}</textarea>
+					</>
+				) : (
+					<div ref={textRef}>{message}</div>
+				)}
 				<div className="reaction-container">
 					{reactions?.map((reaction) => (
 						<div className="reaction">
@@ -78,6 +103,16 @@ export default React.forwardRef(function Message(
 					/>
 				) : (
 					''
+				)}
+				{editing && (
+					<FaRegSave
+						className="save"
+						size={'2rem'}
+						style={{
+							fill: 'url(#base-gradient)',
+						}}
+						onClick={saveEdit}
+					/>
 				)}
 				{showMoreOptions ? (
 					<div
@@ -98,12 +133,19 @@ export default React.forwardRef(function Message(
 						/>
 						{/* <IoBookmarkOutline size={"2rem"} onClick={handleBookmarkClick} /> */}
 						{you && (
-							<AiOutlineDelete
-								size={'2rem'}
-								onClick={() =>
-									onClicks.onDelete && onClicks.onDelete(uuid)
-								}
-							/>
+							<>
+								<AiOutlineDelete
+									size={'2rem'}
+									onClick={() =>
+										onClicks.onDelete &&
+										onClicks.onDelete(uuid)
+									}
+								/>
+								<AiOutlineEdit
+									size={'2rem'}
+									onClick={() => setEditing((prev) => !prev)}
+								/>
+							</>
 						)}
 					</div>
 				) : (
