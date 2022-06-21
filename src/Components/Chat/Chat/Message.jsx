@@ -60,6 +60,9 @@ export default React.forwardRef(function Message(
 
 			<div className="content">
 				{children}
+				<div className="reaction-container">
+						{reactions.map(reaction => <div className="reaction">{reaction.reaction}</div>)}
+				</div>
 				{moreOptions && !showMoreOptions ? (
 					<IoMdMore
 						className="more"

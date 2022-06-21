@@ -118,7 +118,7 @@ export default function ChatInput() {
 
 			embedID = newEmbedID;
 		}
-		setTimeout(() => {
+		
 			sendJsonMessage({
 				action: ACTION_MESSAGE_SEND,
 				target: selectedChat.targetId,
@@ -126,10 +126,9 @@ export default function ChatInput() {
 				content: message,
 				sent: Date.now(),
 				related: related,
-			});
+			})
 			setRelated('');
 			setImages([]);
-		}, 0);
 	};
 
 	const handleImageSelected = (e) => {
@@ -183,7 +182,6 @@ export default function ChatInput() {
 					type="file"
 					className="file-select-input"
 					multiple="multiple"
-					accept=".txt, .docx, .pdf"
 				/>
 			</div>
 			<BiMicrophone

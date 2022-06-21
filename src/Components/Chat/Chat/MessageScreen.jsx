@@ -19,10 +19,11 @@ import {
 	NOTIFICATION_USER_STOPPED_TYPING,
 	ACTION_GET_MESSAGE,
 	NOTIFICATION_MESSAGE_DELETE,
+	NOTIFICATION_MESSAGE_REACTED,
 } from '../../../Util/Websocket';
 
 export default function MessageScreen() {
-	const [messages, setMessages] = useState(fillwithDummyMessages(10));
+	const [messages, setMessages] = useState([]);
 	const [scrollTo, setScrollTo] = useState('bottom');
 	const [you, setYou] = useState(localStorage.getItem('userName'));
 
@@ -156,6 +157,8 @@ export default function MessageScreen() {
 				break;
 			}
 			case NOTIFICATION_MESSAGE_DELETE: {
+				if (selectedChat.chatId !== lastJsonMessage.content.chat)
+					return;
 				setMessages((prev) => {
 					const deleted = prev.filter(
 						(message) =>
@@ -176,6 +179,20 @@ export default function MessageScreen() {
 					return deleted;
 				});
 				break;
+			}
+			case NOTIFICATION_MESSAGE_REACTED:{
+				if (selectedChat.chatId !== lastJsonMessage.content.chat)
+					return;
+					setMessages((prev) => {
+						prev.forEach((message, i)=> {
+							if(message.messageID === lastJsonMessage.content.message.messageID){
+								prev[i] = lastJsonMessage.content.message;
+							}
+						})
+
+	
+						return prev;
+					});
 			}
 		}
 	}, [lastJsonMessage]);

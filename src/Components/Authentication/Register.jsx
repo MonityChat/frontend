@@ -106,7 +106,7 @@ export default function Register() {
         />
         <PasswordField
           getState={setPasswordConfirm}
-          text="Cofirm Password"
+          text="Confirm Password"
           error={passwordConfirmError}
           onKeyDown={(e) => {
             if (e.key === "Enter") handleRegister();

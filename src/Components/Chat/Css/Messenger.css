@@ -16,6 +16,10 @@
 .loading-screen {
   position: absolute;
   inset: 0rem;
+  top: 0rem;
+  bottom: 0rem;
+  left: 0rem;
+  right: 0rem;
   z-index: 500;
   background-color: var(--c-grey-dark);
   display: flex;

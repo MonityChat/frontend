@@ -28,7 +28,7 @@ function ProfilePicture({ path, status, children }, ref) {
           }}
         />
       </div>
-      <div className={`status ${status?.toLowerCase().replaceAll("_", "-")}`}>
+      <div className={`status ${status?.toLowerCase().replace(/_/, "-")}`}>
         <div className="outer"></div>
         <div className="middle"></div>
         <div className="inner"></div>

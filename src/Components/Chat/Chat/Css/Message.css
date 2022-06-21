@@ -134,6 +134,17 @@
   margin-bottom: var(--m-2);
 }
 
+.message > .content > .reaction-container{
+  display: flex;
+  flex-direction: row;
+}
+
+.message > .content > .reaction-container > .reaction{
+  background-color: var(--c-grey-dark);
+  border-radius: var(--b-r);
+  padding: var(--p-1);
+}
+
 .message > .content > .more {
   position: absolute;
   opacity: 0;
