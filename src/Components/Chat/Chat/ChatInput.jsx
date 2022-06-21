@@ -21,7 +21,6 @@ import useAuthentication from '../../../Util/UseAuth';
 import { SettingsContext, MESSAGE_MODES } from '../../../App';
 import { ChatContext } from '../Messenger';
 import { RelatedContext, ReactContext } from './Chat';
-import { NotificationContext, TOAST_TYPE } from '../Notification/Notification';
 
 export default function ChatInput() {
 	const [showEmoji, setShowEmoji] = useState(false);
@@ -33,7 +32,6 @@ export default function ChatInput() {
 	const { selectedChat } = useContext(ChatContext);
 	const { related, setRelated } = useContext(RelatedContext);
 	const { reactedMessage, setReactedMessage } = useContext(ReactContext);
-	const showToast = useContext(NotificationContext);
 
 	const { sendJsonMessage } = useWebSocket(WEBSOCKET_URL, {
 		share: true,
@@ -56,6 +54,7 @@ export default function ChatInput() {
 
 		if (reactedMessage === '') {
 			messageRef.current.value += emoji;
+			messageRef.current.focus();
 		} else {
 			sendJsonMessage({
 				action: ACTION_MESSAGE_REACT,
@@ -66,7 +65,6 @@ export default function ChatInput() {
 
 		setReactedMessage('');
 		setShowEmoji(false);
-		messageRef.current.focus();
 	};
 
 	const sendMessage = async () => {
@@ -118,17 +116,17 @@ export default function ChatInput() {
 
 			embedID = newEmbedID;
 		}
-		
-			sendJsonMessage({
-				action: ACTION_MESSAGE_SEND,
-				target: selectedChat.targetId,
-				embedID: embedID,
-				content: message,
-				sent: Date.now(),
-				related: related,
-			})
-			setRelated('');
-			setImages([]);
+
+		sendJsonMessage({
+			action: ACTION_MESSAGE_SEND,
+			target: selectedChat.targetId,
+			embedID: embedID,
+			content: message,
+			sent: Date.now(),
+			related: related,
+		});
+		setRelated('');
+		setImages([]);
 	};
 
 	const handleImageSelected = (e) => {

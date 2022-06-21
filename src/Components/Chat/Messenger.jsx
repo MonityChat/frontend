@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext, useContext } from "react";
+import React, { useEffect, useState, createContext } from "react";
 import Sidebar from "./Sidebar/Sidebar";
 import Chat from "./Chat/Chat";
 import StatusBar from "./StatusBar/StatusBar";
@@ -6,7 +6,6 @@ import "./Css/Messenger.css";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import useAuthentication from "../../Util/UseAuth";
-import { NotificationContext, TOAST_TYPE } from "./Notification/Notification";
 import {
   WEBSOCKET_URL,
   ACTION_GET_SELF,
@@ -37,7 +36,6 @@ export default function Messenger() {
   const [selectedChat, setSelectedChat] = useState({});
 
   const history = useHistory();
-  const showToast = useContext(NotificationContext);
 
   const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
     share: true,
@@ -61,8 +59,7 @@ export default function Messenger() {
       setProfile(lastJsonMessage.content);
       localStorage.setItem("userName", lastJsonMessage.content.userName);
     } else {
-      if (lastJsonMessage.error !== "NONE") {
-        showToast(TOAST_TYPE.ERROR, "Error", "You're not logged in");
+      if (lastJsonMessage.error !== "NONE") {     
         // console.log(useHistory);
         return;
       }
@@ -81,14 +78,14 @@ export default function Messenger() {
   return (
     <ProfileContext.Provider value={profile}>
       <ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
-         {!logedIn && (
+         {/* {!logedIn && (
           <div className="loading-screen">
             <img src="/src/image/logo.png" alt="Monity Logo" />
             <div className="frame">
               <div className="dot-spin"></div>
             </div>
           </div>
-        )}
+        )} */}
         <div className="messenger">
           <Sidebar />
           <div className="placeholder"></div>

@@ -23,7 +23,7 @@ import {
 } from '../../../Util/Websocket';
 
 export default function MessageScreen() {
-	const [messages, setMessages] = useState([]);
+	const [messages, setMessages] = useState(fillwithDummyMessages(10));
 	const [scrollTo, setScrollTo] = useState('bottom');
 	const [you, setYou] = useState(localStorage.getItem('userName'));
 
@@ -180,19 +180,21 @@ export default function MessageScreen() {
 				});
 				break;
 			}
-			case NOTIFICATION_MESSAGE_REACTED:{
+			case NOTIFICATION_MESSAGE_REACTED: {
 				if (selectedChat.chatId !== lastJsonMessage.content.chat)
 					return;
-					setMessages((prev) => {
-						prev.forEach((message, i)=> {
-							if(message.messageID === lastJsonMessage.content.message.messageID){
-								prev[i] = lastJsonMessage.content.message;
-							}
-						})
-
-	
-						return prev;
+				setMessages((prev) => {
+					prev.forEach((message, i) => {
+						if (
+							message.messageID ===
+							lastJsonMessage.content.message.messageID
+						) {
+							prev[i] = lastJsonMessage.content.message;
+						}
 					});
+
+					return prev;
+				});
 			}
 		}
 	}, [lastJsonMessage]);
@@ -212,7 +214,7 @@ export default function MessageScreen() {
 
 	const relateToMessage = (uuid) => {
 		setRelated(uuid);
-	}
+	};
 
 	const deleteMessage = (uuid) => {
 		sendJsonMessage({
@@ -382,6 +384,10 @@ function fillwithDummyMessages(n) {
 			content: sentences[Math.floor(Math.random() * sentences.length)],
 			attachedMedia: [],
 			related: false,
+			reactions: [
+				{ reaction: '😅', count: 2 },
+				{ reaction: '😅', count: 0 },
+			],
 		};
 
 		if (message.author === 'You') {
