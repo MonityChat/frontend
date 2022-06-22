@@ -88,8 +88,8 @@ export default React.forwardRef(function Message(
 				<div className="reaction-container">
 					{reactions?.map((reaction) => (
 						<div className="reaction">
-							{reaction.reaction}
-							{reaction.count > 0 && (
+							{String.fromCodePoint("0x" + reaction.reaction)}
+							{reaction.count > 1 && (
 								<span className="count">{reaction.count}</span>
 							)}
 						</div>
@@ -102,7 +102,7 @@ export default React.forwardRef(function Message(
 						onClick={() => setShowMoreOptions(true)}
 					/>
 				) : (
-					''
+					''	
 				)}
 				{editing && (
 					<FaRegSave

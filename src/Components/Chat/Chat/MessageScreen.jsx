@@ -101,8 +101,20 @@ export default function MessageScreen() {
 				break;
 			}
 			case ACTION_MESSAGE_REACT: {
-				console.log('REact to message');
-				//check if in this chat
+				if (selectedChat.chatId !== lastJsonMessage.content.message.chat)
+				return;
+			setMessages((prev) => {
+				prev.forEach((message, i) => {
+					if (
+						message.messageID ===
+						lastJsonMessage.content.message.messageID
+					) {
+						prev[i] = lastJsonMessage.content.message;
+					}
+				});
+
+				return prev;
+			});
 			}
 			case ACTION_MESSAGE_EDIT: {
 				console.log('edit to message');
