@@ -168,7 +168,6 @@ export const GRADIENT_SCHEME = Object.freeze({
 	SUNSET: 'sunset',
 	MONITY: 'monity',
 	ICY: 'icy',
-	NEON: 'neon',
 });
 
 export const COLOR_SCHEME = Object.freeze({

@@ -29,7 +29,7 @@ import {
 import Audio from './Audio';
 
 export default function MessageScreen() {
-	const [messages, setMessages] = useState(fillwithDummyMessages(10));
+	const [messages, setMessages] = useState([]);
 	const [scrollTo, setScrollTo] = useState('bottom');
 	const [you, setYou] = useState(localStorage.getItem('userName'));
 

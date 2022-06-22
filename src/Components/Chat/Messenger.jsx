@@ -78,14 +78,14 @@ export default function Messenger() {
   return (
     <ProfileContext.Provider value={profile}>
       <ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
-         {/* {!logedIn && (
+          {!logedIn && (
           <div className="loading-screen">
             <img src="/src/image/logo.png" alt="Monity Logo" />
             <div className="frame">
               <div className="dot-spin"></div>
             </div>
           </div>
-        )} */}
+        )}
         <div className="messenger">
           <Sidebar />
           <div className="placeholder"></div>
