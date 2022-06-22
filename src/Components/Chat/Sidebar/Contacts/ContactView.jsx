@@ -38,7 +38,7 @@ export default function ContactView() {
       } else {
         incomingContacts
           .sort((a, b) => {
-            return a.numberOfUnreadMessages - b.numberOfUnreadMessages;
+            return a.unreadMessages - b.unreadMessages;
           })
           .reverse();
 
