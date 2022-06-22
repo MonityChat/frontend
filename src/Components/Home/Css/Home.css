@@ -1,127 +1,149 @@
 .home-container {
-	display: grid;
-	grid-template-columns: repeat(4, 1fr);
-	grid-template-rows: repeat(5, 1fr);
-	gap: 0px 0px;
-	grid-auto-flow: row;
-	grid-template-areas:
-		'Messenger Messenger ui Fast'
-		'Monity Monity Monity Fast'
-		'Monity Monity Monity Fast'
-		'opensource opensource Login Login'
-		'opensource opensource Login Login';
-	background-color: var(--c-grey-dark);
-	padding: var(--p-3);
-	border: var(--b-w) solid var(--c-selected);
-	border-radius: var(--b-r);
-	box-shadow: inset 0em 0em 5em 0 rgb(0 0 0 / 30%), var(--sh-selected);
-	gap: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 0px 0px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "Messenger Messenger ui Fast"
+    "Monity Monity Monity Fast"
+    "Monity Monity Monity logo"
+    "opensource opensource Login Login"
+    "opensource opensource Login Login";
+  background-color: var(--c-grey-dark);
+  padding: var(--p-3);
+  border: var(--b-w) solid var(--c-selected);
+  border-radius: var(--b-r);
+  box-shadow: inset 0em 0em 5em 0 rgb(0 0 0 / 30%), var(--sh-selected);
+  gap: 0.5rem;
 }
 
 .home-container > div {
-	background-color: var(--c-grey-light);
-	padding: var(--p-3);
-	border-radius: var(--b-r);
-	margin: var(--m-2);
-	box-shadow: var(--sh-2);
-	transition: all 200ms ease-out;
+  background-color: var(--c-grey-light);
+  padding: var(--p-3);
+  border-radius: var(--b-r);
+  margin: var(--m-2);
+  box-shadow: var(--sh-2);
+  transition: all 200ms ease-out;
 }
 
 .home-container > div:hover {
-	transform: scale(1.03);
-    filter: brightness(130%)
+  transform: scale(1.03);
+  filter: brightness(130%);
 }
 
 .monity-grid {
-	grid-area: Monity;
+  grid-area: Monity;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
+/* .monity-grid > img {
+  width: 20%;
+  display: inline;
+} */
+
 .monity-grid > h1 {
-	font-size: 8rem;
-	font-weight: 900;
-	text-align: center;
-	background-image: var(--g-base);
-	color: transparent;
-	background-clip: text;
-	-moz-background-clip: text;
-	-webkit-background-clip: text;
-	-moz-background-clip: text;
-	text-transform: uppercase;
-	user-select: none;
+  font-size: 9rem;
+  font-weight: 900;
+  text-align: center;
+  background-image: var(--g-base);
+  color: transparent;
+  background-clip: text;
+  -moz-background-clip: text;
+  -webkit-background-clip: text;
+  -moz-background-clip: text;
+  text-transform: uppercase;
+  user-select: none;
+  font-family: "Josefin Sans", sans-serif;
+  margin: 0;
+  /* position: relative;
+  top: -2.5rem; */
 }
 
 .monity-grid > .line {
-	height: 0.5rem;
-	width: 90%;
-	position: relative;
-	left: 5%;
-	border-radius: var(--b-r);
-	background-image: var(--g-base);
-	margin: var(--m-1);
+  height: 0.5rem;
+  width: 90%;
+  border-radius: var(--b-r);
+  background-image: var(--g-base);
+  /* position: relative;
+  top: -4rem; */
 }
 
-.login {
-	grid-area: Login;
-	font-size: 3rem;
-	text-align: center;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+.login-now {
+  grid-area: Login;
+  font-size: 3rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .fast {
-	grid-area: Fast;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+  grid-area: Fast;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .fast > div {
-	font-size: 2rem;
-	font-weight: bolder;
+  font-size: 2rem;
+  font-weight: bolder;
 }
 
 .opensource {
-	grid-area: opensource;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: center;
+  grid-area: opensource;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
-.opensource > div {
-	text-transform: uppercase;
-	font-weight: 200;
-	font-size: 3rem;
-	max-width: 50%;
-	text-align: center;
+.opensource > a {
+  text-transform: uppercase;
+  font-weight: 200;
+  font-size: 3rem;
+  max-width: 50%;
+  text-align: center;
+  text-decoration: none;
+  color: var(--c-font);
 }
 
 .messenger-for-all {
-	grid-area: Messenger;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
+  grid-area: Messenger;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .messenger-for-all > div {
-	font-size: 1.8rem;
-	font-weight: bold;
-	margin-left: var(--m-3);
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-left: var(--m-3);
 }
 
 .ui {
-	grid-area: ui;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
+  grid-area: ui;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .ui > div {
-	max-width: 80%;
-	text-align: center;
-	font-weight: bold;
+  max-width: 80%;
+  text-align: center;
+  font-weight: bold;
+}
+
+.logo-image {
+  grid-area: logo;
+  background-image: url("/src/image/Icon.png");
+  background-repeat: no-repeat;
+  background-size: 50%;
+  background-position: center;
 }
