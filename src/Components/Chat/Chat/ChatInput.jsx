@@ -59,7 +59,7 @@ export default function ChatInput({jumpToMessage}) {
 			sendJsonMessage({
 				action: ACTION_MESSAGE_REACT,
 				messageID: reactedMessage,
-				reaction: emoji,
+				reaction: emoji.codePointAt(0).toString(16),
 			});
 		}
 
