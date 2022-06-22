@@ -18,7 +18,8 @@
   gap: 0.5rem;
 }
 
-.home-container > div {
+.home-container > div,
+.home-container > a {
   background-color: var(--c-grey-light);
   padding: var(--p-3);
   border-radius: var(--b-r);
@@ -27,7 +28,8 @@
   transition: all 200ms ease-out;
 }
 
-.home-container > div:hover {
+.home-container > div:hover,
+.home-container > a:hover {
   transform: scale(1.03);
   filter: brightness(130%);
 }
@@ -80,6 +82,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
+}
+
+.login-now > div {
+  color: var(--c-font);
+  text-decoration: none;
+  font-size: 2.5rem;
+  font-weight: bolder;
 }
 
 .fast {
@@ -101,11 +111,12 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  text-decoration: none;
 }
 
-.opensource > a {
+.opensource > div {
   text-transform: uppercase;
-  font-weight: 200;
+  font-weight: 100;
   font-size: 3rem;
   max-width: 50%;
   text-align: center;

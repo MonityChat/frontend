@@ -10,25 +10,23 @@ import BaseGradient from "../Chat/Sidebar/BaseGradient";
 
 export default function Home() {
   return (
-    <div class="home-container">
+    <div className="home-container">
       <BaseGradient />
-      <div class="monity-grid">
+      <div className="monity-grid">
         {/* <img src="/src/image/logo_top.png" /> */}
         <h1>Monity</h1>
         <div className="line"></div>
       </div>
-      <div class="login-now">
+      <Link to="/authentication" target="blank" className=" login-now">
         <IoMdLogIn
           size={"5rem"}
           style={{
             fill: "url(#base-gradient)",
           }}
         />
-        <Link to="/authentication" className="link">
-          chat now
-        </Link>
-      </div>
-      <div class="fast">
+        <div>CHAT NOW</div>
+      </Link>
+      <div className="fast">
         <FaBolt
           size={"4rem"}
           style={{
@@ -40,18 +38,20 @@ export default function Home() {
         <div>S</div>
         <div>T</div>
       </div>
-      <div class="opensource">
-        <a href="https://github.com/MonityChat" target="_blank">
-          open source
-        </a>
+      <a
+        href="https://github.com/MonityChat"
+        target="blank"
+        className="opensource"
+      >
+        <div>open source</div>
         <RiOpenSourceLine
           size={"8rem"}
           style={{
             fill: "url(#base-gradient)",
           }}
         />
-      </div>
-      <div class="messenger-for-all">
+      </a>
+      <div className="messenger-for-all">
         <IoChatbubbleEllipsesOutline
           size={"5rem"}
           style={{
@@ -59,9 +59,9 @@ export default function Home() {
             stroke: "url(#base-gradient)",
           }}
         />
-        <div>Chat with anyone</div>
+        <div>CHAT WITH ANYONE</div>
       </div>
-      <div class="ui">
+      <div className="ui">
         <MdMonitor
           size={"2rem"}
           style={{
@@ -72,15 +72,5 @@ export default function Home() {
       </div>
       <div className="logo-image"> </div>
     </div>
-    // <div className="home">
-    // 	<h1>Monity</h1>
-    // 	<div className="line"></div>
-    // 	<span>Fast and reliable messenger for everyone</span>
-    // 	<span>
-    // 		<Link to="/authentication" className="link">
-    // 			chat now
-    // 		</Link>
-    // 	</span>
-    // </div>
   );
 }

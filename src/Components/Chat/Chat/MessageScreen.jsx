@@ -25,6 +25,8 @@ import {
   ACTION_MESSAGE_EDIT,
   NOTIFICATION_MESSAGE_EDITED,
   ACTION_MESSAGE_REACT,
+  NOTIFICATION_USER_ONLINE,
+  NOTIFICATION_USER_OFFLINE,
 } from "../../../Util/Websocket";
 import Audio from "./Audio";
 
@@ -78,7 +80,6 @@ export default function MessageScreen() {
         break;
       }
       case ACTION_MESSAGE_DELETE: {
-        //chekc if in this chat
         setMessages((prev) => {
           const deleted = prev.filter(
             (message) => message.messageID !== lastJsonMessage.content.message
@@ -100,35 +101,42 @@ export default function MessageScreen() {
       case ACTION_MESSAGE_REACT: {
         if (selectedChat.chatId !== lastJsonMessage.content.message.chat)
           return;
-
         setMessages((prev) => {
-          prev.forEach((message, i) => {
+          for (let i = 0; i < prev.length; i++) {
             if (
-              message.messageID === lastJsonMessage.content.message.messageID
+              prev[i].messageID === lastJsonMessage.content.message.messageID
             ) {
-              message = {
-                ...message,
-                reactions: lastJsonMessage.content.message.reactions,
-              };
-              console.log(lastJsonMessage.content.message.reactions);
-              console.log(message);
+              prev[i] = lastJsonMessage.content.message;
             }
-          });
-
-          return prev;
+          }
+          return [...prev];
         });
+
         break;
       }
       case ACTION_MESSAGE_EDIT: {
-        console.log("edit to message");
-        //check if in this chat
+        if (selectedChat.chatId !== lastJsonMessage.content.message.chat)
+          return;
+        setMessages((prev) => {
+          for (let i = 0; i < prev.length; i++) {
+            if (
+              prev[i].messageID === lastJsonMessage.content.message.messageID
+            ) {
+              prev[i] = lastJsonMessage.content.message;
+            }
+          }
+          return [...prev];
+        });
+        break;
       }
     }
 
     switch (lastJsonMessage.notification) {
       case NOTIFICATION_MESSAGE_INCOMING: {
         if (selectedChat.chatId !== lastJsonMessage.content.message.chat) {
-          toast.info("new Message");
+          const content = lastJsonMessage.content.message.content;
+          toast.info(`${lastJsonMessage.content.from} send you a message:
+          ${content.length > 120 ? content.slice(0, 120) + "..." : content}`);
           break;
         }
         setMessages((prev) => [
@@ -181,6 +189,7 @@ export default function MessageScreen() {
         break;
       }
       case NOTIFICATION_MESSAGE_DELETE: {
+        toast.info(`${lastJsonMessage.content.from} deleted a message`);
         if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
         setMessages((prev) => {
           const deleted = prev.filter(
@@ -198,39 +207,58 @@ export default function MessageScreen() {
 
           return deleted;
         });
+
         break;
       }
       case NOTIFICATION_MESSAGE_REACTED: {
-        if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
+        toast.info(`${lastJsonMessage.content.from} reacted to a message`);
+        if (
+          selectedChat.chatId !== lastJsonMessage.content.message.message.chat
+        )
+          return;
         setMessages((prev) => {
-          prev.forEach((message, i) => {
+          for (let i = 0; i < prev.length; i++) {
             if (
-              message.messageID === lastJsonMessage.content.message.messageID
+              prev[i].messageID ===
+              lastJsonMessage.content.message.message.messageID
             ) {
-              prev[i] = lastJsonMessage.content.message;
+              prev[i] = lastJsonMessage.content.message.message;
             }
-          });
-
-          return prev;
+          }
+          return [...prev];
         });
+
+        break;
       }
       case NOTIFICATION_MESSAGE_EDITED: {
-        console.log("a message was edited");
-        // check if in this chat
-        // if (selectedChat.chatId !== lastJsonMessage.content.chat)
-        // 	return;
-        // setMessages((prev) => {
-        // 	prev.forEach((message, i) => {
-        // 		if (
-        // 			message.messageID ===
-        // 			lastJsonMessage.content.message.messageID
-        // 		) {
-        // 			prev[i] = lastJsonMessage.content.message;
-        // 		}
-        // 	});
+        toast.info(
+          `${lastJsonMessage.content.message.message.author} edited a message`
+        );
+        if (
+          selectedChat.chatId !== lastJsonMessage.content.message.message.chat
+        )
+          return;
+        setMessages((prev) => {
+          for (let i = 0; i < prev.length; i++) {
+            if (
+              prev[i].messageID ===
+              lastJsonMessage.content.message.message.messageID
+            ) {
+              prev[i] = lastJsonMessage.content.message.message;
+            }
+          }
+          return [...prev];
+        });
 
-        // 	return prev;
-        // });
+        break;
+      }
+      case NOTIFICATION_USER_OFFLINE: {
+        toast.info(`${lastJsonMessage.content.from.userName} is now offline`);
+        break;
+      }
+      case NOTIFICATION_USER_ONLINE: {
+        toast.info(`${lastJsonMessage.content.from.userName} is now online`);
+        break;
       }
     }
   }, [lastJsonMessage]);

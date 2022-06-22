@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { toast } from "react-toastify";
 import PasswordField from "./PasswordField";
 import { REGISTER_URL, SESSION_AUTH, getNewKey } from "../../Util/Auth.js";
 import "./Css/Register.css";
@@ -81,6 +82,7 @@ export default function Register() {
     }
 
     setMessage("Registration Email sent, open the email to end registration");
+    toast.success("Registration successfull");
   };
 
   return (

@@ -26,13 +26,17 @@ export const ACTION_SETTINGS_CHANGE_SELF = "settings:change:self";
 export const ACTION_USER_TYPING = "user:action:typing";
 
 export const NOTIFICATION_FRIEND_REQUEST_INCOME = "friend:request:income";
+export const NOTIFICATION_FRIEND_REQUEST_ACCEPT = "chat:private:created";
+// export const NOTIFICATION_FRIEND_REQUEST_DECLINE = "friend:request:income";
+
 export const NOTIFICATION_MESSAGE_INCOMING = "chat:private:message:income";
 export const NOTIFICATION_MESSAGE_READ = "chat:private:message:read";
 export const NOTIFICATION_MESSAGE_DELETE = "chat:private:message:deleted";
 export const NOTIFICATION_MESSAGE_REACTED = "chat:private:message:reacted";
 export const NOTIFICATION_MESSAGE_RECEIVED = "chat:private:message:received";
-export const NOTIFICATION_MESSAGE_EDITED = "chat:private:message:edited";
+export const NOTIFICATION_MESSAGE_EDITED = "chat:private:message:edit";
 export const NOTIFICATION_USER_ONLINE = "user:action:online";
+export const NOTIFICATION_USER_OFFLINE = "user:action:offline";
 // OFFLINE missing
 export const NOTIFICATION_USER_UPDATE_PROFILE = "user:action:update:profile";
 export const NOTIFICATION_USER_STARTED_TYPING = "user:action:started:typing";

@@ -15,8 +15,11 @@ export const SALT_URL = "http://localhost:8808/user/salt";
 //URL for checking if the user with a specific email or username already exists
 export const USER_EXISTS_URL = "http://localhost:8808/user/exists";
 
-//URL for reseting password
-export const RESET_PASSWORD_URL = "http://localhost:8808/user/reset-password";
+//URL for requesting reseting password
+export const REQEUST_RESET_PASSWORD_URL = "http://localhost:8808/user/reset";
+
+//URL FOR PASSWORD RESETING
+export const RESET_PASSWORD_URL = "http://localhost:8808/user/resetConfirm";
 
 //Key for making requests to the server
 export const SESSION_AUTH = {

@@ -1,10 +1,12 @@
 import React, { useRef, useState, useContext, useEffect } from "react";
+import { toast } from "react-toastify";
 import {
   IoSendOutline,
   IoDocumentTextOutline,
   IoImageOutline,
 } from "react-icons/io5";
 import { BiMicrophone } from "react-icons/bi";
+import { AiOutlineDelete } from "react-icons/ai";
 import { BsEmojiSmile } from "react-icons/bs";
 import { BsReply } from "react-icons/bs";
 import "./Css/ChatInput.css";
@@ -85,14 +87,21 @@ export default function ChatInput({ jumpToMessage }) {
       let formData = new FormData();
       formData.append("image", files[0]);
 
-      const res = await fetch(
-        `${FILE_UPLOAD_URL}?chatID=${selectedChat.chatId}&fileName=${files[0].name}&embedID=na`,
+      const res = await toast.promise(
+        fetch(
+          `${FILE_UPLOAD_URL}?chatID=${selectedChat.chatId}&fileName=${files[0].name}&embedID=na`,
+          {
+            headers: {
+              authorization: key,
+            },
+            method: "POST",
+            body: formData,
+          }
+        ),
         {
-          headers: {
-            authorization: key,
-          },
-          method: "POST",
-          body: formData,
+          pending: `Uploading ${files[0].name}...`,
+          success: `Uploaded ${files[0].name} 👌`,
+          error: "Uploaded error 🤯",
         }
       );
       if (!res.ok) return;
@@ -103,14 +112,21 @@ export default function ChatInput({ jumpToMessage }) {
           if (i === 0) continue;
           let formData = new FormData();
           formData.append("image", files[i]);
-          const res = await fetch(
-            `${FILE_UPLOAD_URL}?chatID=${selectedChat.chatId}&fileName=${files[i].name}&embedID=${newEmbedID}`,
+          const res = await toast.promise(
+            fetch(
+              `${FILE_UPLOAD_URL}?chatID=${selectedChat.chatId}&fileName=${files[i].name}&embedID=${newEmbedID}`,
+              {
+                headers: {
+                  authorization: key,
+                },
+                method: "POST",
+                body: formData,
+              }
+            ),
             {
-              headers: {
-                authorization: key,
-              },
-              method: "POST",
-              body: formData,
+              pending: `Uploading ${files[i].name}...`,
+              success: `Uploaded ${files[i].name} 👌`,
+              error: "Uploaded error 🤯",
             }
           );
         }
@@ -135,12 +151,18 @@ export default function ChatInput({ jumpToMessage }) {
 
   const handleImageSelected = (e) => {
     setFiles((prev) => [...prev, ...e.target.files]);
-    setNumberOfImages((prev) => prev + 1);
+    setNumberOfImages((prev) => prev + e.target.files.length);
   };
 
   const handleFileSelected = (e) => {
     setFiles((prev) => [...prev, ...e.target.files]);
-    setNumberOfFiles((prev) => prev + 1);
+    setNumberOfFiles((prev) => prev + e.target.files.length);
+  };
+
+  const discardSelectedFiles = () => {
+    setFiles([]);
+    setNumberOfFiles(0);
+    setNumberOfImages(0);
   };
 
   const handleMessageInput = (e) => {
@@ -208,7 +230,7 @@ export default function ChatInput({ jumpToMessage }) {
         <input
           type="file"
           className="image-select-input"
-          accept=".png, .jpeg, .jpg, .gif, .mp4"
+          accept=".png, .jpeg, .jpg, .gif"
           multiple="multiple"
           onChange={handleImageSelected}
         />
@@ -239,6 +261,14 @@ export default function ChatInput({ jumpToMessage }) {
           style={{ fill: "url(#base-gradient)" }}
         />
       )}
+      {numberOfFiles > 0 || numberOfImages > 0 ? (
+        <AiOutlineDelete
+          className="chat-button"
+          size={"3em"}
+          style={{ fill: "url(#base-gradient)" }}
+          onClick={discardSelectedFiles}
+        />
+      ) : null}
     </div>
   );
 }

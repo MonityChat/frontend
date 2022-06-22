@@ -1,4 +1,5 @@
 import React, { useEffect, useState, createContext } from "react";
+import { toast } from "react-toastify";
 import Sidebar from "./Sidebar/Sidebar";
 import Chat from "./Chat/Chat";
 import StatusBar from "./StatusBar/StatusBar";
@@ -10,6 +11,8 @@ import {
   WEBSOCKET_URL,
   ACTION_GET_SELF,
   ACTION_PROFILE_UPDATE,
+  ACTION_GET_MESSAGE_LATEST,
+  ACTION_PROFILE_GET_OTHER,
 } from "../../Util/Websocket";
 
 export const ProfileContext = createContext();
@@ -45,7 +48,7 @@ export default function Messenger() {
     const [key, , isLogedIn] = useAuthentication();
 
     sendJsonMessage({
-      auth: key,
+      auth: key || "00000000-0000-0000-0000-000000000000",
       user: localStorage.getItem("userName"),
     });
     document.title = "Monity | Chat";
@@ -59,12 +62,31 @@ export default function Messenger() {
       setProfile(lastJsonMessage.content);
       localStorage.setItem("userName", lastJsonMessage.content.userName);
     } else {
-      if (lastJsonMessage.error !== "NONE") {     
-        // console.log(useHistory);
+      if (lastJsonMessage.error !== "NONE") {
+        toast.error("You are not logged in");
+        setTimeout(() => {
+          history.push("/authentication");
+        }, 500);
         return;
       }
       setLogedIn(true);
       sendJsonMessage({ action: ACTION_GET_SELF });
+
+      const lastChatId = localStorage.getItem("lastChat") || null;
+      const lastUser = localStorage.getItem("lastUser") || null;
+
+      if (lastChatId === null || lastUser === null) return;
+
+      setSelectedChat({ chatId: lastChatId, targetId: lastUser });
+      sendJsonMessage({
+        action: ACTION_GET_MESSAGE_LATEST,
+        chatID: lastChatId,
+      });
+
+      sendJsonMessage({
+        action: ACTION_PROFILE_GET_OTHER,
+        target: lastUser,
+      });
     }
   }, [lastJsonMessage]);
 
@@ -78,7 +100,7 @@ export default function Messenger() {
   return (
     <ProfileContext.Provider value={profile}>
       <ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
-          {!logedIn && (
+        {!logedIn && (
           <div className="loading-screen">
             <img src="/src/image/logo.png" alt="Monity Logo" />
             <div className="frame">

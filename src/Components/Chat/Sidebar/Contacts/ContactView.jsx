@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
+import { toast } from "react-toastify";
 import Contact from "./Contact.jsx";
 import {
   WEBSOCKET_URL,
@@ -9,6 +10,7 @@ import {
   ACTION_PROFILE_GET_OTHER,
   NOTIFICATION_USER_ONLINE,
   NOTIFICATION_USER_UPDATE_PROFILE,
+  NOTIFICATION_USER_OFFLINE,
 } from "../../../../Util/Websocket.js";
 import { ChatContext } from "../../Messenger";
 import "./Css/ContactView.css";
@@ -70,6 +72,15 @@ export default function ContactView() {
         ]);
         break;
       }
+      case NOTIFICATION_USER_OFFLINE: {
+        console.log("check thi");
+        const newUser = lastJsonMessage.content.from;
+        setContacts((prev) => [
+          ...prev?.filter((contact) => contact.uuid !== newUser.uuid),
+          newUser,
+        ]);
+        break;
+      }
       case NOTIFICATION_USER_UPDATE_PROFILE: {
         const newUser = lastJsonMessage.content.from;
         setContacts((prev) => [
@@ -103,8 +114,9 @@ export default function ContactView() {
       return prev;
     });
 
-    setSelectedChat((prev) => ({ ...prev, chatId: chatId }));
-    setSelectedChat((prev) => ({ ...prev, targetId: uuid }));
+    setSelectedChat((prev) => ({ ...prev, chatId: chatId, targetId: uuid }));
+    localStorage.setItem("lastChat", chatId);
+    localStorage.setItem("lastUser", uuid);
   };
 
   return (
@@ -128,13 +140,6 @@ export default function ContactView() {
               lastMessage={contact.lastUnread?.content}
               status={contact.preferredStatus}
               onClick={onContactClick}
-              // uuid={'12345'}
-              // name={'Tom'}
-              // lastOnline={Date.now()}
-              // profilPicture={'src/image/Donut.png'}
-              // numberOfUnreadMessages={10}
-              // isBlocked={false}
-              // onClick={onContactClick}
             />
           ))
         )}

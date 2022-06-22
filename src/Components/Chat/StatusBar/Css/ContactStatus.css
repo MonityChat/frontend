@@ -1,103 +1,118 @@
 .contact-status {
-	position: absolute;
-	inset: 0rem;
-	display: flex;
-	align-items: center;
-	justify-content: flex-start;
-	flex-direction: column;
-	overflow: hidden;
+  position: absolute;
+  inset: 0rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .contact-status > .user-name {
-	font-size: 2rem;
-	text-align: center;
-	font-weight: bolder;
-	position: relative;
-	padding: var(--p-1);
-	max-width: 100%;
-	overflow: hidden;
-	white-space: nowrap;
+  font-size: 2rem;
+  text-align: center;
+  font-weight: bolder;
+  position: relative;
+  padding: var(--p-1);
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .contact-status > .user-name::after {
-	content: '';
-	position: absolute;
-	bottom: 0;
-	left: -5%;
-	width: 110%;
-	height: 0.1em;
-	background-color: var(--c-font);
-	border-radius: var(--b-r);
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: -5%;
+  width: 110%;
+  height: 0.1em;
+  background-color: var(--c-font);
+  border-radius: var(--b-r);
 }
 
 .contact-status > .uuid {
-	font-size: 0.7rem;
-	font-weight: lighter;
-	max-width: 60%;
-	overflow: hidden;
-	white-space: nowrap;
-	padding: var(--p-1);
-	opacity: 0;
-	transition: opacity 200ms ease-out;
+  font-size: 0.7rem;
+  font-weight: lighter;
+  max-width: 60%;
+  overflow: hidden;
+  white-space: nowrap;
+  padding: var(--p-1);
+  opacity: 0;
+  transition: opacity 200ms ease-out;
 }
 
 .contact-status > .user-name:hover ~ .uuid {
-	opacity: 0.8;
+  opacity: 0.8;
 }
 
 .contact-status > .short-status {
-	font-size: 1.2rem;
-	line-height: 120%;
-	text-align: center;
-	margin: var(--m-1);
-	position: relative;
-	font-family: 'Permanent Marker', cursive;
-	margin-bottom: var(--m-3);
+  font-size: 1.2rem;
+  line-height: 120%;
+  text-align: center;
+  margin: var(--m-1);
+  position: relative;
+  font-family: "Permanent Marker", cursive;
+  margin-bottom: var(--m-3);
 }
 
 .contact-status > .short-status::before,
 .contact-status > .short-status::after {
-	content: '"';
-	font: inherit;
-	padding: var(--p-1);
+  content: '"';
+  font: inherit;
+  padding: var(--p-1);
 }
 
 .contact-status > .description {
-	max-height: 50%;
-	overflow: scroll;
-	scrollbar-width: 0rem;
+  max-height: 50%;
+  overflow: scroll;
+  scrollbar-width: 0rem;
+  text-align: center;
 }
 
 .contact-status > .description::-webkit-scrollbar {
-	width: 0rem;
+  width: 0rem;
 }
 
 .contact-status > .description img {
-	display: block;
-	margin: var(--m-3) auto;
-	max-width: 80%;
-	height: auto;
-	border-radius: var(--b-r);
-	box-shadow: var(--sh-1);
+  display: block;
+  margin: var(--m-3) auto;
+  max-width: 80%;
+  height: auto;
+  border-radius: var(--b-r);
+  box-shadow: var(--sh-1);
+}
+
+.contact-status > .description a {
+  color: var(--c-gradient-1);
+  text-decoration: none;
+}
+
+.contact-status > .description a:hover {
+  text-decoration: underline;
+}
+
+.contact-status > .description a:hover:visited {
+  text-decoration: underline;
+  color: var(--c-gradient-1);
 }
 
 .contact-status .settings {
-	position: absolute;
-	right: 0rem;
-	left: 0rem;
-	bottom: 0rem;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  position: absolute;
+  right: 0rem;
+  left: 0rem;
+  bottom: 0rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .contact-status .settings > svg {
-	margin: 0 var(--m-2);
-	fill: url('#base-gradient');
-	transition: transform 200ms ease-out;
-	cursor: pointer;
+  margin: 0 var(--m-2);
+  fill: url("#base-gradient");
+  transition: transform 200ms ease-out;
+  cursor: pointer;
 }
 
 .contact-status .settings > svg:hover {
-	transform: scale(1.1);
+  transform: scale(1.1);
 }
