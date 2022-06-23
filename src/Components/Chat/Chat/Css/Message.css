@@ -112,6 +112,7 @@
   outline-color: #ffffff00;
   outline-width: 0rem;
   outline-style: solid;
+  position: relative;
 }
 
 .message.left > .content {
@@ -241,26 +242,26 @@
 .message > .content > .more {
   position: absolute;
   opacity: 0;
-  bottom: 50%;
+  top: 50%;
   transition: inherit;
   cursor: pointer;
   fill: url("#base-gradient");
 }
 
 .message.left > .content > .more {
-  transform: translateY(80%) translateX(-50%);
+  transform: translateY(-50%) translateX(-80%);
   right: -2em;
 }
 
 .message.right > .content > .more {
-  transform: translateY(80%) translateX(50%);
+  transform: translateY(-50%) translateX(80%);
   left: -2em;
 }
 
 .message:hover > .content > .more,
 .message:focus > .content > .more {
   opacity: 1;
-  transform: translateY(80%) translateX(0%);
+  transform: translateY(-50%) translateX(0%);
 }
 
 .message > .content > .more:hover {
@@ -269,11 +270,11 @@
 
 .message > .content > .more-options-menu {
   position: absolute;
-  /* opacity: 1; */
-  bottom: 50%;
+  opacity: 1;
+  top: 50%;
   transition: inherit;
   display: flex;
-  transform: translateY(60%);
+  transform: translateY(-50%);
   padding: var(--p-2);
   border: calc(var(--b-w) * 1) solid var(--c-gradient-2);
   border-radius: var(--b-r);
@@ -293,12 +294,12 @@
 }
 
 .message.left > .content > .more-options-menu {
-  right: -12.5em;
+  right: -6.1rem;
   flex-direction: row-reverse;
 }
 
 .message.right > .content > .more-options-menu {
-  left: -12.5em;
+  left: -10.5rem;
   flex-direction: row;
 }
 
