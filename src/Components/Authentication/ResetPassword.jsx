@@ -75,7 +75,7 @@ export default function ResetPassword() {
 
     setMessage("Password successfully changed");
     setTimeout(() => {
-      history.push("/authentication");
+      history.push("/login");
     }, 1500);
   };
 

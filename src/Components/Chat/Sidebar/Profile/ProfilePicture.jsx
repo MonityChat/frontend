@@ -11,7 +11,6 @@ function ProfilePicture({ path, status, children }, ref) {
       <div className="img-container" onClick={reqeustFullScreen}>
         <img
           src={`http://localhost:8808/assets${path}`}
-          //   src={path}
           className="blur"
           alt="PP"
           ref={(el) => {
@@ -20,7 +19,6 @@ function ProfilePicture({ path, status, children }, ref) {
         />
         <img
           src={`http://localhost:8808/assets${path}`}
-          // src={path}
           className="normal"
           alt="PP"
           ref={(el) => {
@@ -28,7 +26,7 @@ function ProfilePicture({ path, status, children }, ref) {
           }}
         />
       </div>
-      <div className={`status ${status?.toLowerCase().replace(/_/, "-")}`}>
+      <div className={`status ${status?.toLowerCase().replace(/_/g, "-")}`}>
         <div className="outer"></div>
         <div className="middle"></div>
         <div className="inner"></div>

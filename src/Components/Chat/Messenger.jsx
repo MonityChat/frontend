@@ -65,7 +65,7 @@ export default function Messenger() {
       if (lastJsonMessage.error !== "NONE") {
         toast.error("You are not logged in");
         setTimeout(() => {
-          history.push("/authentication");
+          history.push("/login");
         }, 500);
         return;
       }

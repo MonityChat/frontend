@@ -281,7 +281,6 @@ export default function MessageScreen() {
   };
 
   const editMessage = (uuid, newText) => {
-    console.log("edit " + newText);
     sendJsonMessage({
       action: ACTION_MESSAGE_EDIT,
       chatID: selectedChat.chatId,
@@ -306,7 +305,7 @@ export default function MessageScreen() {
     if (
       messageScreenRef.current.scrollTop +
         messageScreenRef.current.clientHeight >=
-      messageScreenRef.current.scrollHeight
+      messageScreenRef.current.scrollHeight - 50
     ) {
       setShowScrollDown(false);
     } else {
@@ -366,6 +365,7 @@ export default function MessageScreen() {
               }}
               message={message.content}
               moreOptions
+              edited={message.edited}
             >
               <>
                 {message.relatedTo && (
@@ -384,6 +384,7 @@ export default function MessageScreen() {
                         onMessage: jumpToMessage,
                       }}
                       message={message.relatedTo.content}
+                      edited={message.relatedTo.edited}
                     >
                       <>
                         {message.relatedTo.attachedMedia.length !== 0 &&
@@ -418,46 +419,6 @@ function sameDay(d1, d2) {
   );
 }
 
-function fillwithDummyMessages(n) {
-  const dummy = [];
-
-  var sentences = [
-    "Hey",
-    "so fat not even Dora can explore her",
-    "so  fat I swerved to miss her and ran out of gas",
-    "so fat she won “The Bachelor” because she all those other bitches",
-    "is like Bazooka Joe, 5 cents a blow",
-    "is like an ATM, open 24/7",
-    "is like a championship ring, everybody puts a finger in her",
-  ];
-
-  for (let i = 0; i < n; i++) {
-    let message = {
-      author: Math.random() > 0.5 ? "Someone" : "Mike",
-      sent: Date.now() + (i + 1) * 10000000,
-      content: sentences[Math.floor(Math.random() * sentences.length)],
-      attachedMedia: [],
-      related: false,
-      reactions: [
-        { reaction: "😅", count: 2 },
-        { reaction: "😅", count: 0 },
-      ],
-    };
-
-    if (message.author === "You") {
-      if (Math.random() > 0.5) {
-        message.read = true;
-      }
-    }
-
-    if (i == 8) message.related = true;
-
-    dummy.push(message);
-  }
-
-  return dummy;
-}
-
 function mapMedia(filePath, id) {
   const splitted = filePath.split(".");
   const type = splitted.pop();
@@ -487,6 +448,7 @@ function mapMedia(filePath, id) {
     case "mp3":
     case "m4a":
     case "ogg":
+    case "webm":
       return <Audio src={`http://localhost:8808/assets${filePath}`} />;
     default:
       return (

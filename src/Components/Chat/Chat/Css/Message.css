@@ -201,19 +201,19 @@
   font-weight: bolder;
 }
 
-.message > .content > .editing{
+.message > .content > .editing {
   display: flex;
   flex-direction: column;
 }
 
-.message > .content > .editing > textarea{
-  border: calc(var(--b-w) * 2)   solid var(--c-grey-dark);
+.message > .content > .editing > textarea {
+  border: calc(var(--b-w) * 2) solid var(--c-grey-dark);
   font-weight: normal;
   font-size: 1rem;
 }
 
 .message > .content > .editing > textarea:hover,
-.message > .content > .editing > textarea:focus{
+.message > .content > .editing > textarea:focus {
   box-shadow: none;
 }
 

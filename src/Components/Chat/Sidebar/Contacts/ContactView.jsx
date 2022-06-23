@@ -73,7 +73,6 @@ export default function ContactView() {
         break;
       }
       case NOTIFICATION_USER_OFFLINE: {
-        console.log("check thi");
         const newUser = lastJsonMessage.content.from;
         setContacts((prev) => [
           ...prev?.filter((contact) => contact.uuid !== newUser.uuid),
@@ -115,6 +114,7 @@ export default function ContactView() {
     });
 
     setSelectedChat((prev) => ({ ...prev, chatId: chatId, targetId: uuid }));
+
     localStorage.setItem("lastChat", chatId);
     localStorage.setItem("lastUser", uuid);
   };
@@ -138,7 +138,7 @@ export default function ContactView() {
               numberOfUnreadMessages={contact.unreadMessages}
               isBlocked={contact.isBlocked}
               lastMessage={contact.lastUnread?.content}
-              status={contact.preferredStatus}
+              status={contact.status.toLowerCase().replace(/_/g, " ")}
               onClick={onContactClick}
             />
           ))

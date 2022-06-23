@@ -1,14 +1,12 @@
 //url for the WS connection
 export const WEBSOCKET_URL = "ws://localhost:8808/monity";
 
-
 //url to upload profile image
-export const PROFILE_IMAGE_UPLOAD_URL = "http://localhost:8808/upload/profileImage";
-
+export const PROFILE_IMAGE_UPLOAD_URL =
+  "http://localhost:8808/upload/profileImage";
 
 //url to upload files
 export const FILE_UPLOAD_URL = "http://localhost:8808/upload/chatFile";
-
 
 //all actions the client send to the server (see more on the excel document)
 export const ACTION_CONTACT_SEARCH = "contact:search";
@@ -38,7 +36,6 @@ export const ACTION_SETTINGS_GET_SELF = "settings:get:self";
 export const ACTION_SETTINGS_CHANGE_SELF = "settings:change:self";
 
 export const ACTION_USER_TYPING = "user:action:typing";
-
 
 //notifications the server sends the client (see more on the excel document)
 export const NOTIFICATION_FRIEND_REQUEST_INCOME = "friend:request:income";
