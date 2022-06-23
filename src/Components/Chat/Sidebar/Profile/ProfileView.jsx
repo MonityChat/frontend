@@ -5,7 +5,7 @@ import useAuthentication from '../../../../Util/UseAuth';
 import {
 	WEBSOCKET_URL,
 	ACTION_PROFILE_UPDATE,
-	IMAGE_UPLOAD_URL,
+	PROFILE_IMAGE_UPLOAD_URL,
 	ACTION_GET_SELF,
 } from '../../../../Util/Websocket';
 import { AiOutlineEdit } from 'react-icons/ai';
@@ -115,7 +115,7 @@ export default function ProfileView() {
 		const [key] = useAuthentication();
 
 		const res = await toast.promise(
-			fetch(`${IMAGE_UPLOAD_URL}?uuid=${profile.uuid}`, {
+			fetch(`${PROFILE_IMAGE_UPLOAD_URL}?uuid=${profile.uuid}`, {
 				headers: {
 					authorization: key,
 				},

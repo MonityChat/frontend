@@ -1,25 +1,25 @@
-.file-not-found h1{
-    font-size: 8rem;
-    font-weight: bolder;
-    color: transparent;
-    background-image: var(--g-base);
-    background-clip: text;
-    -webkit-background-clip: text;
-    user-select: none;
+.file-not-found h1 {
+	font-size: 8rem;
+	font-weight: bolder;
+	color: transparent;
+	background-image: var(--g-base);
+	background-clip: text;
+	-webkit-background-clip: text;
+	user-select: none;
 }
 
-.file-not-found span{
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: var(--c-font);
-    padding: var(--p-3);
-    margin: var(--m-3);
-    text-align: center;
+.file-not-found span {
+	font-size: 1.5rem;
+	font-weight: bold;
+	color: var(--c-font);
+	padding: var(--p-3);
+	margin: var(--m-3);
+	text-align: center;
 }
 
-.file-not-found button{
-    color: var(--c-font); 
-    text-transform: uppercase;
-    min-width: 10em;
-    display: inline-block;
+.file-not-found button {
+	color: var(--c-font);
+	text-transform: uppercase;
+	min-width: 10em;
+	display: inline-block;
 }

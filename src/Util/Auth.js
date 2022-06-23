@@ -1,42 +1,44 @@
-import useAuthentication from "./UseAuth";
+import useAuthentication from './UseAuth';
 
-//URL for sign in
-export const AUTH_KEY_URL = "http://localhost:8808/auth";
+//URL for getting a key
+export const AUTH_KEY_URL = 'http://localhost:8808/auth';
 
 //URL for login into your account
-export const LOGIN_URL = "http://localhost:8808/user/login";
+export const LOGIN_URL = 'http://localhost:8808/user/login';
 
 //URL for registering a new account
-export const REGISTER_URL = "http://localhost:8808/user/register";
+export const REGISTER_URL = 'http://localhost:8808/user/register';
 
 //URL for getting the salt to encrypt the password
-export const SALT_URL = "http://localhost:8808/user/salt";
+export const SALT_URL = 'http://localhost:8808/user/salt';
 
 //URL for checking if the user with a specific email or username already exists
-export const USER_EXISTS_URL = "http://localhost:8808/user/exists";
+export const USER_EXISTS_URL = 'http://localhost:8808/user/exists';
 
 //URL for requesting reseting password
-export const REQEUST_RESET_PASSWORD_URL = "http://localhost:8808/user/reset";
+export const REQEUST_RESET_PASSWORD_URL = 'http://localhost:8808/user/reset';
 
-//URL FOR PASSWORD RESETING
-export const RESET_PASSWORD_URL = "http://localhost:8808/user/resetConfirm";
+//URL for password reset
+export const RESET_PASSWORD_URL = 'http://localhost:8808/user/resetConfirm';
 
-//Key for making requests to the server
+//key for making requests to the server
 export const SESSION_AUTH = {
-  key: null,
-  isLogedIn: false,
+	key: null,
+	isLogedIn: false,
 };
 
-//function for getting a basic session key to make requests to the server
+/**
+ * Function for getting a basic session key to make requests to the server
+ */
 export async function getNewKey() {
-  const res = await fetch(AUTH_KEY_URL, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      "Content-Type": "application/json",
-    },
-  });
-  const { uuid } = await res.json();
-  const [, setKey, ,] = useAuthentication();
-  setKey(uuid);
+	const res = await fetch(AUTH_KEY_URL, {
+		method: 'GET',
+		headers: {
+			Accept: 'application/json',
+			'Content-Type': 'application/json',
+		},
+	});
+	const { uuid } = await res.json();
+	const [, setKey, ,] = useAuthentication();
+	setKey(uuid);
 }

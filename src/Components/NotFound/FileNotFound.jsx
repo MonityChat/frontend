@@ -2,6 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Css/FileNotFound.css';
 
+/**
+ * Component which gets renders when a user tries to access a side that does not exist.
+ */
 export default function FileNotFound() {
 	return (
 		<div className="file-not-found inset-container">
