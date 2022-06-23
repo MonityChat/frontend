@@ -15,6 +15,13 @@ import {
 import { ChatContext } from "../../Messenger";
 import "./Css/ContactView.css";
 
+/**
+ * Component to render a sidebar view for your contacts.
+ * it gets all the data from the Websocket connection and
+ * displays it accordingly.
+ * On clicking a contact it will make a acion to the server and give it
+ * the corresponding chatid and targetid
+ */
 export default function ContactView() {
   const [contacts, setContacts] = useState(null);
 

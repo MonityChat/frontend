@@ -14,6 +14,11 @@ import { ProfileContext } from "../../Messenger";
 import ProfilePicture from "./ProfilePicture";
 import "./Css/ProfileView.css";
 
+/**
+ * Component to render a sidebar view for your profile.
+ * it displays your profile and lets you change it.
+ * After a change, it will send the data to the server to save it
+ */
 export default function ProfileView() {
   const [editableShortStatus, setEditableShortStatus] = useState(false);
   const [editableDescription, setEditableDescription] = useState(false);

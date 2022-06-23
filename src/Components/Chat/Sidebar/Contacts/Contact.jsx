@@ -2,6 +2,9 @@ import React from "react";
 import "./Css/Contact.css";
 import { ImBlocked } from "react-icons/im";
 
+/**
+ * Component to display  a contact in the contact view
+ */
 export default function Contact({
   name,
   lastOnline,

@@ -12,7 +12,6 @@ import AddContactView from "./AddContact/AddContactView";
 import BaseGradient from "./BaseGradient";
 import SearchButton from "./Search/SearchButton";
 import SearchView from "./Search/SearchView";
-import BotsButton from "./BotsButton";
 import ProfileButton from "./Profile/ProfileButton";
 import ProfileView from "./Profile/ProfileView";
 import NewRequestButton from "./Requests/NewRequestButton";
@@ -26,6 +25,12 @@ import {
 } from "../../../Util/Websocket";
 import "./Css/Sidebar.css";
 
+/**
+ * First part of the main components.
+ * It renders the left sidebar and displays all the navigation.
+ * It handles the rendering of all the sidebar views, depending
+ * on the currently selected one.
+ */
 export default function Sidebar() {
   const [size, setSize] = useState("3rem");
   const [view, setView] = useState(VIEWS.PROFILE);
@@ -95,11 +100,6 @@ export default function Sidebar() {
             view={VIEWS.GROUPS}
             selected={VIEWS.GROUPS === view}
           />
-          {/* <BotsButton
-						size={size}
-						view={VIEWS.BOTS}
-						selected={VIEWS.BOTS === view}
-					/> */}
         </div>
         <div className="menu bottom">
           {requests.length > 0 && (
@@ -133,7 +133,6 @@ export default function Sidebar() {
             [VIEWS.PROFILE]: <ProfileView />,
             [VIEWS.CONTACTS]: <ContactView />,
             [VIEWS.GROUPS]: <GroupView />,
-            [VIEWS.BOTS]: <div>Bots</div>,
             [VIEWS.NEW_REQUEST]: (
               <RequestView requests={requests} removeRequest={removeRequest} />
             ),
@@ -151,7 +150,6 @@ const VIEWS = Object.freeze({
   PROFILE: "PROFILE",
   CONTACTS: "CONTACTS",
   GROUPS: "GROUPS",
-  BOTS: "BOTS",
   NEW_REQUEST: "NEW_REQUEST",
   ADD_CONTACT: "ADD_CONTACT",
   SEARCH: "SEARCH",

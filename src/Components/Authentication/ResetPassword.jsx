@@ -21,7 +21,7 @@ export default function ResetPassword() {
   const history = useHistory();
 
   useEffect(() => {
-    getNewKey();
+    // getNewKey();
   }, []);
 
   const passwordInput = (e) => {

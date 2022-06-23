@@ -1,6 +1,10 @@
 import React from "react";
 import "./Css/ProfileButton.css";
 
+/**
+ * Sidebarbutton to open the profileview
+ * it also display's the profile picture of the user
+ */
 export default function ProfileButton({
   size = "1em",
   profileImage,
@@ -17,7 +21,6 @@ export default function ProfileButton({
                 ? `http://localhost:8808/assets${profileImage}`
                 : `http://localhost:8808/assets/images/monity/default.png`
             }
-            // src="/src/image/Donut.png"
             alt=""
             className="blur"
           />
@@ -27,7 +30,6 @@ export default function ProfileButton({
                 ? `http://localhost:8808/assets${profileImage}`
                 : `http://localhost:8808/assets/images/monity/default.png`
             }
-            // src="/src/image/Donut.png"
             alt=""
             className="normal"
           />

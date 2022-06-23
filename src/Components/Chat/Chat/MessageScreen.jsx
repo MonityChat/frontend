@@ -28,8 +28,16 @@ import {
   NOTIFICATION_USER_ONLINE,
   NOTIFICATION_USER_OFFLINE,
 } from "../../../Util/Websocket";
+import { ProfileContext } from "../Messenger";
 import Audio from "./Audio";
 
+/**
+ * Component for displaying all the messages.
+ * It handles a lot of actions and notifications
+ * coming from the server and displays the messages correctly.
+ * It adds the divider between the messages and maps all the data
+ * to the message like attached media.
+ */
 export default function MessageScreen() {
   const [messages, setMessages] = useState([]);
   const [scrollTo, setScrollTo] = useState("bottom");
@@ -37,7 +45,7 @@ export default function MessageScreen() {
 
   const [showScrollDown, setShowScrollDown] = useState(false);
 
-  const messageRefs = useRef([]);
+  const messageRefs = useRef({});
   const messageScreenRef = useRef();
   const bottomRef = useRef();
   const typingRef = useRef();
@@ -45,11 +53,13 @@ export default function MessageScreen() {
   const { selectedChat } = useContext(ChatContext);
   const { setReactedMessage } = useContext(ReactContext);
   const { setRelated } = useContext(RelatedContext);
+  const profile = useContext(ProfileContext);
 
   const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
     share: true,
   });
 
+  //scroll to bottom of page
   useEffect(() => {
     if (scrollTo === "bottom") bottomRef.current.scrollIntoView();
     else messageRefs.current[scrollTo].scrollIntoView();
@@ -57,6 +67,7 @@ export default function MessageScreen() {
     setScrollTo("bottom");
   }, [messages]);
 
+  //depending on the message modify the messages correctly
   useEffect(() => {
     if (lastJsonMessage === null) return;
 
@@ -108,6 +119,13 @@ export default function MessageScreen() {
             ) {
               prev[i] = lastJsonMessage.content.message;
             }
+
+            if (
+              prev[i].relatedTo?.messageID ===
+              lastJsonMessage.content.message.messageID
+            ) {
+              prev[i].relatedTo = lastJsonMessage.content.message;
+            }
           }
           return [...prev];
         });
@@ -134,6 +152,7 @@ export default function MessageScreen() {
     switch (lastJsonMessage.notification) {
       case NOTIFICATION_MESSAGE_INCOMING: {
         if (selectedChat.chatId !== lastJsonMessage.content.message.chat) {
+          if (profile.status === "DO_NOT_DISTURB") return;
           const content = lastJsonMessage.content.message.content;
           toast.info(`${lastJsonMessage.content.from} send you a message:
           ${content.length > 120 ? content.slice(0, 120) + "..." : content}`);
@@ -189,7 +208,9 @@ export default function MessageScreen() {
         break;
       }
       case NOTIFICATION_MESSAGE_DELETE: {
-        toast.info(`${lastJsonMessage.content.from} deleted a message`);
+        if (profile.status !== "DO_NOT_DISTURB") {
+          toast.info(`${lastJsonMessage.content.from} deleted a message`);
+        }
         if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
         setMessages((prev) => {
           const deleted = prev.filter(
@@ -211,7 +232,9 @@ export default function MessageScreen() {
         break;
       }
       case NOTIFICATION_MESSAGE_REACTED: {
-        toast.info(`${lastJsonMessage.content.from} reacted to a message`);
+        if (profile.status !== "DO_NOT_DISTURB") {
+          toast.info(`${lastJsonMessage.content.from} reacted to a message`);
+        }
         if (
           selectedChat.chatId !== lastJsonMessage.content.message.message.chat
         )
@@ -224,6 +247,12 @@ export default function MessageScreen() {
             ) {
               prev[i] = lastJsonMessage.content.message.message;
             }
+            if (
+              prev[i].relatedTo?.messageID ===
+              lastJsonMessage.content.message.message.messageID
+            ) {
+              prev[i].relatedTo = lastJsonMessage.content.message.message;
+            }
           }
           return [...prev];
         });
@@ -231,9 +260,11 @@ export default function MessageScreen() {
         break;
       }
       case NOTIFICATION_MESSAGE_EDITED: {
-        toast.info(
-          `${lastJsonMessage.content.message.message.author} edited a message`
-        );
+        if (profile.status !== "DO_NOT_DISTURB") {
+          toast.info(
+            `${lastJsonMessage.content.message.message.author} edited a message`
+          );
+        }
         if (
           selectedChat.chatId !== lastJsonMessage.content.message.message.chat
         )
@@ -253,23 +284,37 @@ export default function MessageScreen() {
         break;
       }
       case NOTIFICATION_USER_OFFLINE: {
+        if (profile.status === "DO_NOT_DISTURB") return;
         toast.info(`${lastJsonMessage.content.from.userName} is now offline`);
         break;
       }
       case NOTIFICATION_USER_ONLINE: {
+        if (profile.status === "DO_NOT_DISTURB") return;
         toast.info(`${lastJsonMessage.content.from.userName} is now online`);
         break;
       }
     }
   }, [lastJsonMessage]);
 
+  //scrolls to a message with the given index
   const jumpToMessage = (i) => {
-    console.log("jump to message");
-    // messageRefs.current[i].scrollIntoView({ behavior: "smooth" });
-    // messageRefs.current[i].classList.add("highlighted");
-    // messageRefs.current[i].addEventListener("animationend", () =>
-    //   messageRefs.current[i].classList.remove("highlighted")
-    // );
+    if (!(i in messageRefs.current)) {
+      sendJsonMessage({
+        action: ACTION_GET_MESSAGE,
+        chatID: selectedChat.chatId,
+        start: messages[0].index - 1,
+        amount: messages[0].index - i,
+      });
+    }
+    try {
+      messageRefs.current[i].scrollIntoView({ behavior: "smooth" });
+      messageRefs.current[i].classList.add("highlighted");
+      messageRefs.current[i].addEventListener("animationend", () =>
+        messageRefs.current[i].classList.remove("highlighted")
+      );
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const reactToMessage = (uuid) => {
@@ -301,6 +346,7 @@ export default function MessageScreen() {
     bottomRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
+  //checks if the user scrolled completly down, if not display a arrow to scroll down faster
   const onScroll = () => {
     if (
       messageScreenRef.current.scrollTop +
@@ -348,10 +394,10 @@ export default function MessageScreen() {
               ) && <DayDivider date={message.sent} />
             )}
             <Message
-              ref={(el) => (messageRefs.current[i] = el)}
+              ref={(el) => (messageRefs.current[message.index] = el)}
               key={i}
               uuid={message.messageID}
-              index={i}
+              index={message.index}
               you={message.author === you ? true : false}
               author={message.author}
               time={message.sent}
@@ -411,6 +457,7 @@ export default function MessageScreen() {
   );
 }
 
+//checks if to dates are on the same day
 function sameDay(d1, d2) {
   return (
     d1.getFullYear() === d2.getFullYear() &&
@@ -419,6 +466,7 @@ function sameDay(d1, d2) {
   );
 }
 
+//returns the correct jsx depending on the filetype
 function mapMedia(filePath, id) {
   const splitted = filePath.split(".");
   const type = splitted.pop();
@@ -434,11 +482,12 @@ function mapMedia(filePath, id) {
           src={`http://localhost:8808/assets${filePath}`}
           alt={id}
           className="image-media"
+          key={id}
         />
       );
     case "mp4":
       return (
-        <div className="video">
+        <div className="video" key={id}>
           <video
             controls
             src={`http://localhost:8808/assets${filePath}`}
@@ -449,10 +498,11 @@ function mapMedia(filePath, id) {
     case "m4a":
     case "ogg":
     case "webm":
-      return <Audio src={`http://localhost:8808/assets${filePath}`} />;
+    case "wav":
+      return <Audio src={`http://localhost:8808/assets${filePath}`} key={id} />;
     default:
       return (
-        <div className="file">
+        <div className="file" key={id}>
           <a href={`http://localhost:8808/assets${filePath}`} target="blank">
             <AiOutlineFileText
               size={"clamp(2rem, 10vw ,5rem)"}

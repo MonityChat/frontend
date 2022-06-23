@@ -3,6 +3,9 @@ import ProfilePicture from "../Sidebar/Profile/ProfilePicture";
 import "./Css/GroupStatus.css";
 import GroupMember from "./GroupMember";
 
+/**
+ * Component to display a group status
+ */
 export default function GroupStatus({
   groupName,
   uuid,

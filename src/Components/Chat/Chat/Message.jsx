@@ -8,13 +8,12 @@ import { AiOutlineDelete, AiOutlineEye, AiOutlineEdit } from "react-icons/ai";
 import "./Css/Message.css";
 
 /**
- * Dieser Komponente erzeugt eine chatnachricht.
- * Er bekommt die Nachrichten details als props und rendert die nachricht
- * davon abhängig.
- * zum Beispiel: ist "you == false" ist die nachricht nicht von dem eigen benutzer und
- * dem komponent wird die "left" klasse zugewiesen. Dadurch wird die nachricht auf der
- * linken seite angezeigt ( dies wird mit teileweise komplexeren css Selektoren realisiert).
- *
+ * Component to display a message in the chat.
+ * The details of the message will be given through props.
+ * Depending on those, it will render the message correctly.
+ * #It gets functions to call on certain events like editing a message.
+ * The rendering on different sides is made with sometimes complex CSS
+ * selectors and conditionally adding classes.
  */
 export default React.forwardRef(function Message(
   {
@@ -149,7 +148,7 @@ export default React.forwardRef(function Message(
 });
 
 /**
- * Hilfsmethoden zum formatieren der Zeitangabe in einen String der nur Stunde und Minuten angibt.
+ * formating time so it will only display hour and minute
  */
 function formatTime(time) {
   const formatted = new Date(time).toLocaleTimeString();

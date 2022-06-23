@@ -1,6 +1,9 @@
 import React from "react";
 import "./Css/AddContact.css";
 
+/**
+ * Component to display a contact in the add contact view
+ */
 export default function AddContact({
   name,
   shortStatus,

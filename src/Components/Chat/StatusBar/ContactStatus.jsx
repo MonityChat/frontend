@@ -6,6 +6,9 @@ import { AiOutlineUsergroupAdd } from "react-icons/ai";
 import ProfilePicture from "../Sidebar/Profile/ProfilePicture";
 import "./Css/ContactStatus.css";
 
+/**
+ * Component to display a profile for a player.
+ */
 export default function ContactStatus({
   userName,
   uuid,
@@ -34,8 +37,8 @@ export default function ContactStatus({
         <ReactMarkdown children={description} remarkPlugins={[remarkGfm]} />
       </div>
       <div className="settings">
-        <BiBlock size={"3rem"} />
-        <AiOutlineUsergroupAdd size={"3rem"} />
+        {/* <BiBlock size={"3rem"} />
+        <AiOutlineUsergroupAdd size={"3rem"} /> */}
       </div>
     </div>
   );

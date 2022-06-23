@@ -10,6 +10,12 @@ import {
 } from "../../../Util/Websocket";
 import "./Css/StatusBar.css";
 
+/**
+ * Third part of the main components.
+ * It renders the sidebar on the left side and handles
+ * which status should be displayed.
+ * It listens for a new profile and will display it.
+ */
 export default function StatusBar() {
   const [opened, setOpened] = useState(false);
   const [currentContactStatus, setCurrentContactStatus] = useState(null);

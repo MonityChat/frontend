@@ -5,7 +5,7 @@ import {
   IoDocumentTextOutline,
   IoImageOutline,
 } from "react-icons/io5";
-import { BiMicrophone } from "react-icons/bi";
+import { BiMicrophone, BiCamera } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
 import { BsEmojiSmile } from "react-icons/bs";
 import { BsReply } from "react-icons/bs";
@@ -25,11 +25,18 @@ import { SettingsContext, MESSAGE_MODES } from "../../../App";
 import { ChatContext } from "../Messenger";
 import { RelatedContext, ReactContext } from "./Chat";
 
+/**
+ * Component for the user input in the chat.
+ * It handles the sending of the message and additional data.
+ * It also creates the media stream if a user records audio or video.
+ * It holds the files which get selected by the user and will send them with the message.
+ */
 export default function ChatInput({ jumpToMessage }) {
   const [showEmoji, setShowEmoji] = useState(false);
   const [height, setHeight] = useState("4rem");
   const [files, setFiles] = useState([]);
-  const [currentRecorder, setCurrnetRecorder] = useState(null);
+  const [currentAudioRecorder, setCurrentAudioRecorder] = useState();
+  const [currentVideoRecorder, setCurrentVideoRecorder] = useState();
   const [numberOfFiles, setNumberOfFiles] = useState(0);
   const [numberOfImages, setNumberOfImages] = useState(0);
 
@@ -80,6 +87,7 @@ export default function ChatInput({ jumpToMessage }) {
     setShowEmoji(false);
   };
 
+  //upload the images first, then send the message
   const sendMessage = async () => {
     const message = messageRef.current.value;
     messageRef.current.value = "";
@@ -187,9 +195,9 @@ export default function ChatInput({ jumpToMessage }) {
   };
 
   const stopAudio = async () => {
-    if (currentRecorder === null) return;
+    if (currentAudioRecorder === null) return;
 
-    const { audioBlob } = await currentRecorder.stop();
+    const { audioBlob } = await currentAudioRecorder.stop();
 
     const [key] = useAuthentication();
 
@@ -210,9 +218,9 @@ export default function ChatInput({ jumpToMessage }) {
         }
       ),
       {
-        pending: `Uploading ${"test"}...`,
-        success: `Uploaded ${"test"} 👌`,
-        error: "Uploaded error 🤯",
+        pending: `Uploading audio ...`,
+        success: `Uploaded audio👌`,
+        error: "Uploading error 🤯",
       }
     );
     const { embedID } = await res.json();
@@ -226,19 +234,68 @@ export default function ChatInput({ jumpToMessage }) {
       related: related,
     });
 
-    setCurrnetRecorder(null);
+    setCurrentAudioRecorder(null);
+  };
+
+  const stopVideo = async () => {
+    if (currentVideoRecorder === null) return;
+
+    const { audioBlob } = await currentVideoRecorder.stop();
+
+    const [key] = useAuthentication();
+
+    let formData = new FormData();
+    formData.append("audio-file", audioBlob);
+
+    const res = await toast.promise(
+      fetch(
+        `${FILE_UPLOAD_URL}?chatID=${
+          selectedChat.chatId
+        }&fileName=${Date.now()}.mp4&embedID=na`,
+        {
+          headers: {
+            authorization: key,
+          },
+          method: "POST",
+          body: formData,
+        }
+      ),
+      {
+        pending: `Uploading video...`,
+        success: `Uploaded video 👌`,
+        error: "Uploading error 🤯",
+      }
+    );
+    const { embedID } = await res.json();
+
+    sendJsonMessage({
+      action: ACTION_MESSAGE_SEND,
+      target: selectedChat.targetId,
+      embedID: embedID,
+      content: "",
+      sent: Date.now(),
+      related: related,
+    });
+
+    setCurrentVideoRecorder(null);
   };
 
   const onAudioClick = async () => {
-    const recorder = await recordAudio();
+    const recorder = await record(true, false);
     recorder.start();
-    setCurrnetRecorder(recorder);
+    setCurrentAudioRecorder(recorder);
   };
 
   const discardSelectedFiles = () => {
     setFiles([]);
     setNumberOfFiles(0);
     setNumberOfImages(0);
+  };
+
+  const onVideoClick = async () => {
+    const recorder = await record(true, true);
+    recorder.start();
+    setCurrentVideoRecorder(recorder);
   };
 
   const handleMessageInput = (e) => {
@@ -289,7 +346,7 @@ export default function ChatInput({ jumpToMessage }) {
         />
         {numberOfFiles > 0 && <div className="file-count">{numberOfFiles}</div>}
       </div>
-      {!currentRecorder ? (
+      {!currentAudioRecorder ? (
         <BiMicrophone
           className="chat-button"
           size={"3em"}
@@ -302,6 +359,21 @@ export default function ChatInput({ jumpToMessage }) {
           size={"3em"}
           style={{ fill: "url(#base-gradient)" }}
           onClick={stopAudio}
+        />
+      )}
+      {!currentVideoRecorder ? (
+        <BiCamera
+          className="chat-button"
+          size={"3em"}
+          style={{ fill: "url(#base-gradient)" }}
+          onClick={onVideoClick}
+        />
+      ) : (
+        <RiRecordCircleLine
+          className="chat-button recording"
+          size={"3em"}
+          style={{ fill: "url(#base-gradient)" }}
+          onClick={stopVideo}
         />
       )}
       <div className="image-select chat-button">
@@ -345,6 +417,7 @@ export default function ChatInput({ jumpToMessage }) {
           className="chat-button"
           size={"3em"}
           style={{ fill: "url(#base-gradient)" }}
+          onClick={() => setRelated("")}
         />
       )}
       {numberOfFiles > 0 || numberOfImages > 0 ? (
@@ -359,35 +432,42 @@ export default function ChatInput({ jumpToMessage }) {
   );
 }
 
-const recordAudio = () => {
+/**
+ * gets a mediastream from the user if one is available and saves the
+ * chunks given from the stream in an array. Then returns a promise with wich you can
+ * start and stop the media
+ */
+const record = (audio, video) => {
   return new Promise((resolve) => {
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      const mediaRecorder = new MediaRecorder(stream);
-      const audioChunks = [];
+    navigator.mediaDevices
+      .getUserMedia({ audio: audio, video: video })
+      .then((stream) => {
+        const mediaRecorder = new MediaRecorder(stream);
+        const chunks = [];
 
-      mediaRecorder.addEventListener("dataavailable", (event) => {
-        audioChunks.push(event.data);
-      });
+        mediaRecorder.addEventListener("dataavailable", (event) => {
+          chunks.push(event.data);
+        });
 
-      const start = () => {
-        mediaRecorder.start();
-      };
+        const start = () => {
+          mediaRecorder.start();
+        };
 
-      const stop = () => {
-        return new Promise((resolve) => {
-          mediaRecorder.addEventListener("stop", () => {
-            const audioBlob = new Blob(audioChunks, {
-              type: mediaRecorder.mimeType,
+        const stop = () => {
+          return new Promise((resolve) => {
+            mediaRecorder.addEventListener("stop", () => {
+              const audioBlob = new Blob(chunks, {
+                type: mediaRecorder.mimeType,
+              });
+
+              resolve({ audioBlob });
             });
 
-            resolve({ audioBlob });
+            mediaRecorder.stop();
           });
+        };
 
-          mediaRecorder.stop();
-        });
-      };
-
-      resolve({ start, stop });
-    });
+        resolve({ start, stop });
+      });
   });
 };

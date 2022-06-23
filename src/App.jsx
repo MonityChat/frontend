@@ -8,6 +8,7 @@ import ResetPassword from "./Components/Authentication/ResetPassword";
 import Messenger from "./Components/Chat/Messenger";
 import Home from "./Components/Home/Home";
 import "react-toastify/dist/ReactToastify.css";
+import { getNewKey } from "./Util/Auth";
 import "./Css/Forms.css";
 import "./Css/Index.css";
 
@@ -35,6 +36,10 @@ export default function App() {
   const [messageMode, setMessageMode] = useState(
     localStorage.getItem("messageMode") || MESSAGE_MODES.ENTER
   );
+
+  useEffect(() => {
+    getNewKey();
+  }, []);
 
   useEffect(() => {
     if (colorMode === COLOR_MODES.GRADIENT_COLOR) {

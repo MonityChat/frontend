@@ -4,6 +4,11 @@ import { IoMdPause } from "react-icons/io";
 import { MdMoreVert } from "react-icons/md";
 import "./Css/Audio.css";
 
+/**
+ * Component for displaying audio files. It handles the start and stop and progress of the audio file.
+ * It gives you another menu to open the
+ * native audio player and to download it.
+ */
 export default function Audio({ src }) {
   const [paused, setPaused] = useState(false);
 

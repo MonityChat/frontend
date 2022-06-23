@@ -32,7 +32,10 @@
 
 .profile-picture .img-container .blur {
   position: absolute;
-  inset: 0rem;
+  width: 100%;
+  min-height: 100%;
+  min-width: 100%;
+  height: auto;
   filter: blur(0.5rem);
   background-color: var(--c-grey-light);
 }

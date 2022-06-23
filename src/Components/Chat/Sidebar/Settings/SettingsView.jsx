@@ -14,6 +14,10 @@ import {
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import "./Css/SettingsView.css";
 
+/**
+ * Component to render a sidebar view for your settings.
+ * It lets you choose different themes and set some preferences
+ */
 export default function SettingsView() {
   const {
     colorMode,

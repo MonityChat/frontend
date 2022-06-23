@@ -9,6 +9,13 @@ import {
 import AddContact from "./AddContact";
 import "./Css/AddContactView.css";
 
+/**
+ * Component to render a sidebar view for adding contacts.
+ * it displays an input for searching
+ * new contacts. To prevent sending too many messages to
+ * the server while searching we use debouncing.
+ * It basically only sends a message if the user doesn't type for a given time
+ */
 export default function AddContactView() {
   const [searchedContacts, setSearchedContacts] = useState([]);
 
@@ -88,14 +95,6 @@ export default function AddContactView() {
               uuid={contact.uuid}
               onClick={sendFriendRequest}
               key={i}
-              // name={'Simon'}
-              // shortStatus={
-              // 	'Crypto for life is Crypt for people who have '
-              // }
-              // profilePicture={'/src/image/Icon.png'}
-              // uuid={'123'}
-              // onClick={sendFriendRequest}
-              // key={i}
             />
           ))
         )}
