@@ -200,10 +200,42 @@
   font-weight: bolder;
 }
 
-.message > .content > .save {
-  right: 2rem;
-  bottom: 2rem;
+.message > .content > .editing{
+  display: flex;
+  flex-direction: column;
+}
+
+.message > .content > .editing > textarea{
+  border: calc(var(--b-w) * 2)   solid var(--c-grey-dark);
+  font-weight: normal;
+  font-size: 1rem;
+}
+
+.message > .content > .editing > textarea:hover,
+.message > .content > .editing > textarea:focus{
+  box-shadow: none;
+}
+
+.message > .content > .editing > .save {
   cursor: pointer;
+  align-self: flex-end;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--c-grey-dark);
+  padding: var(--p-1);
+  margin: var(--m-1);
+  border-radius: var(--b-r);
+  transition: transform 200ms ease-out;
+}
+
+.message > .content > .editing > .save:hover {
+  transform: scale(1.05);
+}
+
+.message > .content > .editing > .save > div {
+  margin-inline: var(--m-2);
+  font-weight: bold;
 }
 
 .message > .content > .more {
