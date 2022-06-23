@@ -13,7 +13,7 @@ function ProfilePicture({ path, status, children }, ref) {
           src={`http://localhost:8808/assets${path}`}
           //   src={path}
           className="blur"
-          alt="PB"
+          alt="PP"
           ref={(el) => {
             ref.current[0] = el;
           }}
@@ -22,7 +22,7 @@ function ProfilePicture({ path, status, children }, ref) {
           src={`http://localhost:8808/assets${path}`}
           // src={path}
           className="normal"
-          alt="PB"
+          alt="PP"
           ref={(el) => {
             ref.current[1] = el;
           }}

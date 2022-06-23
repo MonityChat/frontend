@@ -9,10 +9,13 @@ export default function GroupMember({
 	onClick,
 }) {
 	return (
-		<div className="group-member sidebar-item" onClick={() => onClick(uuid)}>
+		<div
+			className="group-member sidebar-item"
+			onClick={() => onClick(uuid)}
+		>
 			<div className="profile-picture">
-				<img src={profilePicture} alt="PB" className="blur" />
-				<img src={profilePicture} alt="PB" className="normal" />
+				<img src={profilePicture} alt="PP" className="blur" />
+				<img src={profilePicture} alt="PP" className="normal" />
 				<div className="info">
 					<h2 className="name" title={`${userName} | ${uuid}`}>
 						{userName}

@@ -15,12 +15,12 @@ export default function Group({
 			<div className="profile-picture">
 				<img
 					src={`http://localhost:8808/assets${profilePicture}`}
-					alt="PB"
+					alt="PP"
 					className="blur"
 				/>
 				<img
 					src={`http://localhost:8808/assets${profilePicture}`}
-					alt="PB"
+					alt="PP"
 					className="normal"
 				/>
 			</div>

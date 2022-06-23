@@ -77,7 +77,7 @@ export default function App() {
               <Route path="/forgot-password" component={ForgotPassword} exact />
               <Route path="/reset-password" component={ResetPassword} exact />
               <Route path="/home" component={Home} exact />
-              <Route path="/authentication" component={Authentication} exact />
+              <Route path="/login" component={Authentication} exact />
               <Route path="/" component={Messenger} exact />
               <Route component={FileNotFound} exact />
             </Switch>

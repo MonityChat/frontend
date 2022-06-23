@@ -18,12 +18,12 @@ export default function Contact({
       <div className="profile-picture">
         <img
           src={`http://localhost:8808/assets${profilPicture}`}
-          alt="PB"
+          alt="PP"
           className="blur"
         />
         <img
           src={`http://localhost:8808/assets${profilPicture}`}
-          alt="PB"
+          alt="PP"
           className="normal"
         />
       </div>

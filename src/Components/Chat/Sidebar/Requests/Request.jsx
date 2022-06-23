@@ -15,13 +15,13 @@ export default function Request({
 				<img
 					src={`http://localhost:8808/assets${profilePicture}`}
 					// src={`/src/image/donut.png`}
-					alt="PB"
+					alt="PP"
 					className="blur"
 				/>
 				<img
 					src={`http://localhost:8808/assets${profilePicture}`}
 					// src={`/src/image/donut.png`}
-					alt="PB"
+					alt="PP"
 					className="normal"
 				/>
 			</div>

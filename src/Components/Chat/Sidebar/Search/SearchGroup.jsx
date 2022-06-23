@@ -17,13 +17,13 @@ export default function SearchGroup({
 				<img
 					src={`http://localhost:8808/assets${profilePicture}`}
 					// src={'/src/image/Donut.png'}
-					alt="PB"
+					alt="PP"
 					className="blur"
 				/>
 				<img
 					src={`http://localhost:8808/assets${profilePicture}`}
 					// src={'/src/image/Donut.png'}
-					alt="PB"
+					alt="PP"
 					className="normal"
 				/>
 			</div>
