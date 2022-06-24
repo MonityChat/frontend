@@ -101,55 +101,23 @@ export default function ChatInput({ jumpToMessage }) {
     if (files.length > 0) {
       const [key] = useAuthentication();
 
-      let formData = new FormData();
-      formData.append("image", files[0]);
+      embedID = await fetchFile(files[0], selectedChat.chatId, files[0].name,"na", key);
 
-      const res = await toast.promise(
-        fetch(
-          `${FILE_UPLOAD_URL}?chatID=${selectedChat.chatId}&fileName=${files[0].name}&embedID=na`,
-          {
-            headers: {
-              authorization: key,
-            },
-            method: "POST",
-            body: formData,
-          }
-        ),
-        {
-          pending: `Uploading ${files[0].name}...`,
-          success: `Uploaded ${files[0].name} 👌`,
-          error: "Uploaded error 🤯",
-        }
-      );
-      if (!res.ok) return;
-      const { embedID: newEmbedID, path } = await res.json();
+      if(embedID === null){
+        toast.error("Uploading error");
+        return;
+      }
 
       if (files.length > 1) {
         for (let i = 0; i < files.length; i++) {
           if (i === 0) continue;
-          let formData = new FormData();
-          formData.append("image", files[i]);
-          const res = await toast.promise(
-            fetch(
-              `${FILE_UPLOAD_URL}?chatID=${selectedChat.chatId}&fileName=${files[i].name}&embedID=${newEmbedID}`,
-              {
-                headers: {
-                  authorization: key,
-                },
-                method: "POST",
-                body: formData,
-              }
-            ),
-            {
-              pending: `Uploading ${files[i].name}...`,
-              success: `Uploaded ${files[i].name} 👌`,
-              error: "Uploaded error 🤯",
-            }
-          );
+          const res = await fetchFile(files[i], selectedChat.chatId, files[i].name,embedID, key);
+          if(res === null) {
+            toast.error("Uploading error");
+            return;
+          }
         }
       }
-
-      embedID = newEmbedID;
     }
 
     sendJsonMessage({
@@ -160,6 +128,7 @@ export default function ChatInput({ jumpToMessage }) {
       sent: Date.now(),
       related: related,
     });
+
     setRelated("");
     setFiles([]);
     setNumberOfFiles(0);
@@ -471,3 +440,33 @@ const record = (audio, video) => {
       });
   });
 };
+
+/**
+ * fetches a file to the server and returns an embedID
+ */
+const fetchFile = (file, chatID, fileName, embedID = "na", key) => {
+
+  let formData = new FormData();
+  formData.append("file", file);
+
+  const res = await toast.promise(
+    fetch(
+      `${FILE_UPLOAD_URL}?chatID=${chatID}&fileName=${fileName}&embedID=${embedID}`,
+      {
+        headers: {
+          authorization: key,
+        },
+        method: "POST",
+        body: formData,
+      }
+    ),
+    {
+      pending: `Uploading ${fileName}...`,
+      success: `Uploaded ${fileName} 👌`,
+      error: "Uploading error 🤯",
+    }
+  );
+  if (!res.ok) return null;
+  const { embedID } = await res.json();
+  return embedID;
+}
