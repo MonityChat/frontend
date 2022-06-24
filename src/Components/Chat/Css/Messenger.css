@@ -52,6 +52,11 @@
   transform: scale(1.5);
 }
 
+.loading-screen .back{
+  margin-top: 10rem;
+  text-decoration: none;
+}
+
 @keyframes dot-spin {
   0%,
   100% {

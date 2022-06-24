@@ -21,10 +21,10 @@ export default function Authentication() {
   const logInRef = useRef();
   const registerRef = useRef();
 
-  useEffect(() => {
+  // useEffect(() => {
     // const [key, setKey] = useAuthentication();
     // getNewKey();
-  }, []);
+  // }, []);
 
   useEffect(() => {
     document.title = "Monity " + mode;
