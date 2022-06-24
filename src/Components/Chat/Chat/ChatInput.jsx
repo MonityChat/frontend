@@ -444,7 +444,7 @@ const record = (audio, video) => {
 /**
  * fetches a file to the server and returns an embedID
  */
-const fetchFile = (file, chatID, fileName, embedID = "na", key) => {
+const fetchFile = async (file, chatID, fileName, embedID = "na", key) => {
 
   let formData = new FormData();
   formData.append("file", file);
@@ -467,6 +467,8 @@ const fetchFile = (file, chatID, fileName, embedID = "na", key) => {
     }
   );
   if (!res.ok) return null;
-  const { embedID } = await res.json();
-  return embedID;
+
+  const { embedID: newEmbedID } = await res.json();
+
+  return newEmbedID;
 }
