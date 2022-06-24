@@ -1,4 +1,4 @@
-# Requirements
+# Requirements to run locally
 
 - NodeJS
 - NPM
