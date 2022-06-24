@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { getNewKey } from "./Util/Auth";
 import "./Css/Forms.css";
 import "./Css/Index.css";
+import NewAccount from "./Components/Authentication/NewAccount";
 
 /**
  * Context for color scheme and message modes
@@ -90,6 +91,7 @@ export default function App() {
             <Switch>
               <Route path="/forgot-password" component={ForgotPassword} exact />
               <Route path="/reset-password" component={ResetPassword} exact />
+              <Route path="/success" component={NewAccount} exact />
               <Route path="/home" component={Home} exact />
               <Route path="/login" component={Authentication} exact />
               <Route path="/" component={Messenger} exact />

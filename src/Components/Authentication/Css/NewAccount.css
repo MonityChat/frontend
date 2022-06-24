@@ -1,0 +1,27 @@
+.new-account{
+    padding: var(--p-3);
+    min-width: 25rem;
+    min-height: 15rem;
+    position: relative;
+    top: -5rem;
+}
+
+.new-account .heading {
+    font-size: 5rem;
+    background-image: var(--g-base);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+}
+
+.new-account p {
+    font-size: 2rem;
+    max-width: 40rem;
+    text-align: center;
+    padding: var(--p-3);
+}
+
+.new-account a{
+    text-decoration: none;
+    margin: var(--m-3);
+}

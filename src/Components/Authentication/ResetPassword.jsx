@@ -6,7 +6,6 @@ import PasswordField from "./PasswordField";
 import "./CSS/ResetPassword.css";
 import { generateNewSalt, hash } from "../../Util/Encrypt";
 import useAuthentication from "../../Util/UseAuth.js";
-import { getNewKey } from "../../Util/Auth.js";
 
 const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 
@@ -19,10 +18,6 @@ export default function ResetPassword() {
 
   const query = useQuery();
   const history = useHistory();
-
-  useEffect(() => {
-    // getNewKey();
-  }, []);
 
   const passwordInput = (e) => {
     e.target.classList.remove("error");
