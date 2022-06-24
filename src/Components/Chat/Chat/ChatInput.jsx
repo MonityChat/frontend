@@ -101,9 +101,15 @@ export default function ChatInput({ jumpToMessage }) {
     if (files.length > 0) {
       const [key] = useAuthentication();
 
-      embedID = await fetchFile(files[0], selectedChat.chatId, files[0].name,"na", key);
+      embedID = await fetchFile(
+        files[0],
+        selectedChat.chatId,
+        files[0].name,
+        "na",
+        key
+      );
 
-      if(embedID === null){
+      if (embedID === null) {
         toast.error("Uploading error");
         return;
       }
@@ -111,8 +117,14 @@ export default function ChatInput({ jumpToMessage }) {
       if (files.length > 1) {
         for (let i = 0; i < files.length; i++) {
           if (i === 0) continue;
-          const res = await fetchFile(files[i], selectedChat.chatId, files[i].name,embedID, key);
-          if(res === null) {
+          const res = await fetchFile(
+            files[i],
+            selectedChat.chatId,
+            files[i].name,
+            embedID,
+            key
+          );
+          if (res === null) {
             toast.error("Uploading error");
             return;
           }
@@ -409,16 +421,17 @@ export default function ChatInput({ jumpToMessage }) {
 const record = (audio, video) => {
   return new Promise((resolve) => {
     navigator.mediaDevices
-      .getUserMedia({ audio: audio, video: video })
+      .getUserMedia({ audio: audio, video: video }) //stream bekommen
       .then((stream) => {
         const mediaRecorder = new MediaRecorder(stream);
-        const chunks = [];
+        const chunks = []; //chunks hier speichern
 
         mediaRecorder.addEventListener("dataavailable", (event) => {
-          chunks.push(event.data);
+          chunks.push(event.data); // bei neuen chunks sie in den array einfügen
         });
 
         const start = () => {
+          //zum starten
           mediaRecorder.start();
         };
 
@@ -445,7 +458,6 @@ const record = (audio, video) => {
  * fetches a file to the server and returns an embedID
  */
 const fetchFile = async (file, chatID, fileName, embedID = "na", key) => {
-
   let formData = new FormData();
   formData.append("file", file);
 
@@ -471,4 +483,4 @@ const fetchFile = async (file, chatID, fileName, embedID = "na", key) => {
   const { embedID: newEmbedID } = await res.json();
 
   return newEmbedID;
-}
+};

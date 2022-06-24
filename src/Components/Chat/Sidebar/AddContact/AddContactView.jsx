@@ -31,10 +31,10 @@ export default function AddContactView() {
     let timeout;
 
     return (...args) => {
-      clearTimeout(timeout);
+      clearTimeout(timeout); //lösche den Timeout
       timeout = setTimeout(() => {
-        cb(...args);
-      }, delay);
+        cb(...args); //ruf die Methode auf
+      }, delay); //warte gewisse Zeit
     };
   };
 

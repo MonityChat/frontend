@@ -99,6 +99,7 @@ export default function ContactView() {
   }, [lastJsonMessage]);
 
   const onContactClick = (uuid) => {
+    //ID des Benutzers suchen
     const chatId =
       contacts.find((contact) => contact.uuid === uuid).chatID || "";
     sendJsonMessage({
@@ -120,7 +121,11 @@ export default function ContactView() {
       return prev;
     });
 
-    setSelectedChat((prev) => ({ ...prev, chatId: chatId, targetId: uuid }));
+    setSelectedChat((prev) => ({
+      ...prev,
+      chatId: chatId,
+      targetId: uuid,
+    }));
 
     localStorage.setItem("lastChat", chatId);
     localStorage.setItem("lastUser", uuid);
