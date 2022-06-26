@@ -17,12 +17,12 @@ export default function Group({
     <div className="group sidebar-item" onClick={onClick(uuid)}>
       <div className="profile-picture">
         <img
-          src={`http://localhost:8808/assets${profilePicture}`}
+          src={`http${DOMAIN}/assets${profilePicture}`}
           alt="PP"
           className="blur"
         />
         <img
-          src={`http://localhost:8808/assets${profilePicture}`}
+          src={`http${DOMAIN}/assets${profilePicture}`}
           alt="PP"
           className="normal"
         />

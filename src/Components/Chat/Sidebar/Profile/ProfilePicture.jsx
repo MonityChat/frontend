@@ -10,7 +10,7 @@ function ProfilePicture({ path, status, children }, ref) {
     <div className="profile-picture">
       <div className="img-container" onClick={reqeustFullScreen}>
         <img
-          src={`http://localhost:8808/assets${path}`}
+          src={`http${DOMAIN}/assets${path}`}
           className="blur"
           alt="PP"
           ref={(el) => {
@@ -18,7 +18,7 @@ function ProfilePicture({ path, status, children }, ref) {
           }}
         />
         <img
-          src={`http://localhost:8808/assets${path}`}
+          src={`http${DOMAIN}/assets${path}`}
           className="normal"
           alt="PP"
           ref={(el) => {

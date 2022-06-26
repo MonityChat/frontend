@@ -8,7 +8,7 @@
 		<link
 			rel="icon"
 			type="image/svg+xml"
-			href="http://localhost:8808/assets/images/monity/icon.png"
+			href="http://135.181.80.72:8808/assets/images/monity/icon.png"
 		/>
 
 		<!-- for the used Fonts -->
@@ -28,6 +28,10 @@
 		<!-- for vite -->
 		<script>
 			window.global = window;
+			
+			const DEV_MODE = false;
+
+			const DOMAIN = DEV_MODE ? '://localhost:8808' : '://135.181.80.72:8808';
 		</script>
 	</head>
 	<body>

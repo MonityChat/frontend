@@ -20,12 +20,12 @@ export default function Contact({
     <div className="contact sidebar-item" onClick={() => onClick(uuid)}>
       <div className="profile-picture">
         <img
-          src={`http://localhost:8808/assets${profilPicture}`}
+          src={`http${DOMAIN}/assets${profilPicture}`}
           alt="PP"
           className="blur"
         />
         <img
-          src={`http://localhost:8808/assets${profilPicture}`}
+          src={`http${DOMAIN}/assets${profilPicture}`}
           alt="PP"
           className="normal"
         />

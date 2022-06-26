@@ -136,8 +136,8 @@ export default function ProfileView() {
 
     const newImageURL = await res.text();
 
-    profileImageRef.current[0].src = `http://localhost:8808/assets${newImageURL}`;
-    profileImageRef.current[1].src = `http://localhost:8808/assets${newImageURL}`;
+    profileImageRef.current[0].src = `http${DOMAIN}/assets${newImageURL}`;
+    profileImageRef.current[1].src = `http${DOMAIN}/assets${newImageURL}`;
     sendJsonMessage({
       action: ACTION_GET_SELF,
     });

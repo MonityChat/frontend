@@ -16,12 +16,12 @@ export default function Request({
     <div className="request sidebar-item">
       <div className="profile-picture">
         <img
-          src={`http://localhost:8808/assets${profilePicture}`}
+          src={`http${DOMAIN}/assets${profilePicture}`}
           alt="PP"
           className="blur"
         />
         <img
-          src={`http://localhost:8808/assets${profilePicture}`}
+          src={`http${DOMAIN}/assets${profilePicture}`}
           alt="PP"
           className="normal"
         />

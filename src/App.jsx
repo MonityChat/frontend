@@ -71,7 +71,6 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("messageMode", messageMode);
   }, [messageMode]);
-
   return (
     <>
       <SettingsContext.Provider

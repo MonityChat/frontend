@@ -494,7 +494,7 @@ function mapMedia(filePath, id) {
     case "gif":
       return (
         <img
-          src={`http://localhost:8808/assets${filePath}`}
+          src={`http${DOMAIN}/assets${filePath}`}
           alt={id}
           className="image-media"
           key={id}
@@ -505,7 +505,7 @@ function mapMedia(filePath, id) {
         <div className="video" key={id}>
           <video
             controls
-            src={`http://localhost:8808/assets${filePath}`}
+            src={`http${DOMAIN}/assets${filePath}`}
           ></video>
         </div>
       );
@@ -514,11 +514,11 @@ function mapMedia(filePath, id) {
     case "ogg":
     case "webm":
     case "wav":
-      return <Audio src={`http://localhost:8808/assets${filePath}`} key={id} />;
+      return <Audio src={`http${DOMAIN}/assets${filePath}`} key={id} />;
     default:
       return (
         <div className="file" key={id}>
-          <a href={`http://localhost:8808/assets${filePath}`} target="blank">
+          <a href={`http${DOMAIN}/assets${filePath}`} target="blank">
             <AiOutlineFileText
               size={"clamp(2rem, 10vw ,5rem)"}
               fill="url(#base-gradient)"
