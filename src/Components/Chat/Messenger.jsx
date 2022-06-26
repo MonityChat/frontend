@@ -15,6 +15,7 @@ import {
 	ACTION_GET_MESSAGE_LATEST,
 	ACTION_PROFILE_GET_OTHER,
 } from '../../Util/Websocket';
+import { getNewKey } from '../../Util/Auth';
 
 export const ProfileContext = createContext();
 export const ChatContext = createContext({
@@ -69,6 +70,7 @@ export default function Messenger() {
 		} else {
 			if (lastJsonMessage.error !== 'NONE') {
 				toast.error('You are not logged in');
+				getNewKey();
 				setTimeout(() => {
 					history.push('/login');
 				}, 500);
