@@ -285,7 +285,7 @@ export default function MessageScreen() {
             }
             if (
               prev[i].relatedTo?.messageID ===
-              lastJsonMessage.content.message.messageID
+              lastJsonMessage.content.message.message.messageID
             ) {
               prev[i].relatedTo = lastJsonMessage.content.message.message;
             }

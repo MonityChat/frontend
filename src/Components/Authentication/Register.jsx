@@ -57,6 +57,12 @@ export default function Register() {
 			return;
 		}
 
+		if(userName.length < 3 ){
+			setMessage('Username must be at least 3 characters long')
+			userNameRef.current.classList.add('error');
+			return;
+		}
+
 		if (!isValidEmail(email)) {
 			setMessage('Enter a valid email');
 			emailRef.current.classList.add('error');

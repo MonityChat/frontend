@@ -54,7 +54,7 @@ export default function Messenger() {
 
 		sendJsonMessage({
 			auth: key || '00000000-0000-0000-0000-000000000000',
-			user: localStorage.getItem('userName'),
+			user: localStorage.getItem('userName') || '',
 		});
 		document.title = 'Monity | Chat';
 	}, []);
@@ -107,7 +107,7 @@ export default function Messenger() {
 			<ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
 				{!logedIn && (
 					<div className="loading-screen">
-						<img src="/src/image/logo.png" alt="Monity Logo" />
+						<img src={`http${DOMAIN}/assets/images/monity/logo.png`} alt="Monity Logo" />
 						<div className="frame">
 							<div className="dot-spin"></div>
 						</div>

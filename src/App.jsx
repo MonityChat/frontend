@@ -29,7 +29,7 @@ export default function App() {
     localStorage.getItem("colorMode") || COLOR_MODES.GRADIENT_COLOR
   );
   const [gradientScheme, setGradientScheme] = useState(
-    localStorage.getItem("gradientScheme") || GRADIENT_SCHEME.SUNSET
+    localStorage.getItem("gradientScheme") || GRADIENT_SCHEME.MONITY
   );
   const [colorScheme, setColorScheme] = useState(
     localStorage.getItem("colorScheme") || COLOR_SCHEME.WHITE
@@ -101,7 +101,7 @@ export default function App() {
       </SettingsContext.Provider>
       <ToastContainer
         position="top-right"
-        autoClose={3500}
+        autoClose={3200}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -109,6 +109,7 @@ export default function App() {
         draggable
         pauseOnHover
         theme="dark"
+        pauseOnFocusLoss="false"
       />
       <div className="background">
         <svg viewBox="0 0 900 600" preserveAspectRatio="none">
