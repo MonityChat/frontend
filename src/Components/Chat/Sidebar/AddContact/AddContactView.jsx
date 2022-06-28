@@ -67,7 +67,9 @@ export default function AddContactView() {
       case ACTION_CONTACT_ADD: {
         if (lastJsonMessage.content.error === "ALREADY_MADE_CONTACT") {
           toast.error("You are already in contact");
-        } else {
+        } else if(lastJsonMessage.content.error === "ALREADY_SEND_REQUEST") {
+          toast.error("You already send a request");
+        }else{
           toast.info("Sent friend request");
         }
       }

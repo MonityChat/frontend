@@ -40,6 +40,9 @@ export default function App() {
 
   useEffect(() => {
     getNewKey();
+    Notification.requestPermission().then(function(result) {
+      console.log("Notification granted");
+    });
   }, []);
 
   useEffect(() => {

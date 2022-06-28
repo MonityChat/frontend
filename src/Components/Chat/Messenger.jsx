@@ -109,7 +109,7 @@ export default function Messenger() {
 			<ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
 				{!logedIn && (
 					<div className="loading-screen">
-						<img src="/src/image/logo.png" alt="Monity Logo" />
+						<img src={`${prefixDOMAIN}${DOMAIN}/assets/images/monity/logo.png`} alt="Monity Logo" />
 						<div className="frame">
 							<div className="dot-spin"></div>
 						</div>
