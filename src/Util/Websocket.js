@@ -1,5 +1,5 @@
 //url for the WS connection
-export const WEBSOCKET_URL = `ws${DOMAIN}/monity`;
+export const WEBSOCKET_URL = `wss${DOMAIN}/monity`;
 
 //url to upload profile image
 export const PROFILE_IMAGE_UPLOAD_URL =
