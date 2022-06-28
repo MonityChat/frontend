@@ -57,6 +57,12 @@ export default function Register() {
 			return;
 		}
 
+		if(userName.length < 3 ){
+			setMessage('Username must be at least 3 characters long')
+			userNameRef.current.classList.add('error');
+			return;
+		}
+
 		if (!isValidEmail(email)) {
 			setMessage('Enter a valid email');
 			emailRef.current.classList.add('error');
@@ -77,7 +83,7 @@ export default function Register() {
 
 		const result = await register(userName, email, password);
 
-		if (result === 'USERNAME_TAKEN') {
+		if (result === 'USERNAME_ALREADY_IN_USE') {
 			setMessage('Username already taken');
 			userNameRef.current.classList.add('error');
 			return;

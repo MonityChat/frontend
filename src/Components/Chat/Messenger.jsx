@@ -54,30 +54,30 @@ export default function Messenger() {
   useEffect(() => {
     const [key, , isLogedIn] = useAuthentication();
 
-    sendJsonMessage({
-      auth: key || "00000000-0000-0000-0000-000000000000",
-      user: localStorage.getItem("userName"),
-    });
-    document.title = "Monity | Chat";
-  }, []);
+		sendJsonMessage({
+			auth: key || '00000000-0000-0000-0000-000000000000',
+			user: localStorage.getItem('userName'),
+		});
+		document.title = 'Monity | Chat';
+	}, []);
 
   useEffect(() => {
     if (lastJsonMessage === null) return;
 
-    if (logedIn) {
-      if (lastJsonMessage.action !== ACTION_GET_SELF) return;
-      setProfile(lastJsonMessage.content);
-      localStorage.setItem("userName", lastJsonMessage.content.userName);
-    } else {
-      if (lastJsonMessage.error !== "NONE") {
-        toast.error("You are not logged in");
-        setTimeout(() => {
-          history.push("/login");
-        }, 500);
-        return;
-      }
-      setLogedIn(true);
-      sendJsonMessage({ action: ACTION_GET_SELF });
+		if (logedIn) {
+			if (lastJsonMessage.action !== ACTION_GET_SELF) return;
+			setProfile(lastJsonMessage.content);
+			localStorage.setItem('userName', lastJsonMessage.content.userName);
+		} else {
+			if (lastJsonMessage.error !== 'NONE') {
+				toast.error('You are not logged in');
+				setTimeout(() => {
+					history.push('/login');
+				}, 500);
+				return;
+			}
+			setLogedIn(true);
+			sendJsonMessage({ action: ACTION_GET_SELF });
 
       const lastChatId = localStorage.getItem("lastChat") || null;
       const lastUser = localStorage.getItem("lastUser") || null;
@@ -104,30 +104,27 @@ export default function Messenger() {
     setProfile(lastJsonMessage.content);
   }, [lastJsonMessage]);
 
-  return (
-    <ProfileContext.Provider value={profile}>
-      <ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
-        {!logedIn && (
-          <div className="loading-screen">
-            <img
-              src={`${prefixDOMAIN}${DOMAIN}/assets/images/monity/logo.png`}
-              alt="Monity Logo"
-            />
-            <div className="frame">
-              <div className="dot-spin"></div>
-            </div>
-            <Link to="/login" className="back">
-              <button>Back to login</button>
-            </Link>
-          </div>
-        )}
-        <div className="messenger">
-          <Sidebar />
-          <div className="placeholder"></div>
-          <Chat />
-          <StatusBar />
-        </div>
-      </ChatContext.Provider>
-    </ProfileContext.Provider>
-  );
+	return (
+		<ProfileContext.Provider value={profile}>
+			<ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
+				{!logedIn && (
+					<div className="loading-screen">
+						<img src="/src/image/logo.png" alt="Monity Logo" />
+						<div className="frame">
+							<div className="dot-spin"></div>
+						</div>
+						<Link to="/login" className='back'>
+							<button>Back to login</button>
+						</Link>
+					</div>
+				)}
+				<div className="messenger">
+					<Sidebar />
+					<div className="placeholder"></div>
+					<Chat />
+					<StatusBar />
+				</div>
+			</ChatContext.Provider>
+		</ProfileContext.Provider>
+	);
 }

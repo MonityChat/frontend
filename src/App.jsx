@@ -101,7 +101,7 @@ export default function App() {
       </SettingsContext.Provider>
       <ToastContainer
         position="top-right"
-        autoClose={3500}
+        autoClose={3200}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -109,6 +109,7 @@ export default function App() {
         draggable
         pauseOnHover
         theme="dark"
+        pauseOnFocusLoss="false"
       />
       <div className="wave-background">
         <svg viewBox="0 0 900 600" preserveAspectRatio="none">

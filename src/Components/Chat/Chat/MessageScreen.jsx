@@ -73,7 +73,8 @@ export default function MessageScreen() {
 
     switch (lastJsonMessage.action) {
       case ACTION_GET_MESSAGE_LATEST: {
-        setMessages(lastJsonMessage.content.messages.reverse());
+        if(!lastJsonMessage.content.messages)return;
+        setMessages(lastJsonMessage.content.messages?.reverse());
         setScrollTo("bottom");
         break;
       }
@@ -85,7 +86,7 @@ export default function MessageScreen() {
       case ACTION_GET_MESSAGE: {
         setScrollTo(lastJsonMessage.content.messages[0].index + 1);
         setMessages((prev) => [
-          ...lastJsonMessage.content.messages.reverse(),
+          ...lastJsonMessage.content.messages?.reverse(),
           ...prev,
         ]);
         break;
@@ -290,7 +291,7 @@ export default function MessageScreen() {
             }
             if (
               prev[i].relatedTo?.messageID ===
-              lastJsonMessage.content.message.messageID
+              lastJsonMessage.content.message.message.messageID
             ) {
               prev[i].relatedTo = lastJsonMessage.content.message.message;
             }

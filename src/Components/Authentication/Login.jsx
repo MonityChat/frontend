@@ -48,7 +48,7 @@ export default function Login() {
 		}
 
 		if (!(await userExists(userName))) {
-			setMessage('Invalid userName or Email');
+			setMessage('Invalid username or Email');
 			userNameRef.current.classList.add('error');
 			return;
 		}
