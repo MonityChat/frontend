@@ -53,6 +53,10 @@ export default function Sidebar() {
   useEffect(() => {
     if (!lastJsonMessage) return;
 
+    if(lastJsonMessage.action === ACTION_CONTACT_GET_REQUEST){
+      setRequests(lastJsonMessage.content.requests || []);
+    }
+
     switch (lastJsonMessage.notification) {
       case NOTIFICATION_FRIEND_REQUEST_INCOME: {
         setRequests((prev) => [...prev, lastJsonMessage.content.from]);

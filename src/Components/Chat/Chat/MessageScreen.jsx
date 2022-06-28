@@ -67,6 +67,11 @@ export default function MessageScreen() {
     setScrollTo("bottom");
   }, [messages]);
 
+  useEffect(()=> {
+
+    setYou(profile?.userName )
+  },[profile])
+
   //depending on the message modify the messages correctly
   useEffect(() => {
     if (lastJsonMessage === null) return;
