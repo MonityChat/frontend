@@ -99,13 +99,13 @@ export default function ContactView() {
   }, [lastJsonMessage]);
 
   const onContactClick = (uuid) => {
-    //ID des Benutzers suchen
+    //ID des Chats suchen
     const chatId =
       contacts.find((contact) => contact.uuid === uuid).chatID || "";
     sendJsonMessage({
-      action: ACTION_GET_MESSAGE_LATEST,
-      chatID: chatId,
-    });
+      action: ACTION_GET_MESSAGE_LATEST, //50 Neue nachrichten
+      chatID: chatId, //ID des Chats
+    }); //...
 
     sendJsonMessage({
       action: ACTION_PROFILE_GET_OTHER,

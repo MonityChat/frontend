@@ -29,10 +29,10 @@ export default function App() {
     localStorage.getItem("colorMode") || COLOR_MODES.GRADIENT_COLOR
   );
   const [gradientScheme, setGradientScheme] = useState(
-    localStorage.getItem("gradientScheme") || GRADIENT_SCHEME.SUNSET
+    localStorage.getItem("gradientScheme") || GRADIENT_SCHEME.MONITY
   );
   const [colorScheme, setColorScheme] = useState(
-    localStorage.getItem("colorScheme") || COLOR_SCHEME.WHITE
+    localStorage.getItem("colorScheme") || COLOR_SCHEME.BLUE
   );
   const [messageMode, setMessageMode] = useState(
     localStorage.getItem("messageMode") || MESSAGE_MODES.ENTER
@@ -72,7 +72,7 @@ export default function App() {
     localStorage.setItem("messageMode", messageMode);
   }, [messageMode]);
   return (
-    <>
+    <div style={{ isolation: "isolate" }}>
       <SettingsContext.Provider
         value={{
           colorMode,
@@ -110,7 +110,7 @@ export default function App() {
         pauseOnHover
         theme="dark"
       />
-      <div className="background">
+      <div className="wave-background">
         <svg viewBox="0 0 900 600" preserveAspectRatio="none">
           <rect x="0" y="0" width="900" height="600" fill="#001220"></rect>
           <path
@@ -143,7 +143,7 @@ export default function App() {
           ></path>
         </svg>
       </div>
-    </>
+    </div>
   );
 }
 

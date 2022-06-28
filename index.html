@@ -1,43 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-		<!-- favicon -->
-		<link
-			rel="icon"
-			type="image/svg+xml"
-			href="http://135.181.80.72:8808/assets/images/monity/icon.png"
-		/>
+    <!-- favicon -->
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="https://monitychat.de/api/assets/images/monity/icon.png"
+    />
 
-		<!-- for the used Fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com" />
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap"
-			rel="styles heet"
-		/>
-		<link
-			href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&display=swap"
-			rel="stylesheet"
-		/>
+    <!-- for the used Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Permanent+Marker&display=swap"
+      rel="styles heet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@700&display=swap"
+      rel="stylesheet"
+    />
 
-		<title>Monity</title>
+    <title>Monity</title>
 
-		<!-- for vite -->
-		<script>
-			window.global = window;
-			
-			const DEV_MODE = false;
+    <!-- for vite -->
+    <script>
+      window.global = window;
 
-			const DOMAIN = DEV_MODE ? '://localhost:8808' : '://135.181.80.72:8808';
-		</script>
-	</head>
-	<body>
-		<!-- if javascript is blocked -->
-		<noscript>You need to enable javascript to use this web app</noscript>
-		<div id="root"></div>
-		<script type="module" src="/src/main.jsx"></script>
-	</body>
+      const DEV_MODE = false;
+      const SSL = true;
+
+      const prefixDOMAIN = SSL ? "https" : "http";
+      const DOMAIN = DEV_MODE ? "://localhost:8808" : "://monitychat.de/api";
+    </script>
+  </head>
+  <body>
+    <!-- if javascript is blocked -->
+    <noscript>You need to enable javascript to use this web app</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

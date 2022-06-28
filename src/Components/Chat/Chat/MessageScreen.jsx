@@ -239,21 +239,26 @@ export default function MessageScreen() {
       }
       case NOTIFICATION_MESSAGE_REACTED: {
         if (profile.status !== "DO_NOT_DISTURB") {
+          //falls status auf nicht störe => nicht stören
           toast.info(`${lastJsonMessage.content.from} reacted to a message`);
         }
         if (
+          //nur aktualisieren wenn der Benutzer gerade im chat ist
           selectedChat.chatId !== lastJsonMessage.content.message.message.chat
         )
           return;
         setMessages((prev) => {
           for (let i = 0; i < prev.length; i++) {
+            //für jede Nachricht
             if (
+              //ist es die gleiche Nachricht
               prev[i].messageID ===
               lastJsonMessage.content.message.message.messageID
             ) {
-              prev[i] = lastJsonMessage.content.message.message;
+              prev[i] = lastJsonMessage.content.message.message; //wenn ja ändere sie
             }
             if (
+              //selbes wie oben bei einer antwort
               prev[i].relatedTo?.messageID ===
               lastJsonMessage.content.message.message.messageID
             ) {
@@ -414,7 +419,7 @@ export default function MessageScreen() {
               uuid={message.messageID}
               index={message.index}
               you={message.author === you ? true : false}
-              author={message.author}
+              author={message.author} //...
               time={message.sent}
               read={message.status}
               reactions={message.reactions}
@@ -494,7 +499,7 @@ function mapMedia(filePath, id) {
     case "gif":
       return (
         <img
-          src={`http${DOMAIN}/assets${filePath}`}
+          src={`${prefixDOMAIN}${DOMAIN}/assets${filePath}`}
           alt={id}
           className="image-media"
           key={id}
@@ -505,7 +510,7 @@ function mapMedia(filePath, id) {
         <div className="video" key={id}>
           <video
             controls
-            src={`http${DOMAIN}/assets${filePath}`}
+            src={`${prefixDOMAIN}${DOMAIN}/assets${filePath}`}
           ></video>
         </div>
       );
@@ -514,11 +519,13 @@ function mapMedia(filePath, id) {
     case "ogg":
     case "webm":
     case "wav":
-      return <Audio src={`http${DOMAIN}/assets${filePath}`} key={id} />;
+      return (
+        <Audio src={`${prefixDOMAIN}${DOMAIN}/assets${filePath}`} key={id} />
+      );
     default:
       return (
         <div className="file" key={id}>
-          <a href={`http${DOMAIN}/assets${filePath}`} target="blank">
+          <a href={`${prefixDOMAIN}${DOMAIN}/assets${filePath}`} target="blank">
             <AiOutlineFileText
               size={"clamp(2rem, 10vw ,5rem)"}
               fill="url(#base-gradient)"

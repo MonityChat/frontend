@@ -18,8 +18,8 @@ export default function ProfileButton({
           <img
             src={
               profileImage
-                ? `http${DOMAIN}/assets${profileImage}`
-                : `http${DOMAIN}/assets/images/monity/default.png`
+                ? `${prefixDOMAIN}${DOMAIN}/assets${profileImage}`
+                : `${prefixDOMAIN}${DOMAIN}/assets/images/monity/default.png`
             }
             alt=""
             className="blur"
@@ -27,8 +27,8 @@ export default function ProfileButton({
           <img
             src={
               profileImage
-                ? `http${DOMAIN}/assets${profileImage}`
-                : `http${DOMAIN}/assets/images/monity/default.png`
+                ? `${prefixDOMAIN}${DOMAIN}/assets${profileImage}`
+                : `${prefixDOMAIN}${DOMAIN}/assets/images/monity/default.png`
             }
             alt=""
             className="normal"

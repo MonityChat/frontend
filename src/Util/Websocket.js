@@ -1,12 +1,11 @@
 //url for the WS connection
-export const WEBSOCKET_URL = `ws${DOMAIN}/monity`;
+export const WEBSOCKET_URL = `wss${DOMAIN}/monity`;
 
 //url to upload profile image
-export const PROFILE_IMAGE_UPLOAD_URL =
-  `http${DOMAIN}/upload/profileImage`;
+export const PROFILE_IMAGE_UPLOAD_URL = `${prefixDOMAIN}${DOMAIN}/upload/profileImage`;
 
 //url to upload files
-export const FILE_UPLOAD_URL = `http${DOMAIN}/upload/chatFile`;
+export const FILE_UPLOAD_URL = `${prefixDOMAIN}${DOMAIN}/upload/chatFile`;
 
 //all actions the client send to the server (see more on the excel document)
 export const ACTION_CONTACT_SEARCH = "contact:search";
