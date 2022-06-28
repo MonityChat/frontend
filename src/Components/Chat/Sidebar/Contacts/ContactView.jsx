@@ -46,10 +46,10 @@ export default function ContactView() {
         setContacts([]);
       } else {
         incomingContacts
-          .sort((a, b) => {
+          ?.sort((a, b) => {
             return a.unreadMessages - b.unreadMessages;
           })
-          .reverse();
+          ?.reverse();
 
         setContacts(incomingContacts);
       }

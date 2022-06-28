@@ -31,10 +31,10 @@ export default function GroupView() {
       setGroups([]);
     } else {
       incomingGroups
-        .sort((a, b) => {
+        ?.sort((a, b) => {
           return a.numberOfUnreadMessages - b.numberOfUnreadMessages;
         })
-        .reverse();
+        ?.reverse();
 
       setGroups(incomingGroups);
     }

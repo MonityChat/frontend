@@ -83,7 +83,7 @@ export default function Register() {
 
 		const result = await register(userName, email, password);
 
-		if (result === 'USERNAME_TAKEN') {
+		if (result === 'USERNAME_ALREADY_IN_USE') {
 			setMessage('Username already taken');
 			userNameRef.current.classList.add('error');
 			return;
