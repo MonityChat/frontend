@@ -22,6 +22,7 @@
 	max-width: 85%;
 	text-overflow: ellipsis;
 	overflow: hidden;
+	text-transform: capitalize;
 }
 
 .info .news-status {

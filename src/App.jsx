@@ -40,11 +40,8 @@ export default function App() {
 
   useEffect(() => {
     getNewKey();
-    Notification.requestPermission().then(function(result) {
-      console.log("Notification granted");
-    });
   }, []);
-
+  
   useEffect(() => {
     if (colorMode === COLOR_MODES.GRADIENT_COLOR) {
       document.documentElement.style.setProperty(

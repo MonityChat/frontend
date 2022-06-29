@@ -35,7 +35,7 @@ export default function Contact({
           {name}
         </h2>
         <span className="last-online">
-          {status === "OFFLINE"
+          {status === "offline"
             ? `last online: ${
                 new Date(lastOnline).toLocaleString().split(",")[0]
               }`
