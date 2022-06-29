@@ -47,8 +47,11 @@ export default function Messenger() {
       toast.error(
         "Can not make a connection to the Websocket, the server may be offline"
       );
-      history.push("/home");
+      history.push("/");
     },
+    onClose:() => {
+      history.push("/login");
+    }
   });
 
   useEffect(() => {
@@ -56,7 +59,7 @@ export default function Messenger() {
 
 		sendJsonMessage({
 			auth: key || '00000000-0000-0000-0000-000000000000',
-			user: localStorage.getItem('userName'),
+			user: localStorage.getItem('userName') || 'LOOOOOSER',
 		});
 		document.title = 'Monity | Chat';
 	}, []);

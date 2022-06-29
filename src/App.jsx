@@ -91,9 +91,9 @@ export default function App() {
               <Route path="/forgot-password" component={ForgotPassword} exact />
               <Route path="/reset-password" component={ResetPassword} exact />
               <Route path="/success" component={NewAccount} exact />
-              <Route path="/home" component={Home} exact />
               <Route path="/login" component={Authentication} exact />
-              <Route path="/" component={Messenger} exact />
+              <Route path="/chat" component={Messenger} exact />
+              <Route path="/" component={Home} exact />
               <Route component={FileNotFound} exact />
             </Switch>
           </div>
@@ -101,7 +101,7 @@ export default function App() {
       </SettingsContext.Provider>
       <ToastContainer
         position="top-right"
-        autoClose={3200}
+        autoClose={2000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

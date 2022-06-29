@@ -67,6 +67,12 @@
   --scheme-green-1: green;
 }
 
+@media only screen and (max-width: 600px) {
+  :root{
+    font-size: 12px;
+  }
+}
+
 html,
 body {
   height: 100vh;
@@ -75,7 +81,6 @@ body {
   width: 100vw;
   background-color: #15161a;
   color: var(--c-font);
-  /* background-image: url("http://localhost:8808/assets/images/monity/background.svg"); */
   background-position: bottom;
   background-repeat: repeat-x;
   background-size: cover;

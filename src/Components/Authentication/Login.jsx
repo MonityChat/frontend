@@ -13,8 +13,6 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import useAuthentication from '../../Util/UseAuth';
 import './Css/Login.css';
 
-const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
-
 /**
  * Component to display a login field. It lets you enter an email/username and password.
  *  After pressing the login button, it will first check if the user exists.
@@ -65,10 +63,10 @@ export default function Login() {
 		setMessage('Successfully loged in');
 		toast.success('You will be redirected soon.');
 
-		setLogedIn(true);
+		// setLogedIn(true);
 
 		setTimeout(() => {
-			history.push('/');
+			history.push('/chat');
 		}, 1000);
 	};
 

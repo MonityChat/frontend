@@ -6,8 +6,6 @@ import './Css/Register.css';
 import { generateNewSalt, hash } from '../../Util/Encrypt';
 import useAuthentication from '../../Util/UseAuth.js';
 
-const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
-
 /**
  * Component  to display a register field.
  * Enter all the required data and create an account.
@@ -152,6 +150,7 @@ function isValidPassword(password) {
 async function register(userName, email, password) {
 	const salt = generateNewSalt();
 	const hashedPassword = await hash(password, salt);
+	const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 
 	const registerOptions = {
 		method: 'POST',
