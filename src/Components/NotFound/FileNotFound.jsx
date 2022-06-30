@@ -10,7 +10,7 @@ export default function FileNotFound() {
 		<div className="file-not-found inset-container">
 			<h1>404</h1>
 			<span>Sorry the page you are looking for doesn't exist</span>
-			<Link to={'/home'}>
+			<Link to={'/'}>
 				<button> go back</button>
 			</Link>
 		</div>
