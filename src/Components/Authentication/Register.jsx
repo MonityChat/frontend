@@ -55,8 +55,8 @@ export default function Register() {
 			return;
 		}
 
-		if(userName.length < 3 ){
-			setMessage('Username must be at least 3 characters long')
+		if (userName.length < 3) {
+			setMessage('Username must be at least 3 characters long');
 			userNameRef.current.classList.add('error');
 			return;
 		}
@@ -68,7 +68,9 @@ export default function Register() {
 		}
 
 		if (!isValidPassword(password)) {
-			setMessage('Enter a valid Password');
+			setMessage(
+				'A minimum 8-digit password with a combination of uppercase and lowercase letters and numbers is required.'
+			);
 			setPasswordError(true);
 			return;
 		}
