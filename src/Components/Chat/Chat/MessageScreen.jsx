@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { IoArrowDown } from "react-icons/io5";
 import { toast } from "react-toastify";
-import Message from "./Message";
+import Message from "./Message/Message";
 import DayDivider from "./DayDivider";
 import "./Css/MessageScreen.css";
 import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
@@ -412,7 +412,7 @@ export default function MessageScreen() {
         {messages.map((message, i) => (
           <>
             {i === 0 ? (
-              <DayDivider date={message.sent} key={i + 100000} />
+              <DayDivider date={message.sent} key={message.messageID} />
             ) : (
               !sameDay(
                 new Date(message.sent),
@@ -512,6 +512,8 @@ function mapMedia(filePath, id) {
         />
       );
     case "mp4":
+    case "MOV":
+    case "mov":
       return (
         <div className="video" key={id}>
           <video
