@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import ContactStatus from "./ContactStatus";
 import GroupStatus from "./GroupStatus";
 import {
@@ -7,8 +6,10 @@ import {
   ACTION_PROFILE_GET_OTHER,
   NOTIFICATION_USER_ONLINE,
   NOTIFICATION_USER_UPDATE_PROFILE,
+  NOTIFICATION_USER_OFFLINE,
 } from "../../../Util/Websocket";
 import "./Css/StatusBar.css";
+import useAction from './../../../Hooks/useAction';
 
 /**
  * Third part of the main components.
@@ -23,29 +24,24 @@ export default function StatusBar() {
 
   const statusBarRef = useRef();
 
-  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-    share: true,
+  useAction(ACTION_PROFILE_GET_OTHER, (lastJsonMessage) => {
+    setCurrentContactStatus(lastJsonMessage.content);
+  });
+  useAction(NOTIFICATION_USER_ONLINE, (lastJsonMessage) => {
+    setCurrentContactStatus(lastJsonMessage.content.from);
+  });
+
+  useAction(NOTIFICATION_USER_OFFLINE, (lastJsonMessage) => {
+    setCurrentContactStatus(lastJsonMessage.content.from);
+  });
+
+  useAction(NOTIFICATION_USER_UPDATE_PROFILE, (lastJsonMessage) => {
+    setCurrentContactStatus(lastJsonMessage.content.from);
   });
 
   useEffect(() => {
     statusBarRef.current.classList.toggle("opened", opened);
   }, [opened]);
-
-  useEffect(() => {
-    if (lastJsonMessage === null) return;
-    if (lastJsonMessage.action === ACTION_PROFILE_GET_OTHER) {
-      setCurrentContactStatus(lastJsonMessage.content);
-    }
-
-    switch (lastJsonMessage.notification) {
-      case NOTIFICATION_USER_ONLINE: {
-        setCurrentContactStatus(lastJsonMessage.content.from);
-      }
-      case NOTIFICATION_USER_UPDATE_PROFILE: {
-        setCurrentContactStatus(lastJsonMessage.content.from);
-      }
-    }
-  }, [lastJsonMessage]);
 
   return (
     <div className="statusbar" ref={statusBarRef}>

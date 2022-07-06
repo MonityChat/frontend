@@ -12,6 +12,7 @@ import "./Css/Home.css";
  * Component for the home page. Displays some data about the project.
  */
 export default function Home() {
+
   return (
     <div className="home-container">
       <BaseGradient />
