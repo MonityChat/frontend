@@ -3,7 +3,7 @@ import { useLocation, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
 import { RESET_PASSWORD_URL } from "../../Util/Auth";
 import PasswordField from "./PasswordField";
-import "./CSS/ResetPassword.css";
+import "./Css/ResetPassword.css";
 import { generateNewSalt, hash } from "../../Util/Encrypt";
 import useAuthentication from "../../Util/UseAuth.js";
 
