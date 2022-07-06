@@ -144,7 +144,7 @@
 
 .logo-image {
 	grid-area: logo;
-	background-image: url('/src/image/Icon.png');
+	background-image: url('https://monitychat.de/api/assets/images/monity/icon.png');
 	background-repeat: no-repeat;
 	background-size: 50%;
 	background-position: center;
