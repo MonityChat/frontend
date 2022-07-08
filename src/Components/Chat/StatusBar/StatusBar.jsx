@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import ContactStatus from "./ContactStatus";
 import GroupStatus from "./GroupStatus";
 import {
-  WEBSOCKET_URL,
   ACTION_PROFILE_GET_OTHER,
   NOTIFICATION_USER_ONLINE,
   NOTIFICATION_USER_UPDATE_PROFILE,

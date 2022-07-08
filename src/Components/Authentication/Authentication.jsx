@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { getNewKey, SESSION_AUTH } from "../../Util/Auth";
+import { getNewKey } from "../../Util/Auth";
 import useAuthentication from "../../Util/UseAuth";
 import Login from "./Login";
 import Register from "./Register";

@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { toast } from 'react-toastify';
 import PasswordField from './PasswordField';
-import { REGISTER_URL, SESSION_AUTH, getNewKey } from '../../Util/Auth.js';
+import { REGISTER_URL, getNewKey } from '../../Util/Auth.js';
 import './Css/Register.css';
 import { generateNewSalt, hash } from '../../Util/Encrypt';
 import useAuthentication from '../../Util/UseAuth.js';

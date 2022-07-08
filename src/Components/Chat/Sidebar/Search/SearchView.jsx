@@ -1,91 +1,72 @@
-import React, { useState, useEffect } from "react";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
+import React, { useState, useEffect } from 'react';
 import {
-  ACTION_GROUP_SEARCH,
-  ACTION_GROUP_ADD,
-  WEBSOCKET_URL,
-} from "../../../../Util/Websocket";
-import "./Css/SearchView.css";
-import SearchGroup from "./SearchGroup";
+	ACTION_GROUP_SEARCH,
+	ACTION_GROUP_ADD,
+} from '../../../../Util/Websocket';
+import './Css/SearchView.css';
+import SearchGroup from './SearchGroup';
+import useAction from './../../../../Hooks/useAction';
+import { debounce } from './../../../../Util/Helpers';
 
 /**
  * Component to render a sidebar view for searching groups.
  * currently not supported
  */
 export default function SearchView() {
-  const [searchedGroups, setSearchedGroups] = useState([]);
+	const [searchedGroups, setSearchedGroups] = useState([]);
 
-  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-    share: true,
-  });
+	const { sendJsonMessage } = useAction(
+		ACTION_GROUP_SEARCH,
+		(lastJsonMessage) => {
+			setSearchedGroups(lastJsonMessage.content.groups);
+		}
+	);
 
-  useEffect(() => {
-    if (lastJsonMessage === null) return;
-    if (lastJsonMessage.action !== ACTION_GROUP_SEARCH) return;
+	const searchInput = debounce((keyword) => {
+		if (keyword.length < 3) {
+			setSearchedGroups([]);
+			return;
+		}
 
-    setSearchedGroups(lastJsonMessage.content.groups);
-  }, [lastJsonMessage]);
+		sendJsonMessage({
+			action: ACTION_GROUP_SEARCH,
+			keyword,
+		});
+	});
 
-  const searchInputChanged = (e) => {
-    searchInput(e.target.value);
-  };
+	const sendJoinRequest = (uuid) => {
+		console.log('sendJoinRequest', uuid);
+		sendJsonMessage({
+			action: ACTION_GROUP_ADD,
+			target: uuid,
+		});
+	};
 
-  const debunce = (cb, delay = 700) => {
-    let timeout;
-
-    return (...args) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        cb(...args);
-      }, delay);
-    };
-  };
-
-  const searchInput = debunce((keyword) => {
-    if (keyword.length < 3) {
-      searchedGroups([]);
-      return;
-    }
-
-    sendJsonMessage({
-      action: ACTION_GROUP_SEARCH,
-      keyword,
-    });
-  });
-
-  const sendJoinRequest = (uuid) => {
-    console.log("sendJoinRequest", uuid);
-    sendJsonMessage({
-      action: ACTION_GROUP_ADD,
-      target: uuid,
-    });
-  };
-
-  return (
-    <div className="search-view view">
-      <h2 className="title">Search public groups</h2>
-      <input
-        type="text"
-        className="search"
-        placeholder="Search public groups"
-        onChange={searchInputChanged}
-      />
-      <div className="scrollable">
-        {searchedGroups.length === 0 ? (
-          <span className="placeholder">No results</span>
-        ) : (
-          searchedGroups.map((groups, i) => (
-            <SearchGroup
-              key={i}
-              name={"Die Wilden"}
-              shortStatus={"WILD AND FREE"}
-              profilePicture={"/src/image/Donut.png"}
-              uuid={"12323535"}
-              onClick={sendJoinRequest}
-            />
-          ))
-        )}
-      </div>
-    </div>
-  );
+	return (
+		<div className="search-view view">
+			<h2 className="title">Search public groups</h2>
+			<input
+				type="text"
+				className="search"
+				placeholder="Search public groups"
+				onChange={(e) => searchInput(e.target.value)}
+			/>
+			<div className="scrollable">
+			{searchedGroups.length === 0 ? (
+					<span className="placeholder">No results</span>
+				) : (
+					searchedGroups.map((group, i) => (
+						<AddContact
+							name={group.userName}
+							shortStatus={group.shortStatus}
+							profilePicture={group.profileImageLocation}
+							uuid={group.uuid}
+							onClick={sendJoinRequest}
+							key={i}
+						/>
+					))
+				)}
+			</div>
+		</div>
+	);
 }

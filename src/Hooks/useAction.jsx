@@ -6,38 +6,54 @@ const CONSOLE_CSS_ERROR =
 	'color:red;font-size:1rem;font-weight:bold;background-color: #55000088';
 const CONSOLE_CSS_CONFIRM = 'color:lightgreen;font-size:1rem;font-weight:bold';
 
-//TODO implements rest operator to pass multiple functions to the useAction which all get checked
-
-export default function useAction(action = '', cb = () => {}) {
+/**
+ * Costum Hook to check if a Websocket message actiontype equals with a given
+ * actiontype and invokes a callback function if so
+ * @param {String} actiontype to check for in the WS message. Can be a notification or action
+ * @param {Function} cb to run if the action is equal with the one from the WS
+ * @returns {{Function, Function}} object with to functions to send and read WS messages
+ */
+export default function useAction(actiontype = '', cb = () => {}) {
 	const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
 		share: true,
 		shouldReconnect: false,
 		onError,
 		onClose,
-		onMessage,
 		onOpen,
 		filter,
+		onMessage: () => console.log("new messaeg")
 	});
 
 	useEffect(() => {
 		if (lastJsonMessage === null) return;
 
-		if ('error' in lastJsonMessage && LOGS) {
-			console.warn('An error was send with a json message');
-		}
+
 
 		if (
-			action === lastJsonMessage.action ||
-			action === lastJsonMessage.notification
+			actiontype === lastJsonMessage.action ||
+			actiontype === lastJsonMessage.notification
 		) {
+			if (cb === null) return;
+			onMessage(lastJsonMessage);
 			cb(lastJsonMessage);
 		}
 	}, [lastJsonMessage]);
 	return { sendJsonMessage, lastJsonMessage };
 }
 
+/**
+ * Filter for filtering messages from the WS to check them if they are valid
+ * @param {*} rawData
+ * @returns {boolean} true or false wheater the message is valid
+ */
 function filter(rawData) {
-	const message = JSON.parse(rawData.data);
+	let message = {};
+	try {
+		message = JSON.parse(rawData.data);
+	} catch (error) {
+		console.error('WS message body does not cotain valid JSON: ', error);
+		return false;
+	}
 
 	if (
 		'action' in message ||
@@ -55,6 +71,10 @@ function filter(rawData) {
 	return false;
 }
 
+/**
+ * Prints an error to the console with styling
+ * @param {Error} e error
+ */
 function onError(e) {
 	e.preventDefault();
 	console.groupCollapsed('%cWS Error', CONSOLE_CSS_ERROR);
@@ -63,26 +83,41 @@ function onError(e) {
 	console.groupEnd('WS Error');
 }
 
-function onMessage(e) {
+/**
+ * Logs the message to the console if logs are enabled
+ * @param {Object} message message from a WS
+ */
+function onMessage(message) {
+
 	if (!LOGS) return;
 
-	const data = JSON.parse(e.data);
-
 	console.groupCollapsed(
-		'WS message: ' + data.action || data.notification || data.error || '-'
+		'WS message: ' + message.action ||
+			message.notification ||
+			message.error ||
+			'-'
 	);
-	console.log(e);
+	console.log(message);
 	console.groupEnd(
-		'WS message: ' + data.action || data.notification || data.error || '-'
+		'WS message: ' + message.action ||
+			message.notification ||
+			message.error ||
+			'-'
 	);
 }
 
+/**
+ * Logs a styled close message
+ */
 function onClose(e) {
-  if(!LOGS) return;
+	if (!LOGS) return;
 	console.info('%c👋 Closed Websocket connection 👋', CONSOLE_CSS_ERROR);
 }
 
+/**
+ * Logs a styled open message
+ */
 function onOpen(e) {
-  if(!LOGS) return;
+	if (!LOGS) return;
 	console.info('%c👌 Opened Websocket connection 🤝', CONSOLE_CSS_CONFIRM);
 }

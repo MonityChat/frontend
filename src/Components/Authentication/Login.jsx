@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PasswordField from './PasswordField';
 import { toast } from 'react-toastify';
 import {
 	USER_EXISTS_URL,
 	SALT_URL,
 	LOGIN_URL,
-	SESSION_AUTH,
 } from '../../Util/Auth.js';
 import { hash } from '../../Util/Encrypt';
 import { Link } from 'react-router-dom';

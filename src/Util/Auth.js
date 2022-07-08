@@ -21,12 +21,6 @@ export const REQEUST_RESET_PASSWORD_URL = `${prefixDOMAIN}${DOMAIN}/user/reset`;
 //URL for password reset
 export const RESET_PASSWORD_URL = `${prefixDOMAIN}${DOMAIN}/user/resetConfirm`;
 
-//key for making requests to the server -> OLD <- use useAuthentication instead
-export const SESSION_AUTH = {
-  key: null,
-  isLogedIn: false,
-};
-
 /**
  * Function for getting a basic session key to make requests to the server
  */
