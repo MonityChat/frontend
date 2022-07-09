@@ -4,7 +4,6 @@ import useAuthentication from "../../Util/UseAuth";
 import Login from "./Login";
 import Register from "./Register";
 import "./Css/Authentication.css";
-import { PushNotification, Toast } from "../../Util/Toast";
 
 //Authentication modes
 const MODES = Object.freeze({
@@ -28,7 +27,6 @@ export default function Authentication() {
   // }, []);
 
   useEffect(() => {
-    Toast.error("ERROR").sendIfFocus(PushNotification.new("ERROR"));
     document.title = "Monity " + mode;
     logInRef.current.classList.toggle("selected", mode === MODES.LOGIN);
     registerRef.current.classList.toggle("selected", mode === MODES.REGISTER);

@@ -1,37 +1,34 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { AiOutlineFileText } from 'react-icons/ai';
 import { IoArrowDown } from 'react-icons/io5';
 import { toast } from 'react-toastify';
-import Message from './Message/Message';
-import DayDivider from './DayDivider';
-import './Css/MessageScreen.css';
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
-import { ChatContext } from '../Messenger';
-import { ReactContext, RelatedContext } from './Chat';
-import { AiOutlineFileText } from 'react-icons/ai';
 import {
-	WEBSOCKET_URL,
+	ACTION_GET_MESSAGE,
 	ACTION_GET_MESSAGE_LATEST,
+	ACTION_MESSAGE_DELETE,
+	ACTION_MESSAGE_EDIT,
+	ACTION_MESSAGE_REACT,
+	ACTION_MESSAGE_READ,
 	ACTION_MESSAGE_SEND,
+	NOTIFICATION_MESSAGE_DELETE,
+	NOTIFICATION_MESSAGE_EDITED,
 	NOTIFICATION_MESSAGE_INCOMING,
+	NOTIFICATION_MESSAGE_REACTED,
 	NOTIFICATION_MESSAGE_READ,
 	NOTIFICATION_MESSAGE_RECEIVED,
-	ACTION_MESSAGE_READ,
-	ACTION_MESSAGE_DELETE,
+	NOTIFICATION_USER_OFFLINE,
+	NOTIFICATION_USER_ONLINE,
 	NOTIFICATION_USER_STARTED_TYPING,
 	NOTIFICATION_USER_STOPPED_TYPING,
-	ACTION_GET_MESSAGE,
-	NOTIFICATION_MESSAGE_DELETE,
-	NOTIFICATION_MESSAGE_REACTED,
-	ACTION_MESSAGE_EDIT,
-	NOTIFICATION_MESSAGE_EDITED,
-	ACTION_MESSAGE_REACT,
-	NOTIFICATION_USER_ONLINE,
-	NOTIFICATION_USER_OFFLINE,
+	WEBSOCKET_URL,
 } from '../../../Util/Websocket';
-import { ProfileContext } from '../Messenger';
+import { ChatContext, ProfileContext } from '../Messenger';
 import Audio from './Audio';
-import notify from '../../../Util/Notification';
-import { NOTIFICATION_TYPES } from './../../../Util/Notification';
+import { ReactContext, RelatedContext } from './Chat';
+import './Css/MessageScreen.css';
+import DayDivider from './DayDivider';
+import Message from './Message/Message';
 
 /**
  * Component for displaying all the messages.
@@ -178,26 +175,8 @@ export default function MessageScreen() {
 				) {
 					if (profile.status === 'DO_NOT_DISTURB') return;
 					const content = lastJsonMessage.content.message.content;
-					const title = `New Message from: ${lastJsonMessage.content.from}`;
-					const attachedMedia =
-						lastJsonMessage.content.message.attachedMedia;
-					notify(
-						{
-							title,
-							message: `${
-								content.length > 120
-									? content.slice(0, 120) + '...'
-									: content
-							}`,
-						},
-						NOTIFICATION_TYPES.INFO,
-						{
-							icon: "https://monitychat.de/api/assets/images/monity/default.png",
-							image: 'https://monitychat.de/api/assets/images/chats/d8361a6b-ba0b-466f-a57b-2c30c8a15c06/9e5a3c44-1342-4f16-b8b7-9d5060083c52/2A461BDC-72C2-4C8E-845F-0AFC54C7DA54.jpeg'
-						}
-					);
-					// toast.info(`${lastJsonMessage.content.from} send you a message:
-					// ${content.length > 120 ? content.slice(0, 120) + "..." : content}`);
+					toast.info(`${lastJsonMessage.content.from} send you a message:
+					${content.length > 120 ? content.slice(0, 120) + "..." : content}`);
 					break;
 				}
 				setMessages((prev) => [

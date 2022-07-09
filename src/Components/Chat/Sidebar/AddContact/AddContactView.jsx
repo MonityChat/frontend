@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
+import { debounce } from '../../../../Util/Helpers';
 import {
 	ACTION_CONTACT_ADD,
-	ACTION_CONTACT_SEARCH,
+	ACTION_CONTACT_SEARCH
 } from '../../../../Util/Websocket';
+import useAction from './../../../../Hooks/useAction';
 import AddContact from './AddContact';
 import './Css/AddContactView.css';
-import useAction from './../../../../Hooks/useAction';
-import { debounce } from '../../../../Util/Helpers';
-import notify from '../../../../Util/Notification';
 
 /**
  * Component to render a sidebar view for adding contacts.

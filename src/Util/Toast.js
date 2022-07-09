@@ -1,13 +1,17 @@
 import { toast } from 'react-toastify';
 
 async function requestNotificationPermission() {
-	if (Notification.permission !== 'default') return;
+	if (!('Notification' in window)) {
+		return;
+	}
+	if (Notification.permission !== 'default') {
+		return;
+	}
 
 	try {
 		const result = await Notification.requestPermission();
-		HAS_PERMISSION = result === 'granted';
 	} catch (err) {
-		console.error('Browser does not support Push notifications ', error);
+		console.error(err);
 	}
 }
 
@@ -232,7 +236,7 @@ export class Toast {
  */
 export class PushNotification {
 	/** are notifications granted */
-	static #notificationPermission = Notification.permission;
+	static #notificationPermission = Notification?.permission;
 
 	/** are notifications supported*/
 	static #notificationIsSupported = Boolean(
@@ -256,6 +260,14 @@ export class PushNotification {
 	 * @param {number}
 	 */
 	constructor(title, message, onClick) {
+		console.log(
+			PushNotification.#notificationIsSupported + ' static private'
+		);
+		console.log(('Notification' in window) + ' is in window');
+		if (PushNotification.#notificationPermission === 'default') {
+			requestNotificationPermission();
+		}
+
 		if (typeof title === 'string') {
 			this.#title = title;
 		}
@@ -363,23 +375,27 @@ export class PushNotification {
 		if (!this.#title) {
 			return this;
 		}
-
-		if(!PushNotification.#notificationIsSupported){
+		if (!PushNotification.#notificationIsSupported) {
 			return this;
 		}
 
-		const notification = new Notification(this.#title, {
-			body: this.#message,
-			icon: this.#icon,
-			image: this.#image,
-			...this.#options,
-			renotify: true,
-			tag: 'no-empty',
-		});
+		try {
+			const notification = new Notification(this.#title, {
+				body: this.#message,
+				icon: this.#icon,
+				image: this.#image,
+				...this.#options,
+				renotify: true,
+				tag: 'no-empty',
+			});
 
-		if (this.#onClick !== null) {
-			notification.onclick = this.#onClick;
+			if (this.#onClick !== null) {
+				notification.onclick = this.#onClick;
+			}
+			return notification;
+		} catch (err) {
+			console.error(err);
+			return this;
 		}
-		return notification;
 	}
 }
