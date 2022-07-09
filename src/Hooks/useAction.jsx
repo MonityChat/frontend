@@ -21,7 +21,6 @@ export default function useAction(actiontype = '', cb = () => {}) {
 		onClose,
 		onOpen,
 		filter,
-		onMessage: () => console.log("new messaeg")
 	});
 
 	useEffect(() => {
