@@ -1,10 +1,13 @@
 /** URL for the WS connection*/
+/** @deprecated use WSSYTEM instead */
 export const WEBSOCKET_URL = `wss${DOMAIN}/monity`;
 
 /**URL to upload profile image*/
+/** @deprecated use WSSYTEM instead */
 export const PROFILE_IMAGE_UPLOAD_URL = `${prefixDOMAIN}${DOMAIN}/upload/profileImage`;
 
 /**URL to upload files*/
+/** @deprecated use WSSYTEM instead */
 export const FILE_UPLOAD_URL = `${prefixDOMAIN}${DOMAIN}/upload/chatFile`;
 
 //all actions the client send to the server (see more on the excel document)
@@ -79,6 +82,8 @@ export const NOTIFICATION_USER_STARTED_TYPING = 'user:action:started:typing';
 /** @deprecated use WSSYTEM instead */
 export const NOTIFICATION_USER_STOPPED_TYPING = 'user:action:stopped:typing';
 
+const URL_PREFIX = `${prefixDOMAIN}${DOMAIN}`;
+
 export const ACTION = {
 	CONTACT: {
 		SEARCH: 'contact:search',
@@ -148,7 +153,18 @@ export const NOTIFICATION = {
 	},
 };
 
-export const WSSYSTEM = {
+export const URL = {
+	WS_CONNECT_URL: `wss${DOMAIN}/monity`,
+	UPLOAD: {
+		PROFILE_IMAGE: `${URL_PREFIX}/upload/profileImage`,
+		FILE: `${URL_PREFIX}/upload/chatFile`,
+	},
+};
+
+const WSSYSTEM = {
 	ACTION,
 	NOTIFICATION,
+	URL,
 };
+
+export default WSSYSTEM;

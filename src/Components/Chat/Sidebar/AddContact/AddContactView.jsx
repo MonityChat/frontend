@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { debounce } from '../../../../Util/Helpers';
-import {
-	ACTION_CONTACT_ADD,
-	ACTION_CONTACT_SEARCH
-} from '../../../../Util/Websocket';
+import { ACTION } from '../../../../Util/Websocket';
 import useAction from './../../../../Hooks/useAction';
+import ERROR from './../../../../Util/Errors';
 import AddContact from './AddContact';
 import './Css/AddContactView.css';
 
@@ -19,14 +17,17 @@ import './Css/AddContactView.css';
 export default function AddContactView() {
 	const [searchedContacts, setSearchedContacts] = useState([]);
 
-	const {sendJsonMessage} = useAction(ACTION_CONTACT_SEARCH, (lastJsonMessage) => {
-		setSearchedContacts(lastJsonMessage.content.users);
-	});
+	const { sendJsonMessage } = useAction(
+		ACTION.CONTACT.SEARCH,
+		(lastJsonMessage) => {
+			setSearchedContacts(lastJsonMessage.content.users);
+		}
+	);
 
-	useAction(ACTION_CONTACT_ADD, (lastJsonMessage) => {
-		if (lastJsonMessage.content.error === 'ALREADY_MADE_CONTACT') {
+	useAction(ACTION.CONTACT.ADD, (lastJsonMessage) => {
+		if (lastJsonMessage.content.error === ERROR.ALREADY_CONTACT) {
 			toast.error('You are already in contact');
-		} else if (lastJsonMessage.content.error === 'ALREADY_SEND_REQUEST') {
+		} else if (lastJsonMessage.content.error === ERROR.ALREADY_SEND_REQUEST) {
 			toast.error('You already send a request');
 		} else {
 			toast.info('Sent friend request');
@@ -40,14 +41,14 @@ export default function AddContactView() {
 		}
 
 		sendJsonMessage({
-			action: ACTION_CONTACT_SEARCH,
+			action: ACTION.CONTACT.SEARCH,
 			keyword,
 		});
 	});
 
 	const sendFriendRequest = (uuid) => {
 		sendJsonMessage({
-			action: ACTION_CONTACT_ADD,
+			action: ACTION.CONTACT.ADD,
 			target: uuid,
 		});
 	};

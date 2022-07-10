@@ -1,8 +1,7 @@
-import React, { useState, createContext } from "react";
-
+import React, { createContext, useState } from "react";
 import ChatInput from "./ChatInput";
-import MessageScreen from "./MessageScreen";
 import "./Css/Chat.css";
+import MessageScreen from "./MessageScreen";
 
 /**
  * Context for the currently selected message which will be related/ answered to

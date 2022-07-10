@@ -1,19 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
-import { toast } from "react-toastify";
-import Contact from "./Contact.jsx";
-import {
-  WEBSOCKET_URL,
-  ACTION_CONTACT_GET,
-  ACTION_GET_MESSAGE_LATEST,
-  NOTIFICATION_MESSAGE_INCOMING,
-  ACTION_PROFILE_GET_OTHER,
-  NOTIFICATION_USER_ONLINE,
-  NOTIFICATION_USER_UPDATE_PROFILE,
-  NOTIFICATION_USER_OFFLINE,
-} from "../../../../Util/Websocket.js";
-import { ChatContext } from "../../Messenger";
-import "./Css/ContactView.css";
+import React, { useContext, useEffect, useState } from 'react';
+import { ChatContext } from '../../Messenger';
+import useAction from './../../../../Hooks/useAction';
+import WSSYSTEM from './../../../../Util/Websocket';
+import Contact from './Contact.jsx';
+import './Css/ContactView.css';
 
 /**
  * Component to render a sidebar view for your contacts.
@@ -23,139 +13,133 @@ import "./Css/ContactView.css";
  * the corresponding chatid and targetid
  */
 export default function ContactView() {
-  const [contacts, setContacts] = useState(null);
+	const [contacts, setContacts] = useState(null);
 
-  const { selectedChat, setSelectedChat } = useContext(ChatContext);
+	const { selectedChat, setSelectedChat } = useContext(ChatContext);
 
-  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-    share: true,
-  });
+	const { sendJsonMessage } = useAction(
+		WSSYSTEM.ACTION.CONTACT.GET._,
+		(lastJsonMessage) => {
+			const incomingContacts = lastJsonMessage.content.contacts;
 
-  useEffect(() => {
-    sendJsonMessage({
-      action: ACTION_CONTACT_GET,
-    });
-  }, []);
+			if (incomingContacts.length === 0) {
+				setContacts([]);
+			} else {
+				incomingContacts
+					?.sort((a, b) => {
+						return a.unreadMessages - b.unreadMessages;
+					})
+					?.reverse();
 
-  useEffect(() => {
-    if (lastJsonMessage === null) return;
-    if (lastJsonMessage.action === ACTION_CONTACT_GET) {
-      const incomingContacts = lastJsonMessage.content.contacts;
+				setContacts(incomingContacts);
+			}
+		}
+	);
 
-      if (incomingContacts.length === 0) {
-        setContacts([]);
-      } else {
-        incomingContacts
-          ?.sort((a, b) => {
-            return a.unreadMessages - b.unreadMessages;
-          })
-          ?.reverse();
+	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.INCOMING, (lastJsonMessage) => {
+		const inChatID = lastJsonMessage.content.chatID;
+		if (inChatID === selectedChat.chatId) return;
+		setContacts((prev) =>
+			prev.map((contact) =>
+				contact.chatID === inChatID
+					? {
+							...contact,
+							unreadMessages: contact.unreadMessages + 1,
+					  }
+					: contact
+			)
+		);
+	});
 
-        setContacts(incomingContacts);
-      }
-    }
+	useAction(WSSYSTEM.NOTIFICATION.USER.ONLINE, (lastJsonMessage) => {
+		const newUser = lastJsonMessage.content.from;
+		setContacts((prev) => [
+			...prev?.filter((contact) => contact.uuid !== newUser.uuid),
+			newUser,
+		]);
+	});
 
-    switch (lastJsonMessage.notification) {
-      case NOTIFICATION_MESSAGE_INCOMING: {
-        const inChatID = lastJsonMessage.content.chatID;
-        if (inChatID === selectedChat.chatId) return;
-        setContacts((prev) =>
-          prev.map((contact) =>
-            contact.chatID === inChatID
-              ? {
-                  ...contact,
-                  unreadMessages: contact.unreadMessages + 1,
-                }
-              : contact
-          )
-        );
-        break;
-      }
-      case NOTIFICATION_USER_ONLINE: {
-        const newUser = lastJsonMessage.content.from;
-        setContacts((prev) => [
-          ...prev?.filter((contact) => contact.uuid !== newUser.uuid),
-          newUser,
-        ]);
-        break;
-      }
-      case NOTIFICATION_USER_OFFLINE: {
-        const newUser = lastJsonMessage.content.from;
-        setContacts((prev) => [
-          ...prev?.filter((contact) => contact.uuid !== newUser.uuid),
-          newUser,
-        ]);
-        break;
-      }
-      case NOTIFICATION_USER_UPDATE_PROFILE: {
-        const newUser = lastJsonMessage.content.from;
-        setContacts((prev) => [
-          ...prev?.filter((contact) => contact.uuid !== newUser.uuid),
-          newUser,
-        ]);
-        break;
-      }
-    }
-  }, [lastJsonMessage]);
+	useAction(WSSYSTEM.NOTIFICATION.USER.OFFLINE, (lastJsonMessage) => {
+		const newUser = lastJsonMessage.content.from;
+		setContacts((prev) => [
+			...prev?.filter((contact) => contact.uuid !== newUser.uuid),
+			newUser,
+		]);
+	});
 
-  const onContactClick = (uuid) => {
-    //ID des Chats suchen
-    const chatId =
-      contacts.find((contact) => contact.uuid === uuid).chatID || "";
-    sendJsonMessage({
-      action: ACTION_GET_MESSAGE_LATEST, //50 Neue nachrichten
-      chatID: chatId, //ID des Chats
-    }); //...
+	useAction(WSSYSTEM.NOTIFICATION.USER.PROFILE_UPDATE, (lastJsonMessage) => {
+		const newUser = lastJsonMessage.content.from;
+		setContacts((prev) => [
+			...prev?.filter((contact) => contact.uuid !== newUser.uuid),
+			newUser,
+		]);
+	});
 
-    sendJsonMessage({
-      action: ACTION_PROFILE_GET_OTHER,
-      target: uuid,
-    });
+	useEffect(() => {
+		sendJsonMessage({
+			action: WSSYSTEM.ACTION.CONTACT.GET._,
+		});
+	}, []);
 
-    setContacts((prev) => {
-      prev.forEach((contact) => {
-        if (contact.uuid === uuid) {
-          contact.unreadMessages = 0;
-        }
-      });
-      return prev;
-    });
+	const onContactClick = (uuid) => {
+		const chatId =
+			contacts.find((contact) => contact.uuid === uuid).chatID || '';
+		sendJsonMessage({
+			action: WSSYSTEM.ACTION.MESSAGE.GET.LATEST,
+			chatID: chatId,
+		});
 
-    setSelectedChat((prev) => ({
-      ...prev,
-      chatId: chatId,
-      targetId: uuid,
-    }));
+		sendJsonMessage({
+			action: WSSYSTEM.ACTION.PROFILE.GET.OTHER,
+			target: uuid,
+		});
 
-    localStorage.setItem("lastChat", chatId);
-    localStorage.setItem("lastUser", uuid);
-  };
+		setContacts((prev) => {
+			prev.forEach((contact) => {
+				if (contact.uuid === uuid) {
+					contact.unreadMessages = 0;
+				}
+			});
+			return prev;
+		});
 
-  return (
-    <div className="contact-view view">
-      <h2 className="title">Contacts</h2>
-      <div className="scrollable">
-        {contacts === null ? (
-          <span className="placeholder">Loading data...</span>
-        ) : contacts.length === 0 ? (
-          <></>
-        ) : (
-          contacts.map((contact, i) => (
-            <Contact
-              key={i}
-              uuid={contact.uuid}
-              name={contact.userName}
-              lastOnline={contact.lastSeen}
-              profilPicture={contact.profileImageLocation}
-              numberOfUnreadMessages={contact.unreadMessages}
-              isBlocked={contact.isBlocked}
-              lastMessage={contact.lastUnread?.content}
-              status={contact.status.toLowerCase().replace(/_/g, " ")}
-              onClick={onContactClick}
-            />
-          ))
-        )}
-      </div>
-    </div>
-  );
+		setSelectedChat((prev) => ({
+			...prev,
+			chatId: chatId,
+			targetId: uuid,
+		}));
+
+		localStorage.setItem('lastChat', chatId);
+		localStorage.setItem('lastUser', uuid);
+	};
+
+	return (
+		<div className="contact-view view">
+			<h2 className="title">Contacts</h2>
+			<div className="scrollable">
+				{contacts === null ? (
+					<span className="placeholder">Loading data...</span>
+				) : contacts.length === 0 ? (
+					<></>
+				) : (
+					contacts.map((contact, i) => (
+						<Contact
+							key={i}
+							uuid={contact.uuid}
+							name={contact.userName}
+							lastOnline={contact.lastSeen}
+							profilPicture={contact.profileImageLocation}
+							numberOfUnreadMessages={contact.unreadMessages}
+							isBlocked={contact.isBlocked}
+							lastMessage={contact.lastUnread?.content}
+							status={contact.status
+								.toLowerCase()
+								.replace(/_/g, ' ')}
+							onClick={onContactClick}
+						/>
+					))
+				)}
+			</div>
+		</div>
+	);
 }

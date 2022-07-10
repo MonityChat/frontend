@@ -1,25 +1,21 @@
-import React, { useEffect, useState, createContext } from "react";
-import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
-import Sidebar from "./Sidebar/Sidebar";
-import Chat from "./Chat/Chat";
-import StatusBar from "./StatusBar/StatusBar";
-import "./Css/Messenger.css";
-import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
-import useAuthentication from "../../Util/UseAuth";
-import {
-  WEBSOCKET_URL,
-  ACTION_GET_SELF,
-  ACTION_PROFILE_UPDATE,
-  ACTION_GET_MESSAGE_LATEST,
-  ACTION_PROFILE_GET_OTHER,
-} from "../../Util/Websocket";
+import React, { useEffect, useState, createContext } from 'react';
+import { toast } from 'react-toastify';
+import { Link } from 'react-router-dom';
+import Sidebar from './Sidebar/Sidebar';
+import Chat from './Chat/Chat';
+import StatusBar from './StatusBar/StatusBar';
+import './Css/Messenger.css';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
+import useAuthentication from '../../Hooks/UseAuth';
+import { ACTION, URL } from '../../Util/Websocket';
+import ERROR from './../../Util/Errors';
+import useAction from './../../Hooks/useAction';
 
 export const ProfileContext = createContext();
 export const ChatContext = createContext({
-  selectedChat: "",
-  setSelectedChat: () => {},
+	selectedChat: '',
+	setSelectedChat: () => {},
 });
 
 /**
@@ -35,27 +31,27 @@ export const ChatContext = createContext({
  * be displayed and the user will be able to use the chat application.
  */
 export default function Messenger() {
-  const [logedIn, setLogedIn] = useState(false);
-  const [profile, setProfile] = useState();
-  const [selectedChat, setSelectedChat] = useState({});
+	const [logedIn, setLogedIn] = useState(false);
+	const [profile, setProfile] = useState();
+	const [selectedChat, setSelectedChat] = useState({});
 
-  const history = useHistory();
+	const history = useHistory();
 
-  const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-    share: true,
-    onError: () => {
-      toast.error(
-        "Can not make a connection to the Websocket, the server may be offline"
-      );
-      history.push("/");
-    },
-    onClose:() => {
-      history.push("/login");
-    }
-  });
+	const { sendJsonMessage, lastJsonMessage } = useWebSocket(URL.WS_CONNECT_URL, {
+		share: true,
+		onError: () => {
+			toast.error(
+				'Can not make a connection to the Websocket, the server may be offline'
+			);
+			history.push('/');
+		},
+		onClose: () => {
+			history.push('/login');
+		},
+	});
 
-  useEffect(() => {
-    const [key, , isLogedIn] = useAuthentication();
+	useEffect(() => {
+		const [key, , isLogedIn] = useAuthentication();
 
 		sendJsonMessage({
 			auth: key || '00000000-0000-0000-0000-000000000000',
@@ -64,15 +60,15 @@ export default function Messenger() {
 		document.title = 'Monity | Chat';
 	}, []);
 
-  useEffect(() => {
-    if (lastJsonMessage === null) return;
+	useEffect(() => {
+		if (lastJsonMessage === null) return;
 
 		if (logedIn) {
-			if (lastJsonMessage.action !== ACTION_GET_SELF) return;
+			if (lastJsonMessage.action !== ACTION.PROFILE.GET.SELF) return;
 			setProfile(lastJsonMessage.content);
 			localStorage.setItem('userName', lastJsonMessage.content.userName);
 		} else {
-			if (lastJsonMessage.error !== 'NONE') {
+			if (lastJsonMessage.error !== ERROR.NONE) {
 				toast.error('You are not logged in');
 				setTimeout(() => {
 					history.push('/login');
@@ -80,43 +76,41 @@ export default function Messenger() {
 				return;
 			}
 			setLogedIn(true);
-			sendJsonMessage({ action: ACTION_GET_SELF });
+			sendJsonMessage({ action: ACTION.PROFILE.GET.SELF });
 
-      const lastChatId = localStorage.getItem("lastChat") || null;
-      const lastUser = localStorage.getItem("lastUser") || null;
+			const lastChatId = localStorage.getItem('lastChat') || null;
+			const lastUser = localStorage.getItem('lastUser') || null;
 
-      if (lastChatId === null || lastUser === null) return;
+			if (lastChatId === null || lastUser === null) return;
 
-      setSelectedChat({ chatId: lastChatId, targetId: lastUser });
-      sendJsonMessage({
-        action: ACTION_GET_MESSAGE_LATEST,
-        chatID: lastChatId,
-      });
+			setSelectedChat({ chatId: lastChatId, targetId: lastUser });
+			sendJsonMessage({
+				action: ACTION.MESSAGE.GET.LATEST,
+				chatID: lastChatId,
+			});
 
-      sendJsonMessage({
-        action: ACTION_PROFILE_GET_OTHER,
-        target: lastUser,
-      });
-    }
-  }, [lastJsonMessage]);
+			sendJsonMessage({
+				action: ACTION.PROFILE.GET.OTHER,
+				target: lastUser,
+			});
+		}
+	}, [lastJsonMessage]);
 
-  useEffect(() => {
-    if (lastJsonMessage === null) return;
-    if (lastJsonMessage.action !== ACTION_PROFILE_UPDATE) return;
-
-    setProfile(lastJsonMessage.content);
-  }, [lastJsonMessage]);
+  useAction(ACTION.PROFILE.UPDATE, () => {setProfile(lastJsonMessage.content);})
 
 	return (
 		<ProfileContext.Provider value={profile}>
 			<ChatContext.Provider value={{ selectedChat, setSelectedChat }}>
 				{!logedIn && (
 					<div className="loading-screen">
-						<img src={`${prefixDOMAIN}${DOMAIN}/assets/images/monity/logo.png`} alt="Monity Logo" />
+						<img
+							src={`${prefixDOMAIN}${DOMAIN}/assets/images/monity/logo.png`}
+							alt="Monity Logo"
+						/>
 						<div className="frame">
 							<div className="dot-spin"></div>
 						</div>
-						<Link to="/login" className='back'>
+						<Link to="/login" className="back">
 							<button>Back to login</button>
 						</Link>
 					</div>

@@ -1,8 +1,10 @@
 import React, { useState, useRef } from 'react';
 import { toast } from 'react-toastify';
-import { REQEUST_RESET_PASSWORD_URL } from '../../Util/Auth';
-import useAuthentication from '../../Util/UseAuth.js';
+import useAuthentication from '../../Hooks/UseAuth.js';
 import './Css/ForgotPassword.css';
+import AUTHENTICATION_URL from './../../Util/Auth';
+import ERROR from './../../Util/Errors';
+import { isValidEmail } from '../../Util/Helpers.js';
 
 const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 
@@ -38,7 +40,7 @@ export default function ForgotPassword() {
 
 		const res = await sendResetRequest(email);
 
-		if (res === 'EMAIL_NOT_FOUND') {
+		if (res === ERROR.EMAIL_NOT_FOUND) {
 			setMessage('NO valid email');
 			toast.error("The email doesn't exist");
 			return;
@@ -69,12 +71,6 @@ export default function ForgotPassword() {
 	);
 }
 
-function isValidEmail(email) {
-	const regExEmail =
-		/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g;
-	return email.match(regExEmail) != null;
-}
-
 async function sendResetRequest(email) {
 	const resetOptions = {
 		method: 'POST',
@@ -93,7 +89,7 @@ async function sendResetRequest(email) {
 	};
 
 	const res = await toast.promise(
-		fetch(REQEUST_RESET_PASSWORD_URL, resetOptions),
+		fetch(AUTHENTICATION_URL.PASSWORD.RESET_REQUEST, resetOptions),
 		{
 			pending: 'Processing',
 			success: 'Email sent 👌',

@@ -1,16 +1,13 @@
 import React, { useRef, useState } from 'react';
-import PasswordField from './PasswordField';
-import { toast } from 'react-toastify';
-import {
-	USER_EXISTS_URL,
-	SALT_URL,
-	LOGIN_URL,
-} from '../../Util/Auth.js';
-import { hash } from '../../Util/Encrypt';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import useAuthentication from '../../Util/UseAuth';
+import { toast } from 'react-toastify';
+import useAuthentication from '../../Hooks/UseAuth';
+import { hash } from '../../Util/Encryption';
+import { isValidEmail } from '../../Util/Helpers';
+import AUTHENTICATION_URL from './../../Util/Auth';
 import './Css/Login.css';
+import PasswordField from './PasswordField';
 
 /**
  * Component to display a login field. It lets you enter an email/username and password.
@@ -101,7 +98,7 @@ export default function Login() {
 }
 
 async function userExists(userName) {
-	const res = await fetch(`${USER_EXISTS_URL}?username=${userName}`, {
+	const res = await fetch(`${AUTHENTICATION_URL.USER_EXISTS}?username=${userName}`, {
 		method: 'GET',
 		headers: {
 			Accept: 'application/json',
@@ -113,7 +110,7 @@ async function userExists(userName) {
 }
 
 async function getSalt(userName) {
-	const res = await fetch(`${SALT_URL}?username=${userName}`, {
+	const res = await fetch(`${AUTHENTICATION_URL.GET_SALT}?username=${userName}`, {
 		method: 'GET',
 		params: {
 			userName,
@@ -135,7 +132,7 @@ async function login(input, password) {
 
 	let userName = '';
 	let email = '';
-	if (isValidEmail(input)) {
+	if (isValidEmail(email)) {
 		email = input;
 	} else {
 		userName = input;
@@ -159,13 +156,8 @@ async function login(input, password) {
 		}),
 	};
 
-	const res = await fetch(LOGIN_URL, logInOptions);
+	const res = await fetch(AUTHENTICATION_URL.LOGIN, logInOptions);
 	const data = await res.json();
 	return data;
 }
 
-function isValidEmail(email) {
-	const regExEmail =
-		/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g;
-	return email.match(regExEmail) != null;
-}

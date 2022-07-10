@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import {
-	ACTION_GROUP_SEARCH,
-	ACTION_GROUP_ADD,
-} from '../../../../Util/Websocket';
-import './Css/SearchView.css';
-import SearchGroup from './SearchGroup';
+import React, { useState } from 'react';
+import { ACTION } from '../../../../Util/Websocket';
 import useAction from './../../../../Hooks/useAction';
 import { debounce } from './../../../../Util/Helpers';
+import './Css/SearchView.css';
+import SearchGroup from './SearchGroup';
 
 /**
  * Component to render a sidebar view for searching groups.
@@ -16,7 +13,7 @@ export default function SearchView() {
 	const [searchedGroups, setSearchedGroups] = useState([]);
 
 	const { sendJsonMessage } = useAction(
-		ACTION_GROUP_SEARCH,
+		ACTION.GROUP.SEARCH,
 		(lastJsonMessage) => {
 			setSearchedGroups(lastJsonMessage.content.groups);
 		}
@@ -29,15 +26,14 @@ export default function SearchView() {
 		}
 
 		sendJsonMessage({
-			action: ACTION_GROUP_SEARCH,
+			action: ACTION.GROUP.SEARCH,
 			keyword,
 		});
 	});
 
 	const sendJoinRequest = (uuid) => {
-		console.log('sendJoinRequest', uuid);
 		sendJsonMessage({
-			action: ACTION_GROUP_ADD,
+			action: ACTION.GROUP.ADD,
 			target: uuid,
 		});
 	};
@@ -52,11 +48,11 @@ export default function SearchView() {
 				onChange={(e) => searchInput(e.target.value)}
 			/>
 			<div className="scrollable">
-			{searchedGroups.length === 0 ? (
+				{searchedGroups.length === 0 ? (
 					<span className="placeholder">No results</span>
 				) : (
 					searchedGroups.map((group, i) => (
-						<AddContact
+						<SearchGroup
 							name={group.userName}
 							shortStatus={group.shortStatus}
 							profilePicture={group.profileImageLocation}

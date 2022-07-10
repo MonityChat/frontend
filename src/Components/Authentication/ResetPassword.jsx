@@ -1,11 +1,13 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useLocation, useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import { RESET_PASSWORD_URL } from "../../Util/Auth";
 import PasswordField from "./PasswordField";
 import "./Css/ResetPassword.css";
-import { generateNewSalt, hash } from "../../Util/Encrypt";
-import useAuthentication from "../../Util/UseAuth.js";
+import { generateNewSalt, hash } from "../../Util/Encryption";
+import useAuthentication from "../../Hooks/UseAuth.js";
+import AUTHENTICATION_URL from './../../Util/Auth';
+import useQuery from './../../Hooks/useQuery';
+import { isValidPassword } from './../../Util/Helpers';
 
 const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 
@@ -97,12 +99,6 @@ export default function ResetPassword() {
   );
 }
 
-function isValidPassword(password) {
-  const regExPassword =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/g;
-  return password.match(regExPassword) != null;
-}
-
 async function resetPassword(password, id) {
   const salt = generateNewSalt();
   const hashedPassword = await hash(password, salt);
@@ -123,13 +119,7 @@ async function resetPassword(password, id) {
     }),
   };
 
-  const res = await fetch(`${RESET_PASSWORD_URL}?id=${id}`, resetOptions);
+  const res = await fetch(`${AUTHENTICATION_URL.PASSWORD.RESET_CONFIRM}?id=${id}`, resetOptions);
   const data = await res.json();
   return data;
-}
-
-function useQuery() {
-  const { search } = useLocation();
-
-  return useMemo(() => new URLSearchParams(search), [search]);
 }

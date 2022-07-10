@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
-import { WEBSOCKET_URL } from './../Util/Websocket';
+import WSSYSTEM from '../Util/Websocket';
 
 const CONSOLE_CSS_ERROR =
 	'color:red;font-size:1rem;font-weight:bold;background-color: #55000088';
@@ -14,19 +14,20 @@ const CONSOLE_CSS_CONFIRM = 'color:lightgreen;font-size:1rem;font-weight:bold';
  * @returns {{Function, Function}} object with to functions to send and read WS messages
  */
 export default function useAction(actiontype = '', cb = () => {}) {
-	const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-		share: true,
-		shouldReconnect: false,
-		onError,
-		onClose,
-		onOpen,
-		filter,
-	});
+	const { sendJsonMessage, lastJsonMessage } = useWebSocket(
+		WSSYSTEM.URL.WS_CONNECT_URL,
+		{
+			share: true,
+			shouldReconnect: false,
+			onError,
+			onClose,
+			onOpen,
+			filter,
+		}
+	);
 
 	useEffect(() => {
 		if (lastJsonMessage === null) return;
-
-
 
 		if (
 			actiontype === lastJsonMessage.action ||
@@ -34,7 +35,7 @@ export default function useAction(actiontype = '', cb = () => {}) {
 		) {
 			if (cb === null) return;
 			onMessage(lastJsonMessage);
-			cb(lastJsonMessage);
+			cb(lastJsonMessage, sendJsonMessage);
 		}
 	}, [lastJsonMessage]);
 	return { sendJsonMessage, lastJsonMessage };
@@ -87,7 +88,6 @@ function onError(e) {
  * @param {Object} message message from a WS
  */
 function onMessage(message) {
-
 	if (!LOGS) return;
 
 	console.groupCollapsed(

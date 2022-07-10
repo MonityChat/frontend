@@ -2,28 +2,9 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AiOutlineFileText } from 'react-icons/ai';
 import { IoArrowDown } from 'react-icons/io5';
 import { toast } from 'react-toastify';
-import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
-import {
-	ACTION_GET_MESSAGE,
-	ACTION_GET_MESSAGE_LATEST,
-	ACTION_MESSAGE_DELETE,
-	ACTION_MESSAGE_EDIT,
-	ACTION_MESSAGE_REACT,
-	ACTION_MESSAGE_READ,
-	ACTION_MESSAGE_SEND,
-	NOTIFICATION_MESSAGE_DELETE,
-	NOTIFICATION_MESSAGE_EDITED,
-	NOTIFICATION_MESSAGE_INCOMING,
-	NOTIFICATION_MESSAGE_REACTED,
-	NOTIFICATION_MESSAGE_READ,
-	NOTIFICATION_MESSAGE_RECEIVED,
-	NOTIFICATION_USER_OFFLINE,
-	NOTIFICATION_USER_ONLINE,
-	NOTIFICATION_USER_STARTED_TYPING,
-	NOTIFICATION_USER_STOPPED_TYPING,
-	WEBSOCKET_URL,
-} from '../../../Util/Websocket';
 import { ChatContext, ProfileContext } from '../Messenger';
+import useAction from './../../../Hooks/useAction';
+import WSSYSTEM from './../../../Util/Websocket';
 import Audio from './Audio';
 import { ReactContext, RelatedContext } from './Chat';
 import './Css/MessageScreen.css';
@@ -54,10 +35,6 @@ export default function MessageScreen() {
 	const { setRelated } = useContext(RelatedContext);
 	const profile = useContext(ProfileContext);
 
-	const { sendJsonMessage, lastJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-		share: true,
-	});
-
 	//scroll to bottom of page
 	useEffect(() => {
 		if (scrollTo === 'bottom') bottomRef.current.scrollIntoView();
@@ -70,290 +47,249 @@ export default function MessageScreen() {
 		setYou(profile?.userName);
 	}, [profile]);
 
-	//depending on the message modify the messages correctly
-	useEffect(() => {
-		if (lastJsonMessage === null) return;
+	const { sendJsonMessage } = useAction();
 
-		switch (lastJsonMessage.action) {
-			case ACTION_GET_MESSAGE_LATEST: {
-				if (!lastJsonMessage.content.messages) return;
-				setMessages(lastJsonMessage.content.messages?.reverse());
-				setScrollTo('bottom');
-				break;
-			}
-			case ACTION_MESSAGE_SEND: {
-				setMessages((prev) => [...prev, lastJsonMessage.content]);
-				setScrollTo('bottom');
-				break;
-			}
-			case ACTION_GET_MESSAGE: {
-				setScrollTo(lastJsonMessage.content.messages[0].index + 1);
-				setMessages((prev) => [
-					...lastJsonMessage.content.messages?.reverse(),
-					...prev,
-				]);
-				break;
-			}
-			case ACTION_MESSAGE_DELETE: {
-				setMessages((prev) => {
-					const deleted = prev.filter(
-						(message) =>
-							message.messageID !==
-							lastJsonMessage.content.message
-					);
+	useAction(WSSYSTEM.ACTION.MESSAGE.GET.LATEST, (lastJsonMessage) => {
+		if (!lastJsonMessage.content.messages) return;
+		setMessages(lastJsonMessage.content.messages?.reverse());
+		setScrollTo('bottom');
+	});
 
-					deleted.forEach((message) => {
-						if (
-							message?.relatedTo &&
-							message.relatedTo.messageID ===
-								lastJsonMessage.content.message
-						) {
-							message.relatedTo = undefined;
-						}
-					});
+	useAction(WSSYSTEM.ACTION.MESSAGE.GET._, (lastJsonMessage) => {
+		setScrollTo(lastJsonMessage.content.messages[0].index + 1);
+		setMessages((prev) => [
+			...lastJsonMessage.content.messages?.reverse(),
+			...prev,
+		]);
+	});
 
-					return deleted;
-				});
-				break;
-			}
-			case ACTION_MESSAGE_REACT: {
+	useAction(WSSYSTEM.ACTION.MESSAGE.SEND, (lastJsonMessage) => {
+		setMessages((prev) => [...prev, lastJsonMessage.content]);
+		setScrollTo('bottom');
+	});
+
+	useAction(WSSYSTEM.ACTION.MESSAGE.DELETE, (lastJsonMessage) => {
+		setMessages((prev) => {
+			const deleted = prev.filter(
+				(message) =>
+					message.messageID !== lastJsonMessage.content.message
+			);
+
+			deleted.forEach((message) => {
 				if (
-					selectedChat.chatId !== lastJsonMessage.content.message.chat
-				)
-					return;
-				setMessages((prev) => {
-					for (let i = 0; i < prev.length; i++) {
-						if (
-							prev[i].messageID ===
-							lastJsonMessage.content.message.messageID
-						) {
-							prev[i] = lastJsonMessage.content.message;
-						}
-
-						if (
-							prev[i].relatedTo?.messageID ===
-							lastJsonMessage.content.message.messageID
-						) {
-							prev[i].relatedTo = lastJsonMessage.content.message;
-						}
-					}
-					return [...prev];
-				});
-
-				break;
-			}
-			case ACTION_MESSAGE_EDIT: {
-				if (
-					selectedChat.chatId !== lastJsonMessage.content.message.chat
-				)
-					return;
-				setMessages((prev) => {
-					for (let i = 0; i < prev.length; i++) {
-						if (
-							prev[i].messageID ===
-							lastJsonMessage.content.message.messageID
-						) {
-							prev[i] = lastJsonMessage.content.message;
-						}
-						if (
-							prev[i].relatedTo?.messageID ===
-							lastJsonMessage.content.message.messageID
-						) {
-							prev[i].relatedTo = lastJsonMessage.content.message;
-						}
-					}
-					return [...prev];
-				});
-				break;
-			}
-		}
-
-		switch (lastJsonMessage.notification) {
-			case NOTIFICATION_MESSAGE_INCOMING: {
-				if (
-					selectedChat.chatId !== lastJsonMessage.content.message.chat
+					message?.relatedTo &&
+					message.relatedTo.messageID ===
+						lastJsonMessage.content.message
 				) {
-					if (profile.status === 'DO_NOT_DISTURB') return;
-					const content = lastJsonMessage.content.message.content;
-					toast.info(`${lastJsonMessage.content.from} send you a message:
-					${content.length > 120 ? content.slice(0, 120) + "..." : content}`);
-					break;
+					message.relatedTo = undefined;
 				}
-				setMessages((prev) => [
-					...prev,
-					{
-						...lastJsonMessage.content.message,
-						author: lastJsonMessage.content.from,
-					},
-				]);
+			});
 
-				bottomRef.current.scrollIntoView();
+			return deleted;
+		});
+	});
 
-				sendJsonMessage({
-					action: ACTION_MESSAGE_READ,
-					chatID: selectedChat.chatId,
-					target: selectedChat.targetId,
-				});
-				break;
-			}
-			case NOTIFICATION_MESSAGE_READ: {
-				if (selectedChat.chatId !== lastJsonMessage.content.chat)
-					return;
-				setMessages((prev) => {
-					const newMessages = prev.map((message) => ({
-						...message,
-						status: 'READ',
-					}));
-					return [...newMessages];
-				});
-				break;
-			}
-			case NOTIFICATION_MESSAGE_RECEIVED: {
-				if (selectedChat.chatId !== lastJsonMessage.content.chat)
-					return;
-				setMessages((prev) => {
-					const newMessages = prev.map((message) => ({
-						...message,
-						status: 'RECEIVED',
-					}));
-					return [...newMessages];
-				});
-				break;
-			}
-			case NOTIFICATION_USER_STARTED_TYPING: {
-				if (selectedChat.chatId !== lastJsonMessage.content.chat)
-					return;
-				typingRef.current.innerText = `${lastJsonMessage.content.from.userName} is typing...`;
-				break;
-			}
-			case NOTIFICATION_USER_STOPPED_TYPING: {
-				if (selectedChat.chatId !== lastJsonMessage.content.chat)
-					return;
-				typingRef.current.innerText = '';
-				break;
-			}
-			case NOTIFICATION_MESSAGE_DELETE: {
-				if (profile.status !== 'DO_NOT_DISTURB') {
-					toast.info(
-						`${lastJsonMessage.content.from} deleted a message`
-					);
+	useAction(WSSYSTEM.ACTION.MESSAGE.REACT, (lastJsonMessage) => {
+		if (selectedChat.chatId !== lastJsonMessage.content.message.chat)
+			return;
+		setMessages((prev) => {
+			for (let i = 0; i < prev.length; i++) {
+				if (
+					prev[i].messageID ===
+					lastJsonMessage.content.message.messageID
+				) {
+					prev[i] = lastJsonMessage.content.message;
 				}
-				if (selectedChat.chatId !== lastJsonMessage.content.chat)
-					return;
-				setMessages((prev) => {
-					const deleted = prev.filter(
-						(message) =>
-							message.messageID !==
-							lastJsonMessage.content.messageID
-					);
 
-					deleted.forEach((message) => {
-						if (
-							message?.relatedTo &&
-							message.relatedTo.messageID ===
-								lastJsonMessage.content.messageID
-						) {
-							message.relatedTo = undefined;
-						}
-					});
-
-					return deleted;
-				});
-
-				break;
+				if (
+					prev[i].relatedTo?.messageID ===
+					lastJsonMessage.content.message.messageID
+				) {
+					prev[i].relatedTo = lastJsonMessage.content.message;
+				}
 			}
-			case NOTIFICATION_MESSAGE_REACTED: {
-				if (profile.status !== 'DO_NOT_DISTURB') {
-					//falls status auf nicht störe => nicht stören
-					toast.info(
-						`${lastJsonMessage.content.from} reacted to a message`
-					);
+			return [...prev];
+		});
+	});
+
+	useAction(WSSYSTEM.ACTION.MESSAGE.EDIT, (lastJsonMessage) => {
+		if (selectedChat.chatId !== lastJsonMessage.content.message.chat)
+			return;
+		setMessages((prev) => {
+			for (let i = 0; i < prev.length; i++) {
+				if (
+					prev[i].messageID ===
+					lastJsonMessage.content.message.messageID
+				) {
+					prev[i] = lastJsonMessage.content.message;
 				}
 				if (
-					//nur aktualisieren wenn der Benutzer gerade im chat ist
-					selectedChat.chatId !==
-					lastJsonMessage.content.message.message.chat
-				)
-					return;
-				setMessages((prev) => {
-					for (let i = 0; i < prev.length; i++) {
-						//für jede Nachricht
-						if (
-							//ist es die gleiche Nachricht
-							prev[i].messageID ===
-							lastJsonMessage.content.message.message.messageID
-						) {
-							prev[i] = lastJsonMessage.content.message.message; //wenn ja ändere sie
-						}
-						if (
-							//selbes wie oben bei einer antwort
-							prev[i].relatedTo?.messageID ===
-							lastJsonMessage.content.message.message.messageID
-						) {
-							prev[i].relatedTo =
-								lastJsonMessage.content.message.message;
-						}
-					}
-					return [...prev];
-				});
-
-				break;
-			}
-			case NOTIFICATION_MESSAGE_EDITED: {
-				if (profile.status !== 'DO_NOT_DISTURB') {
-					toast.info(
-						`${lastJsonMessage.content.message.message.author} edited a message`
-					);
+					prev[i].relatedTo?.messageID ===
+					lastJsonMessage.content.message.messageID
+				) {
+					prev[i].relatedTo = lastJsonMessage.content.message;
 				}
-				if (
-					selectedChat.chatId !==
-					lastJsonMessage.content.message.message.chat
-				)
-					return;
-				setMessages((prev) => {
-					for (let i = 0; i < prev.length; i++) {
-						if (
-							prev[i].messageID ===
-							lastJsonMessage.content.message.message.messageID
-						) {
-							prev[i] = lastJsonMessage.content.message.message;
-						}
-						if (
-							prev[i].relatedTo?.messageID ===
-							lastJsonMessage.content.message.message.messageID
-						) {
-							prev[i].relatedTo =
-								lastJsonMessage.content.message.message;
-						}
-					}
-					return [...prev];
-				});
+			}
+			return [...prev];
+		});
+	});
 
-				break;
-			}
-			case NOTIFICATION_USER_OFFLINE: {
+	useAction(
+		WSSYSTEM.NOTIFICATION.MESSAGE.INCOMING,
+		(lastJsonMessage, sendJsonMessage) => {
+			if (selectedChat.chatId !== lastJsonMessage.content.message.chat) {
 				if (profile.status === 'DO_NOT_DISTURB') return;
-				toast.info(
-					`${lastJsonMessage.content.from.userName} is now offline`
-				);
-				break;
+				const content = lastJsonMessage.content.message.content;
+				toast.info(`${lastJsonMessage.content.from} send you a message:
+			${content.length > 120 ? content.slice(0, 120) + '...' : content}`);
 			}
-			case NOTIFICATION_USER_ONLINE: {
-				if (profile.status === 'DO_NOT_DISTURB') return;
-				toast.info(
-					`${lastJsonMessage.content.from.userName} is now online`
-				);
-				break;
-			}
+			setMessages((prev) => [
+				...prev,
+				{
+					...lastJsonMessage.content.message,
+					author: lastJsonMessage.content.from,
+				},
+			]);
+
+			bottomRef.current.scrollIntoView();
+
+			sendJsonMessage({
+				action: WSSYSTEM.ACTION.MESSAGE.READ,
+				chatID: selectedChat.chatId,
+				target: selectedChat.targetId,
+			});
 		}
-	}, [lastJsonMessage]);
+	);
+
+	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.READ, (lastJsonMessage) => {
+		if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
+		setMessages((prev) => {
+			const newMessages = prev.map((message) => ({
+				...message,
+				status: 'READ',
+			}));
+			return [...newMessages];
+		});
+	});
+
+	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.RECEIVED, (lastJsonMessage) => {
+		if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
+		setMessages((prev) => {
+			const newMessages = prev.map((message) => ({
+				...message,
+				status: 'RECEIVED',
+			}));
+			return [...newMessages];
+		});
+	});
+
+	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.DELETE, (lastJsonMessage) => {
+		if (profile.status !== 'DO_NOT_DISTURB') {
+			toast.info(`${lastJsonMessage.content.from} deleted a message`);
+		}
+		if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
+		setMessages((prev) => {
+			const deleted = prev.filter(
+				(message) =>
+					message.messageID !== lastJsonMessage.content.messageID
+			);
+
+			deleted.forEach((message) => {
+				if (
+					message?.relatedTo &&
+					message.relatedTo.messageID ===
+						lastJsonMessage.content.messageID
+				) {
+					message.relatedTo = undefined;
+				}
+			});
+
+			return deleted;
+		});
+	});
+
+	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.REACTED, (lastJsonMessage) => {
+		if (profile.status !== 'DO_NOT_DISTURB') {
+			toast.info(`${lastJsonMessage.content.from} reacted to a message`);
+		}
+		if (
+			selectedChat.chatId !== lastJsonMessage.content.message.message.chat
+		)
+			return;
+		setMessages((prev) => {
+			for (let i = 0; i < prev.length; i++) {
+				if (
+					prev[i].messageID ===
+					lastJsonMessage.content.message.message.messageID
+				) {
+					prev[i] = lastJsonMessage.content.message.message;
+				}
+				if (
+					prev[i].relatedTo?.messageID ===
+					lastJsonMessage.content.message.message.messageID
+				) {
+					prev[i].relatedTo = lastJsonMessage.content.message.message;
+				}
+			}
+			return [...prev];
+		});
+	});
+
+	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.EDITED, (lastJsonMessage) => {
+		if (profile.status !== 'DO_NOT_DISTURB') {
+			toast.info(
+				`${lastJsonMessage.content.message.message.author} edited a message`
+			);
+		}
+		if (
+			selectedChat.chatId !== lastJsonMessage.content.message.message.chat
+		)
+			return;
+		setMessages((prev) => {
+			for (let i = 0; i < prev.length; i++) {
+				if (
+					prev[i].messageID ===
+					lastJsonMessage.content.message.message.messageID
+				) {
+					prev[i] = lastJsonMessage.content.message.message;
+				}
+				if (
+					prev[i].relatedTo?.messageID ===
+					lastJsonMessage.content.message.message.messageID
+				) {
+					prev[i].relatedTo = lastJsonMessage.content.message.message;
+				}
+			}
+			return [...prev];
+		});
+	});
+
+	useAction(WSSYSTEM.NOTIFICATION.USER.TYPING.STARTED, (lastJsonMessage) => {
+		if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
+		typingRef.current.innerText = `${lastJsonMessage.content.from.userName} is typing...`;
+	});
+
+	useAction(WSSYSTEM.NOTIFICATION.USER.TYPING.STOPPED, (lastJsonMessage) => {
+		if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
+		typingRef.current.innerText = '';
+	});
+
+	useAction(WSSYSTEM.NOTIFICATION.USER.ONLINE, (lastJsonMessage) => {
+		if (profile.status === 'DO_NOT_DISTURB') return;
+		toast.info(`${lastJsonMessage.content.from.userName} is now offline`);
+	});
+
+	useAction(WSSYSTEM.NOTIFICATION.USER.OFFLINE, (lastJsonMessage) => {
+		if (profile.status === 'DO_NOT_DISTURB') return;
+		toast.info(`${lastJsonMessage.content.from.userName} is now online`);
+	});
 
 	//scrolls to a message with the given index if it isn't
 	//loading yet request the messages from the server
 	const jumpToMessage = (i) => {
 		if (!(i in messageRefs.current)) {
 			sendJsonMessage({
-				action: ACTION_GET_MESSAGE,
+				action: WSSYSTEM.ACTION.MESSAGE.GET._,
 				chatID: selectedChat.chatId,
 				start: messages[0].index - 1,
 				amount: messages[0].index - i,
@@ -380,7 +316,7 @@ export default function MessageScreen() {
 
 	const editMessage = (uuid, newText) => {
 		sendJsonMessage({
-			action: ACTION_MESSAGE_EDIT,
+			action: WSSYSTEM.ACTION.MESSAGE.EDIT,
 			chatID: selectedChat.chatId,
 			messageID: uuid,
 			newContent: newText,
@@ -389,7 +325,7 @@ export default function MessageScreen() {
 
 	const deleteMessage = (uuid) => {
 		sendJsonMessage({
-			action: ACTION_MESSAGE_DELETE,
+			action: WSSYSTEM.ACTION.MESSAGE.DELETE,
 			messageID: uuid,
 			chatID: selectedChat.chatId,
 		});
@@ -412,13 +348,12 @@ export default function MessageScreen() {
 			setShowScrollDown(true);
 		}
 
-		//Benutzer hat ganz nach oben gescrollt
 		if (messageScreenRef.current.scrollTop == 0) {
-			if (messages[0].index <= 0) return; //gibt es noch neue?
+			if (messages[0].index <= 0) return;
 			sendJsonMessage({
-				action: ACTION_GET_MESSAGE, //neue Nachrichten anfordern
+				action: WSSYSTEM.ACTION.MESSAGE.GET._,
 				chatID: selectedChat.chatId,
-				start: messages[0].index - 1, //von welchem index
+				start: messages[0].index - 1,
 				amount: 50,
 			});
 		}
