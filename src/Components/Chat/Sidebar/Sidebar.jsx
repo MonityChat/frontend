@@ -1,7 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { toast } from 'react-toastify';
-import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
 import { ProfileContext } from '../Messenger';
+import useAction from './../../../Hooks/useAction';
+import WSSYSTEM from './../../../Util/Websocket';
 import BaseGradient from './../../General/BaseGradient';
 import AddContactsButton from './AddContact/AddContactsButton';
 import AddContactView from './AddContact/AddContactView';
@@ -18,8 +19,6 @@ import SearchButton from './Search/SearchButton';
 import SearchView from './Search/SearchView';
 import SettingsButton from './Settings/SettingsButton';
 import SettingsView from './Settings/SettingsView';
-import WSSYSTEM from './../../../Util/Websocket';
-import useAction from './../../../Hooks/useAction';
 
 /**
  * First part of the main components.

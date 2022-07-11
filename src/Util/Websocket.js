@@ -81,6 +81,7 @@ const WSSYSTEM = {
 	ACTION,
 	NOTIFICATION,
 	URL,
+	ERROR: 'error',
 };
 
 export default WSSYSTEM;

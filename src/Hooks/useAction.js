@@ -2,9 +2,9 @@ import { useEffect } from 'react';
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
 import WSSYSTEM from '../Util/Websocket';
 
-const CONSOLE_CSS_ERROR =
-	'color:red;font-size:1rem;font-weight:bold;background-color: #55000088';
-const CONSOLE_CSS_CONFIRM = 'color:lightgreen;font-size:1rem;font-weight:bold';
+// const CONSOLE_CSS_ERROR =
+// 	'color:red;font-size:1rem;font-weight:bold;background-color: #55000088';
+// const CONSOLE_CSS_CONFIRM = 'color:lightgreen;font-size:1rem;font-weight:bold';
 
 /**
  * Costum Hook to check if a Websocket message actiontype equals with a given
@@ -13,16 +13,14 @@ const CONSOLE_CSS_CONFIRM = 'color:lightgreen;font-size:1rem;font-weight:bold';
  * @param {Function} cb to run if the action is equal with the one from the WS
  * @returns {{Function, Function}} object with to functions to send and read WS messages
  */
-export default function useAction(actiontype = '', cb = () => {}) {
+export default function useAction(actiontype = '', cb = () => {}, wsOptions) {
 	const { sendJsonMessage, lastJsonMessage } = useWebSocket(
 		WSSYSTEM.URL.WS_CONNECT_URL,
 		{
 			share: true,
 			shouldReconnect: false,
-			onError,
-			onClose,
-			onOpen,
 			filter,
+			...wsOptions,
 		}
 	);
 
@@ -36,6 +34,14 @@ export default function useAction(actiontype = '', cb = () => {}) {
 			if (cb === null) return;
 			onMessage(lastJsonMessage);
 			cb(lastJsonMessage, sendJsonMessage);
+			return;
+		}
+
+		if (lastJsonMessage[actiontype]) {
+			if (cb === null) return;
+			onMessage(lastJsonMessage);
+			cb(lastJsonMessage, sendJsonMessage);
+			return;
 		}
 	}, [lastJsonMessage]);
 	return { sendJsonMessage, lastJsonMessage };
@@ -75,13 +81,13 @@ function filter(rawData) {
  * Prints an error to the console with styling
  * @param {Error} e error
  */
-function onError(e) {
-	e.preventDefault();
-	console.groupCollapsed('%cWS Error', CONSOLE_CSS_ERROR);
-	console.error('Websocket Error');
-	console.error(e);
-	console.groupEnd('WS Error');
-}
+// function onError(e) {
+// 	e.preventDefault();
+// 	console.groupCollapsed('%cWS Error', CONSOLE_CSS_ERROR);
+// 	console.error('Websocket Error');
+// 	console.error(e);
+// 	console.groupEnd('WS Error');
+// }
 
 /**
  * Logs the message to the console if logs are enabled
@@ -108,15 +114,15 @@ function onMessage(message) {
 /**
  * Logs a styled close message
  */
-function onClose(e) {
-	if (!LOGS) return;
-	console.info('%c👋 Closed Websocket connection 👋', CONSOLE_CSS_ERROR);
-}
+// function onClose(e) {
+// 	if (!LOGS) return;
+// 	console.info('%c👋 Closed Websocket connection 👋', CONSOLE_CSS_ERROR);
+// }
 
 /**
  * Logs a styled open message
  */
-function onOpen(e) {
-	if (!LOGS) return;
-	console.info('%c👌 Opened Websocket connection 🤝', CONSOLE_CSS_CONFIRM);
-}
+// function onOpen(e) {
+// 	if (!LOGS) return;
+// 	console.info('%c👌 Opened Websocket connection 🤝', CONSOLE_CSS_CONFIRM);
+// }

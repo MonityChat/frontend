@@ -6,11 +6,14 @@ import Chat from './Chat/Chat';
 import StatusBar from './StatusBar/StatusBar';
 import './Css/Messenger.css';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
 import useAuthentication from '../../Hooks/UseAuth';
-import { ACTION, URL } from '../../Util/Websocket';
+import WSSYSTEM from '../../Util/Websocket';
 import ERROR from './../../Util/Errors';
 import useAction from './../../Hooks/useAction';
+
+const CONSOLE_CSS_ERROR =
+	'color:red;font-size:1rem;font-weight:bold;background-color: #55000088';
+const CONSOLE_CSS_CONFIRM = 'color:lightgreen;font-size:1rem;font-weight:bold';
 
 export const ProfileContext = createContext();
 export const ChatContext = createContext({
@@ -35,68 +38,92 @@ export default function Messenger() {
 	const [profile, setProfile] = useState();
 	const [selectedChat, setSelectedChat] = useState({});
 
+	const [key, , isLogedIn] = useAuthentication();
+
 	const history = useHistory();
 
-	const { sendJsonMessage, lastJsonMessage } = useWebSocket(URL.WS_CONNECT_URL, {
-		share: true,
-		onError: () => {
-			toast.error(
-				'Can not make a connection to the Websocket, the server may be offline'
-			);
-			history.push('/');
-		},
-		onClose: () => {
-			history.push('/login');
-		},
-	});
-
 	useEffect(() => {
-		const [key, , isLogedIn] = useAuthentication();
-
-		sendJsonMessage({
-			auth: key || '00000000-0000-0000-0000-000000000000',
-			user: localStorage.getItem('userName') || 'LOOOOOSER',
-		});
 		document.title = 'Monity | Chat';
 	}, []);
 
-	useEffect(() => {
-		if (lastJsonMessage === null) return;
-
-		if (logedIn) {
-			if (lastJsonMessage.action !== ACTION.PROFILE.GET.SELF) return;
+	useAction(
+		WSSYSTEM.ACTION.PROFILE.UPDATE,
+		() => {
 			setProfile(lastJsonMessage.content);
-			localStorage.setItem('userName', lastJsonMessage.content.userName);
-		} else {
-			if (lastJsonMessage.error !== ERROR.NONE) {
-				toast.error('You are not logged in');
-				setTimeout(() => {
-					history.push('/login');
-				}, 500);
-				return;
-			}
-			setLogedIn(true);
-			sendJsonMessage({ action: ACTION.PROFILE.GET.SELF });
+		},
+		{
+			onError: (e) => {
+				e.preventDefault();
+				toast.error(
+					'Can not make a connection to the Websocket, the server may be offline'
+				);
+				history.push('/');
+				console.groupCollapsed('%cWS Error', CONSOLE_CSS_ERROR);
+				console.error('Websocket Error');
+				console.error(e);
+				console.groupEnd('WS Error');
+			},
+			onClose: (e) => {
+				history.push('/login');
 
-			const lastChatId = localStorage.getItem('lastChat') || null;
-			const lastUser = localStorage.getItem('lastUser') || null;
-
-			if (lastChatId === null || lastUser === null) return;
-
-			setSelectedChat({ chatId: lastChatId, targetId: lastUser });
-			sendJsonMessage({
-				action: ACTION.MESSAGE.GET.LATEST,
-				chatID: lastChatId,
-			});
-
-			sendJsonMessage({
-				action: ACTION.PROFILE.GET.OTHER,
-				target: lastUser,
-			});
+				if (!LOGS) return;
+				console.info(
+					'%c👋 Closed Websocket connection 👋',
+					CONSOLE_CSS_ERROR
+				);
+			},
+			onMessage: () => {
+				if (!LOGS) return;
+				console.info('New Message via WS');
+			},
+			onOpen: () => {
+				sendJsonMessage({
+					auth: key || '00000000-0000-0000-0000-000000000000',
+					user: localStorage.getItem('userName') || '-',
+				});
+				if (!LOGS) return;
+				console.info(
+					'%c👌 Opened Websocket connection 🤝',
+					CONSOLE_CSS_CONFIRM
+				);
+			},
 		}
-	}, [lastJsonMessage]);
+	);
 
-  useAction(ACTION.PROFILE.UPDATE, () => {setProfile(lastJsonMessage.content);})
+	useAction(WSSYSTEM.ACTION.PROFILE.GET.SELF, (lastJsonMessage) => {
+		setProfile(lastJsonMessage.content);
+		localStorage.setItem('userName', lastJsonMessage.content.userName);
+	});
+
+	useAction(WSSYSTEM.ERROR, (lastJsonMessage, sendJsonMessage) => {
+		if (logedIn) return;
+
+		if (lastJsonMessage.error !== ERROR.NONE) {
+			toast.error('You are not logged in');
+			setTimeout(() => {
+				history.push('/login');
+			}, 500);
+			return;
+		}
+		setLogedIn(true);
+		sendJsonMessage({ action: WSSYSTEM.ACTION.PROFILE.GET.SELF });
+
+		const lastChatId = localStorage.getItem('lastChat') || null;
+		const lastUser = localStorage.getItem('lastUser') || null;
+
+		if (!lastChatId || !lastUser) return;
+
+		setSelectedChat({ chatId: lastChatId, targetId: lastUser });
+
+		sendJsonMessage({
+			action: WSSYSTEM.ACTION.MESSAGE.GET.LATEST,
+			chatID: lastChatId,
+		});
+		sendJsonMessage({
+			action: WSSYSTEM.ACTION.PROFILE.GET.OTHER,
+			target: lastUser,
+		});
+	});
 
 	return (
 		<ProfileContext.Provider value={profile}>
