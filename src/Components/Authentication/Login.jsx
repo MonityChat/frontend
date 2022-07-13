@@ -1,11 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
-import { toast } from 'react-toastify';
 import useAuthentication from '../../Hooks/UseAuth';
 import { hash } from '../../Util/Encryption';
 import { isValidEmail } from '../../Util/Helpers';
 import AUTHENTICATION_URL from './../../Util/Auth';
+import ERROR from './../../Util/Errors';
+import { Toast } from './../../Util/Toast';
 import './Css/Login.css';
 import PasswordField from './PasswordField';
 
@@ -51,15 +52,13 @@ export default function Login() {
 
 		localStorage.setItem('userName', userName);
 
-		if (result === 'INVALID_PASSWORD') {
+		if (result === ERROR.INVALID_PASSWORD) {
 			setMessage('Invalid password');
 			setPasswordError(true);
 			return;
 		}
 		setMessage('Successfully loged in');
-		toast.success('You will be redirected soon.');
-
-		// setLogedIn(true);
+		Toast.success('You will be redirected soon.').send();
 
 		setTimeout(() => {
 			history.push('/chat');
@@ -93,7 +92,7 @@ export default function Login() {
 					</Link>
 				</span>
 			</div>
-		</div>
+		</div>	
 	);
 }
 

@@ -10,6 +10,7 @@ import { ReactContext, RelatedContext } from './Chat';
 import './Css/MessageScreen.css';
 import DayDivider from './DayDivider';
 import Message from './Message/Message';
+import { PushNotification, Toast } from './../../../Util/Toast';
 
 /**
  * Component for displaying all the messages.
@@ -34,6 +35,8 @@ export default function MessageScreen() {
 	const { setReactedMessage } = useContext(ReactContext);
 	const { setRelated } = useContext(RelatedContext);
 	const profile = useContext(ProfileContext);
+
+	const doNotDisturbMode = profile?.status === 'DO_NOT_DISTURB' || false;
 
 	//scroll to bottom of page
 	useEffect(() => {
@@ -138,10 +141,28 @@ export default function MessageScreen() {
 		WSSYSTEM.NOTIFICATION.MESSAGE.INCOMING,
 		(lastJsonMessage, sendJsonMessage) => {
 			if (selectedChat.chatId !== lastJsonMessage.content.message.chat) {
-				if (profile.status === 'DO_NOT_DISTURB') return;
-				const content = lastJsonMessage.content.message.content;
-				toast.info(`${lastJsonMessage.content.from} send you a message:
-			${content.length > 120 ? content.slice(0, 120) + '...' : content}`);
+				if (doNotDisturbMode) return;
+				const content = lastJsonMessage.content.message.content.slice(
+					0,
+					120
+				);
+
+				const mediaPath =
+					lastJsonMessage.content.message.attachedMedia.length > 0
+						? `${prefixDOMAIN}${DOMAIN}/assets${lastJsonMessage.content.message.attachedMedia[0].filePath}`
+						: undefined;
+
+				Toast.info(
+					`${lastJsonMessage.content.from} send you a message:
+				${content.length > 120 ? `${content}...` : content}`
+				).sendIfFocus(
+					PushNotification.new(
+						`New message from ${lastJsonMessage.content.from}`
+					)
+						.message(content)
+						.image(mediaPath)
+						.onClick(() => window.focus())
+				);
 			}
 			setMessages((prev) => [
 				...prev,
@@ -184,8 +205,10 @@ export default function MessageScreen() {
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.DELETE, (lastJsonMessage) => {
-		if (profile.status !== 'DO_NOT_DISTURB') {
-			toast.info(`${lastJsonMessage.content.from} deleted a message`);
+		if (!doNotDisturbMode) {
+			Toast.info(
+				`${lastJsonMessage.content.from} deleted a message`
+			).send();
 		}
 		if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
 		setMessages((prev) => {
@@ -209,8 +232,10 @@ export default function MessageScreen() {
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.REACTED, (lastJsonMessage) => {
-		if (profile.status !== 'DO_NOT_DISTURB') {
-			toast.info(`${lastJsonMessage.content.from} reacted to a message`);
+		if (!doNotDisturbMode) {
+			Toast.info(
+				`${lastJsonMessage.content.from} reacted to a message`
+			).send();
 		}
 		if (
 			selectedChat.chatId !== lastJsonMessage.content.message.message.chat
@@ -236,10 +261,10 @@ export default function MessageScreen() {
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.EDITED, (lastJsonMessage) => {
-		if (profile.status !== 'DO_NOT_DISTURB') {
-			toast.info(
+		if (!doNotDisturbMode) {
+			Toast.info(
 				`${lastJsonMessage.content.message.message.author} edited a message`
-			);
+			).send();
 		}
 		if (
 			selectedChat.chatId !== lastJsonMessage.content.message.message.chat
@@ -275,13 +300,17 @@ export default function MessageScreen() {
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.USER.ONLINE, (lastJsonMessage) => {
-		if (profile.status === 'DO_NOT_DISTURB') return;
-		toast.info(`${lastJsonMessage.content.from.userName} is now offline`);
+		if (doNotDisturbMode) return;
+		Toast.info(
+			`${lastJsonMessage.content.from.userName} is now offline`
+		).send();
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.USER.OFFLINE, (lastJsonMessage) => {
-		if (profile.status === 'DO_NOT_DISTURB') return;
-		toast.info(`${lastJsonMessage.content.from.userName} is now online`);
+		if (doNotDisturbMode) return;
+		Toast.info(
+			`${lastJsonMessage.content.from.userName} is now online`
+		).send();
 	});
 
 	//scrolls to a message with the given index if it isn't

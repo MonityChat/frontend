@@ -7,6 +7,7 @@ import AUTHENTICATION_URL from './../../Util/Auth';
 import './Css/Register.css';
 import PasswordField from './PasswordField';
 import ERROR from './../../Util/Errors';
+import { Toast } from './../../Util/Toast';
 
 /**
  * Component  to display a register field.
@@ -100,7 +101,7 @@ export default function Register() {
 		setMessage(
 			'Registration Email sent, open the email to end registration'
 		);
-		toast.success('Registration successfull');
+		Toast.success('Registration successfull').send();
 	};
 
 	return (

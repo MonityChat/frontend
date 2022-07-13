@@ -26,9 +26,9 @@ export class Toast {
 	/** Default toast  */
 	static DEFAULT_TYPE = toast.TYPE.DEFAULT;
 	/** Warning toast  */
-	static WARNING_TYPE = toast.TYPE.SUCCESS;
+	static WARNING_TYPE = toast.TYPE.WARNING;
 	/** Success toast  */
-	static SUCCESS_TYPE = toast.TYPE.WARNING;
+	static SUCCESS_TYPE = toast.TYPE.SUCCESS;
 
 	#type = Toast.DEFAULT_TYPE;
 	#message;
@@ -260,10 +260,6 @@ export class PushNotification {
 	 * @param {number}
 	 */
 	constructor(title, message, onClick) {
-		console.log(
-			PushNotification.#notificationIsSupported + ' static private'
-		);
-		console.log(('Notification' in window) + ' is in window');
 		if (PushNotification.#notificationPermission === 'default') {
 			requestNotificationPermission();
 		}

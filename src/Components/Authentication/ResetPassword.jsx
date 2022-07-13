@@ -8,6 +8,8 @@ import useAuthentication from "../../Hooks/UseAuth.js";
 import AUTHENTICATION_URL from './../../Util/Auth';
 import useQuery from './../../Hooks/useQuery';
 import { isValidPassword } from './../../Util/Helpers';
+import ERROR from './../../Util/Errors';
+import { Toast } from './../../Util/Toast';
 
 const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 
@@ -62,11 +64,11 @@ export default function ResetPassword() {
 
     const res = await resetPassword(password, id);
 
-    if (res !== "NONE") {
+    if (res !== ERROR.NONE) {
       setMessage("Error while changing password");
       passwordError(true);
       passwordConfirmError(true);
-      toast.error("Error while changing password");
+      Toast.success('Error while changing password').send();
       return;
     }
 

@@ -97,17 +97,17 @@ function onMessage(message) {
 	if (!LOGS) return;
 
 	console.groupCollapsed(
-		'WS message: ' + message.action ||
+		'WS message: ' + (message.action ||
 			message.notification ||
 			message.error ||
-			'-'
+			'-')
 	);
 	console.log(message);
 	console.groupEnd(
-		'WS message: ' + message.action ||
+		'WS message: ' + (message.action ||
 			message.notification ||
 			message.error ||
-			'-'
+			'-')
 	);
 }
 

@@ -10,10 +10,12 @@ import useAuthentication from '../../Hooks/UseAuth';
 import WSSYSTEM from '../../Util/Websocket';
 import ERROR from './../../Util/Errors';
 import useAction from './../../Hooks/useAction';
+import { Toast } from './../../Util/Toast';
 
 const CONSOLE_CSS_ERROR =
 	'color:red;font-size:1rem;font-weight:bold;background-color: #55000088';
 const CONSOLE_CSS_CONFIRM = 'color:lightgreen;font-size:1rem;font-weight:bold';
+const CONSOLE_CSS_INFO = 'color:lightblue;font-size:0.8rem;font-weight:bold';
 
 export const ProfileContext = createContext();
 export const ChatContext = createContext({
@@ -42,11 +44,7 @@ export default function Messenger() {
 
 	const history = useHistory();
 
-	useEffect(() => {
-		document.title = 'Monity | Chat';
-	}, []);
-
-	useAction(
+	const {sendJsonMessage} = useAction(
 		WSSYSTEM.ACTION.PROFILE.UPDATE,
 		() => {
 			setProfile(lastJsonMessage.content);
@@ -54,9 +52,9 @@ export default function Messenger() {
 		{
 			onError: (e) => {
 				e.preventDefault();
-				toast.error(
+				Toast.error(
 					'Can not make a connection to the Websocket, the server may be offline'
-				);
+				).send();
 				history.push('/');
 				console.groupCollapsed('%cWS Error', CONSOLE_CSS_ERROR);
 				console.error('Websocket Error');
@@ -74,13 +72,11 @@ export default function Messenger() {
 			},
 			onMessage: () => {
 				if (!LOGS) return;
-				console.info('New Message via WS');
+				console.info('%c✉️ New Message via WS 👇',
+				CONSOLE_CSS_INFO
+				);
 			},
 			onOpen: () => {
-				sendJsonMessage({
-					auth: key || '00000000-0000-0000-0000-000000000000',
-					user: localStorage.getItem('userName') || '-',
-				});
 				if (!LOGS) return;
 				console.info(
 					'%c👌 Opened Websocket connection 🤝',
@@ -89,6 +85,15 @@ export default function Messenger() {
 			},
 		}
 	);
+
+	useEffect(() => {
+		sendJsonMessage({
+			auth: key || '00000000-0000-0000-0000-000000000000',
+			user: localStorage.getItem('userName') || '-',
+		});
+		document.title = 'Monity | Chat';
+	}, []);
+
 
 	useAction(WSSYSTEM.ACTION.PROFILE.GET.SELF, (lastJsonMessage) => {
 		setProfile(lastJsonMessage.content);
@@ -99,7 +104,7 @@ export default function Messenger() {
 		if (logedIn) return;
 
 		if (lastJsonMessage.error !== ERROR.NONE) {
-			toast.error('You are not logged in');
+			Toast.error('You are not logged in').send();
 			setTimeout(() => {
 				history.push('/login');
 			}, 500);

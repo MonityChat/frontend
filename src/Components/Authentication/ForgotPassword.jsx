@@ -5,6 +5,7 @@ import './Css/ForgotPassword.css';
 import AUTHENTICATION_URL from './../../Util/Auth';
 import ERROR from './../../Util/Errors';
 import { isValidEmail } from '../../Util/Helpers.js';
+import { Toast } from './../../Util/Toast';
 
 const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 
@@ -41,8 +42,8 @@ export default function ForgotPassword() {
 		const res = await sendResetRequest(email);
 
 		if (res === ERROR.EMAIL_NOT_FOUND) {
-			setMessage('NO valid email');
-			toast.error("The email doesn't exist");
+			setMessage('No valid email');
+			Toast.error("The email doesn't exist").send();
 			return;
 		}
 
@@ -92,7 +93,7 @@ async function sendResetRequest(email) {
 		fetch(AUTHENTICATION_URL.PASSWORD.RESET_REQUEST, resetOptions),
 		{
 			pending: 'Processing',
-			success: 'Email sent 👌',
+			// success: 'Request Finished',
 			error: 'Something went wrong',
 		}
 	);

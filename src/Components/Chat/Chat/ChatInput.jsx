@@ -17,6 +17,7 @@ import { ChatContext } from '../Messenger';
 import useAction from './../../../Hooks/useAction';
 import { ReactContext, RelatedContext } from './Chat';
 import './Css/ChatInput.css';
+import { Toast } from './../../../Util/Toast';
 
 /**
  * Component for the user input in the chat.
@@ -86,7 +87,6 @@ export default function ChatInput({ jumpToMessage }) {
 		if (message.length <= 0 && files.length <= 0) return;
 
 		if (selectedChat.targetId === undefined) return;
-
 		let embedID = '';
 
 		if (files.length > 0) {
@@ -101,7 +101,7 @@ export default function ChatInput({ jumpToMessage }) {
 			);
 
 			if (embedID === null) {
-				toast.error('Uploading error');
+				Toast.error('Uploading error').send();
 				return;
 			}
 
@@ -116,7 +116,7 @@ export default function ChatInput({ jumpToMessage }) {
 						key
 					);
 					if (res === null) {
-						toast.error('Uploading error');
+						Toast.error('Uploading error').send();
 						return;
 					}
 				}
