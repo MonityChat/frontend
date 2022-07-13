@@ -138,6 +138,10 @@
   opacity: 1;
 }
 
+.sidebar-button.news{
+  background-color: red;
+}
+
 .sidebar-button:hover,
 .sidebar-button:focus {
   transform: scale(1.1);

@@ -1,24 +1,27 @@
 import React, { useContext, useState } from 'react';
-import { toast } from 'react-toastify';
+import { BiMessageAdd } from 'react-icons/bi';
+import {
+	IoChatbubbleEllipsesOutline,
+	IoCompassOutline,
+	IoPeopleOutline,
+	IoPersonAddOutline,
+	IoSettingsOutline,
+} from 'react-icons/io5';
 import { ProfileContext } from '../Messenger';
 import useAction from './../../../Hooks/useAction';
+import { PushNotification, Toast } from './../../../Util/Toast';
 import WSSYSTEM from './../../../Util/Websocket';
 import BaseGradient from './../../General/BaseGradient';
-import AddContactsButton from './AddContact/AddContactsButton';
 import AddContactView from './AddContact/AddContactView';
-import ContactsButton from './Contacts/ContactsButton';
 import ContactView from './Contacts/ContactView';
 import './Css/Sidebar.css';
-import GroupsButton from './Groups/GroupsButton';
 import GroupView from './Groups/GroupView';
 import ProfileButton from './Profile/ProfileButton';
 import ProfileView from './Profile/ProfileView';
-import NewRequestButton from './Requests/NewRequestButton';
 import RequestView from './Requests/RequestView';
-import SearchButton from './Search/SearchButton';
 import SearchView from './Search/SearchView';
-import SettingsButton from './Settings/SettingsButton';
 import SettingsView from './Settings/SettingsView';
+import SidebarButton from './SidebarButton';
 
 /**
  * First part of the main components.
@@ -27,7 +30,6 @@ import SettingsView from './Settings/SettingsView';
  * on the currently selected one.
  */
 export default function Sidebar() {
-	const [size, setSize] = useState('3rem');
 	const [view, setView] = useState(VIEWS.PROFILE);
 	const [requests, setRequests] = useState([]);
 
@@ -47,8 +49,17 @@ export default function Sidebar() {
 		WSSYSTEM.NOTIFICATION.REQUEST.FRIEND.INCOME,
 		(lastJsonMessage) => {
 			setRequests((prev) => [...prev, lastJsonMessage.content.from]);
-			toast.info(
+			Toast.info(
 				`New friend request from ${lastJsonMessage.content.from.userName}`
+			).sendIfFocus(
+				PushNotification.new('Incoming friend request')
+					.message(
+						`${lastJsonMessage.content.from.userName} send you a friend request`
+					)
+					.icon(
+						`${prefixDOMAIN}${DOMAIN}/assets${lastJsonMessage.content.from.profileImageLocation}`
+					)
+					.onClick(() => window.focus())
 			);
 		}
 	);
@@ -56,8 +67,17 @@ export default function Sidebar() {
 	useAction(
 		WSSYSTEM.NOTIFICATION.REQUEST.FRIEND.ACCEPT,
 		(lastJsonMessage) => {
-			toast.info(
+			Toast.info(
 				`${lastJsonMessage.content.from.userName} accepted your friend request`
+			).sendIfFocus(
+				PushNotification.new('Accepted friend request')
+					.message(
+						`your are no friends with ${lastJsonMessage.content.from.userName}`
+					)
+					.icon(
+						`${prefixDOMAIN}${DOMAIN}/assets${lastJsonMessage.content.profileImageLocation}`
+					)
+					.onClick(() => window.focus())
 			);
 		}
 	);
@@ -78,42 +98,42 @@ export default function Sidebar() {
 			<div className="buttons" onClick={handleButtonClick}>
 				<div className="menu top">
 					<ProfileButton
-						size={size}
+						size={'3rem'}
 						view={VIEWS.PROFILE}
 						selected={VIEWS.PROFILE === view}
 						profileImage={profile && profile?.profileImageLocation}
 					/>
-					<ContactsButton
-						size={size}
+					<SidebarButton
+						icon={IoChatbubbleEllipsesOutline}
 						view={VIEWS.CONTACTS}
 						selected={VIEWS.CONTACTS === view}
 					/>
-					<GroupsButton
-						size={size}
+					<SidebarButton
+						icon={IoPeopleOutline}
 						view={VIEWS.GROUPS}
 						selected={VIEWS.GROUPS === view}
 					/>
 				</div>
 				<div className="menu bottom">
 					{requests.length > 0 && (
-						<NewRequestButton
-							size={size}
+						<SidebarButton
+							icon={BiMessageAdd}
 							view={VIEWS.NEW_REQUEST}
 							selected={VIEWS.NEW_REQUEST === view}
 						/>
 					)}
-					<AddContactsButton
-						size={size}
+					<SidebarButton
+						icon={IoPersonAddOutline}
 						view={VIEWS.ADD_CONTACT}
 						selected={VIEWS.ADD_CONTACT === view}
 					/>
-					<SearchButton
-						size={size}
+					<SidebarButton
+						icon={IoCompassOutline}
 						view={VIEWS.SEARCH}
 						selected={VIEWS.SEARCH === view}
 					/>
-					<SettingsButton
-						size={size}
+					<SidebarButton
+						icon={IoSettingsOutline}
 						view={VIEWS.SETTINGS}
 						selected={VIEWS.SETTINGS === view}
 					/>
