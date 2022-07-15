@@ -1,18 +1,19 @@
 import useAuthentication from './../Hooks/UseAuth';
+import { toast } from 'react-toastify';
 
 const [key] = useAuthentication();
- 
+
 /**
  * Available HTTP methods
  */
-const HTTP_METHODES = Object.freeze({
+export const HTTP_METHOD = Object.freeze({
 	POST: 'POST',
 	GET: 'GET',
 });
 
 /**
  * Formats an query object to the right format so it can be appended to a url
- * @param {Object} query 
+ * @param {Object} query
  * @example {name: "jo", age: 10} => "?name=jo&age=10"
  * @returns {String} formatted String
  */
@@ -36,26 +37,26 @@ function formatQuery(query) {
 }
 
 export default class Fetch {
-	static METHOD_POST = HTTP_METHODES.POST;
-	static METHOD_GET = HTTP_METHODES.GET;
+	static METHOD_POST = HTTP_METHOD.POST;
+	static METHOD_GET = HTTP_METHOD.GET;
+	static #key = key;
 
 	#url;
 	#query = {};
-	#key = key;
 	#body = {};
 	#headers = {
 		Accept: 'application/json',
 		'Content-Type': 'application/json',
 	};
-	#method = HTTP_METHODES.GET;
+	#method = HTTP_METHOD.GET;
 	#withAuth = true;
 
-        /**
-     * Constructor for a Fetch instance
-     * @param {String} url of the server
-     * @param {String} method of the request
-     * @param {Object} query of the request
-     * */
+	/**
+	 * Constructor for a Fetch instance
+	 * @param {String} url of the server
+	 * @param {String} method of the request
+	 * @param {Object} query of the request
+	 * */
 	constructor(url, method, query) {
 		if (typeof url === 'string') {
 			this.#url = url;
@@ -63,7 +64,7 @@ export default class Fetch {
 
 		if (
 			typeof method === 'string' &&
-			Object.values(HTTP_METHODES).includes(method.toUpperCase())
+			Object.values(HTTP_METHOD).includes(method.toUpperCase())
 		) {
 			this.#method = method.toUpperCase();
 		}
@@ -96,7 +97,7 @@ export default class Fetch {
 	/**
 	 * Create a new Fetch instance
 	 * @param {String} url of the server
-	 * @param {HTTP_METHODES} method of the request
+	 * @param {HTTP_METHOD} method of the request
 	 * @param {Object} query of the request
 	 * @returns new instance of the {@link Fetch} class
 	 */
@@ -137,13 +138,13 @@ export default class Fetch {
 
 	/**
 	 * Sets the method of the request
-	 * @param {HTTP_METHODES} method of the request
+	 * @param {HTTP_METHOD} method of the request
 	 * @returns {this} itself for chaining
 	 */
 	method(method) {
 		if (
 			typeof method === 'string' &&
-			Object.values(HTTP_METHODES).includes(method.toUpperCase())
+			Object.values(HTTP_METHOD).includes(method.toUpperCase())
 		) {
 			this.#method = method;
 		}
@@ -157,7 +158,20 @@ export default class Fetch {
 	 */
 	authKey(key) {
 		if (typeof key === 'string') {
-			this.#key = key;
+			Fetch.#key = key;
+		}
+		return this;
+	}
+
+	/**
+	 * Adds a auth key to the request
+	 * @static
+	 * @param {String} key for authentication on the server
+	 * @returns {this} itself for chaining
+	 */
+	static authKey(key) {
+		if (typeof key === 'string') {
+			Fetch.#key = key;
 		}
 		return this;
 	}
@@ -194,8 +208,7 @@ export default class Fetch {
 	/**
 	 * Adds body data to the request
 	 * @param {Object} body of a request
-	 * @param {Boolean} overrideOld should the new stuff override the old one or spreaded out
-	 * @default withAuth = true
+	 * @param {Boolean} overrideOld should the new stuff override the old one or spreaded out {@default = true}
 	 * @returns {this} itself for chaining
 	 */
 	body(body, overrideOld = true) {
@@ -225,10 +238,10 @@ export default class Fetch {
 		const options = {
 			method: this.#method,
 			headers: {
-				...(this.#withAuth && { authorization: this.#key }),
+				...(this.#withAuth && { authorization: Fetch.#key }),
 				...this.#headers,
 			},
-			...(this.#method !== HTTP_METHODES.GET && {
+			...(this.#method !== HTTP_METHOD.GET && {
 				body: JSON.stringify(this.#body),
 			}),
 		};
@@ -246,13 +259,30 @@ export default class Fetch {
 
 	/**
 	 *
+	 * @param {String} pending String which should be displayed while the promise pending
+	 * @param {String} success String which should be displayed if the promise succeded
+	 * @param {String} error String which should be displayed if the promise fails
+	 * @param {Boolean} toJSON should the result be automaticly converted to JSON {@default false}
+	 * @returns {Object} JSON object of the result or HTTP result
 	 */
-	sendAndToast() {}
+	async sendAndToast(pending, success, error, toJSON = false) {
+		const res = await toast.promise(this.send(), {
+			pending,
+			success,
+			error,
+		});
+		if (toJSON) {
+			const json = await res.json();
+			return json;
+		} else {
+			return res;
+		}
+	}
 
 	/**
 	 * Send the request and convert it to JSON
 	 * @async
-	 * @returns {Object} result in JSON format
+	 * @returns {Promise<Object>} result in JSON format
 	 */
 	async sendGetJSON() {
 		const result = await this.send();

@@ -3,11 +3,14 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { HiOutlineUpload } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 import useAuthentication from '../../../../Hooks/UseAuth';
+import Fetch from '../../../../Util/Fetch';
 import { ACTION, URL } from '../../../../Util/Websocket';
 import ProfilePicture from '../../../General/ProfilePicture';
 import { ProfileContext } from '../../Messenger';
 import useAction from './../../../../Hooks/useAction';
 import './Css/ProfileView.css';
+import { HTTP_METHOD } from './../../../../Util/Fetch';
+import { Toast } from './../../../../Util/Toast';
 
 /**
  * Component to render a sidebar view for your profile.
@@ -101,22 +104,24 @@ export default function ProfileView() {
 
 		const [key] = useAuthentication();
 
-		const res = await toast.promise(
-			fetch(`${URL.UPLOAD.PROFILE_IMAGE}?uuid=${profile.uuid}`, {
-				headers: {
-					authorization: key,
-				},
-				method: 'POST',
-				body: formData,
-			}),
-			{
-				pending: 'Uploading new Profile image...',
-				success: 'Profile image changed 👌',
-				error: 'Something went wrong',
-			}
-		);
+		const res = await Fetch.new(
+			URL.UPLOAD.PROFILE_IMAGE,
+			HTTP_METHOD.POST,
+			{ uuid: profile.uuid }
+		)
+			.body(formData)
+			.sendAndToast(
+				'Uploading new Profile image...',
+				undefined,
+				'Something went wrong'
+			);
 
-		if (!res.ok) return;
+		if (!res.ok) {
+			Toast.error('Image could not be changed, something went wrong');
+			return;
+		}
+
+		Toast.success('Profile image changed 👌').send();
 
 		const newImageURL = await res.text();
 

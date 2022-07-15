@@ -8,6 +8,8 @@ import './Css/Register.css';
 import PasswordField from './PasswordField';
 import ERROR from './../../Util/Errors';
 import { Toast } from './../../Util/Toast';
+import Fetch from '../../Util/Fetch.js';
+import { HTTP_METHOD } from './../../Util/Fetch';
 
 /**
  * Component  to display a register field.
@@ -143,24 +145,13 @@ export default function Register() {
 async function register(userName, email, password) {
 	const salt = generateNewSalt();
 	const hashedPassword = await hash(password, salt);
-	const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
+	const [key,,,] = useAuthentication();
 
-	const registerOptions = {
-		method: 'POST',
-		headers: {
-			authorization: key,
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			username: userName,
-			email,
-			password: hashedPassword.toString(),
-			salt: salt.toString(),
-		}),
-	};
-
-	const res = await fetch(AUTHENTICATION_URL.REGISTER, registerOptions);
-	const data = await res.json();
+	const data = await Fetch.new(AUTHENTICATION_URL.REGISTER, HTTP_METHOD.POST).body({
+		username: userName,
+		email,
+		password: hashedPassword.toString(),
+		salt: salt.toString(),
+	}).sendAndToast("Registration in progress", undefined, undefined, true);
 	return data;
 }

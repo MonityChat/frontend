@@ -46,7 +46,7 @@ export const NOTIFICATION = {
 	REQUEST: {
 		FRIEND: {
 			INCOME: 'friend:request:income',
-			ACCEPT: 'chat:private:created',
+			ACCEPT: 'friend:accept:income',
 		},
 		GROUP: {},
 	},

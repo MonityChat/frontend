@@ -2,8 +2,12 @@ import React, { forwardRef } from 'react';
 import './Css/ProfilePicture.css';
 
 function ProfilePicture({ path, status, children }, ref) {
-	const reqeustFullScreen = (e) => {
-		ref.current[1].requestFullscreen();
+	const reqeustFullScreen = () => {
+		if (!document.fullscreenElement) {
+			ref.current[1].requestFullscreen();
+		} else {
+			document.exitFullscreen();
+		}
 	};
 
 	return (

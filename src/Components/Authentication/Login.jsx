@@ -9,6 +9,7 @@ import ERROR from './../../Util/Errors';
 import { Toast } from './../../Util/Toast';
 import './Css/Login.css';
 import PasswordField from './PasswordField';
+import Fetch, { HTTP_METHOD } from './../../Util/Fetch';
 
 /**
  * Component to display a login field. It lets you enter an email/username and password.
@@ -23,7 +24,6 @@ export default function Login() {
 	const [message, setMessage] = useState('');
 	const [passwordError, setPasswordError] = useState(false);
 	const userNameRef = useRef();
-
 	const history = useHistory();
 
 	const userNameInput = (e) => {
@@ -92,41 +92,37 @@ export default function Login() {
 					</Link>
 				</span>
 			</div>
-		</div>	
+		</div>
 	);
 }
 
-async function userExists(userName) {
-	const res = await fetch(`${AUTHENTICATION_URL.USER_EXISTS}?username=${userName}`, {
-		method: 'GET',
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-	});
+async function userExists(username) {
+	const res = await Fetch.new(
+		AUTHENTICATION_URL.USER_EXISTS,
+		HTTP_METHOD.GET,
+		{
+			username,
+		}
+	).send();
 
-	return res.status !== 404;
+	return res.status === 200;
 }
 
-async function getSalt(userName) {
-	const res = await fetch(`${AUTHENTICATION_URL.GET_SALT}?username=${userName}`, {
-		method: 'GET',
-		params: {
-			userName,
-		},
-		headers: {
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-	});
-	const { salt } = await res.json();
+async function getSalt(username) {
+	const { salt } = await Fetch.new(
+		AUTHENTICATION_URL.GET_SALT,
+		HTTP_METHOD.GET,
+		{
+			username,
+		}
+	).sendGetJSON();
+
 	return salt;
 }
 
 async function login(input, password) {
 	const salt = await getSalt(input);
 
-	//hashing password with the salt from the server
 	const hashedPassword = hash(password, salt);
 
 	let userName = '';
@@ -155,8 +151,18 @@ async function login(input, password) {
 		}),
 	};
 
+	// const res1 = await Fetch.new(
+	// 	AUTHENTICATION_URL.LOGIN,
+	// 	HTTP_METHOD.POST
+	// ).body({
+	// 	username: userName,
+	// 		email: email,
+	// 		password: hashedPassword.toString(),
+	// 		salt: '',
+	// 		uuid: '00000000-0000-0000-0000-000000000000',
+	// }).send();
+
 	const res = await fetch(AUTHENTICATION_URL.LOGIN, logInOptions);
 	const data = await res.json();
 	return data;
 }
-

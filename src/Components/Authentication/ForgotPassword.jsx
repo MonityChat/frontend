@@ -6,6 +6,8 @@ import AUTHENTICATION_URL from './../../Util/Auth';
 import ERROR from './../../Util/Errors';
 import { isValidEmail } from '../../Util/Helpers.js';
 import { Toast } from './../../Util/Toast';
+import Fetch from '../../Util/Fetch.js';
+import { HTTP_METHOD } from './../../Util/Fetch';
 
 const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
 
@@ -73,30 +75,23 @@ export default function ForgotPassword() {
 }
 
 async function sendResetRequest(email) {
-	const resetOptions = {
-		method: 'POST',
-		headers: {
-			authorization: key,
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
+	const data = await Fetch.new(
+		AUTHENTICATION_URL.PASSWORD.RESET_REQUEST,
+		HTTP_METHOD.POST
+	)
+		.body({
 			password: '',
 			salt: '',
 			username: '',
 			uuid: '00000000-0000-0000-0000-000000000000',
 			email: email,
-		}),
-	};
+		})
+		.sendAndToast(
+			'Processing request',
+			undefined,
+			'Something went wrong',
+			true
+		);
 
-	const res = await toast.promise(
-		fetch(AUTHENTICATION_URL.PASSWORD.RESET_REQUEST, resetOptions),
-		{
-			pending: 'Processing',
-			// success: 'Request Finished',
-			error: 'Something went wrong',
-		}
-	);
-	const data = await res.json();
 	return data;
 }

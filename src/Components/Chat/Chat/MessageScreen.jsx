@@ -1,16 +1,18 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { AiOutlineFileText } from 'react-icons/ai';
 import { IoArrowDown } from 'react-icons/io5';
-import { toast } from 'react-toastify';
 import { ChatContext, ProfileContext } from '../Messenger';
 import useAction from './../../../Hooks/useAction';
+import { PushNotification, Toast } from './../../../Util/Toast';
 import WSSYSTEM from './../../../Util/Websocket';
-import Audio from './Audio';
+import Audio from './Message/Audio';
 import { ReactContext, RelatedContext } from './Chat';
 import './Css/MessageScreen.css';
 import DayDivider from './DayDivider';
 import Message from './Message/Message';
-import { PushNotification, Toast } from './../../../Util/Toast';
+import Video from './Message/Video';
+import File from './Message/File';
+import Image from './Message/Image';
 
 /**
  * Component for displaying all the messages.
@@ -493,7 +495,12 @@ export default function MessageScreen() {
 	);
 }
 
-//checks if to dates are on the same day
+/**
+ * checks if to dates are on the same day
+ * @param {Date} d1 first date
+ * @param {Date} d2 second date
+ * @returns {Boolean} if the are at the same day
+ */
 function sameDay(d1, d2) {
 	return (
 		d1.getFullYear() === d2.getFullYear() &&
@@ -502,61 +509,36 @@ function sameDay(d1, d2) {
 	);
 }
 
-//returns the correct jsx depending on the filetype
+/**
+ * Checks the extension of a file and returns the corrensponding media element
+ * @param {String} filePath path to the file
+ * @param {String} id of a media
+ * @returns {ReactElement} a media element which can handle the file extension
+ */
 function mapMedia(filePath, id) {
 	const splitted = filePath.split('.');
 	const type = splitted.pop();
 	const name = splitted.pop().split('\\').pop();
+
+	const fullPath = `${prefixDOMAIN}${DOMAIN}/assets${filePath}`;
 
 	switch (type) {
 		case 'jpeg':
 		case 'jpg':
 		case 'png':
 		case 'gif':
-			return (
-				<img
-					src={`${prefixDOMAIN}${DOMAIN}/assets${filePath}`}
-					alt={id}
-					className="image-media"
-					key={id}
-				/>
-			);
+			return <Image key={id} src={fullPath} alt={name} />;
 		case 'mp4':
 		case 'MOV':
 		case 'mov':
-			return (
-				<div className="video" key={id}>
-					<video
-						controls
-						src={`${prefixDOMAIN}${DOMAIN}/assets${filePath}`}
-					></video>
-				</div>
-			);
+			return <Video key={id} src={fullPath} />;
 		case 'mp3':
 		case 'm4a':
 		case 'ogg':
 		case 'webm':
 		case 'wav':
-			return (
-				<Audio
-					src={`${prefixDOMAIN}${DOMAIN}/assets${filePath}`}
-					key={id}
-				/>
-			);
+			return <Audio src={fullPath} key={id} />;
 		default:
-			return (
-				<div className="file" key={id}>
-					<a
-						href={`${prefixDOMAIN}${DOMAIN}/assets${filePath}`}
-						target="blank"
-					>
-						<AiOutlineFileText
-							size={'clamp(2rem, 10vw ,5rem)'}
-							fill="url(#base-gradient)"
-						/>
-					</a>
-					<div className="file-name">{name}</div>
-				</div>
-			);
+			return <File key={id} name={name} />;
 	}
 }

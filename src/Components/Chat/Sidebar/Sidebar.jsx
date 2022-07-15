@@ -72,7 +72,7 @@ export default function Sidebar() {
 			).sendIfFocus(
 				PushNotification.new('Accepted friend request')
 					.message(
-						`your are no friends with ${lastJsonMessage.content.from.userName}`
+						`You are now friends with ${lastJsonMessage.content.from.userName}`
 					)
 					.icon(
 						`${prefixDOMAIN}${DOMAIN}/assets${lastJsonMessage.content.profileImageLocation}`
