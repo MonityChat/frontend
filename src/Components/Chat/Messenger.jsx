@@ -46,7 +46,7 @@ export default function Messenger() {
 
 	const {sendJsonMessage} = useAction(
 		WSSYSTEM.ACTION.PROFILE.UPDATE,
-		() => {
+		(lastJsonMessage) => {
 			setProfile(lastJsonMessage.content);
 		},
 		{

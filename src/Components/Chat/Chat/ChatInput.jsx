@@ -18,6 +18,8 @@ import useAction from './../../../Hooks/useAction';
 import { ReactContext, RelatedContext } from './Chat';
 import './Css/ChatInput.css';
 import { Toast } from './../../../Util/Toast';
+import Fetch, { HTTP_METHOD } from '../../../Util/Fetch';
+import ChatInputIcon from './ChatInputIcon';
 
 /**
  * Component for the user input in the chat.
@@ -305,7 +307,7 @@ export default function ChatInput({ jumpToMessage }) {
 			onDrop={dropFile}
 		>
 			{showEmoji && (
-				<div onMouseLeave={() => setShowEmoji(true)}>
+				<div onMouseLeave={() => setShowEmoji(false)}>
 					<Picker
 						onEmojiClick={onEmojiClicked}
 						searchPlaceholder={'Search...'}
@@ -313,10 +315,7 @@ export default function ChatInput({ jumpToMessage }) {
 				</div>
 			)}
 			<div className="file-select chat-button">
-				<IoDocumentTextOutline
-					size={'3em'}
-					style={{ stroke: 'url(#base-gradient)' }}
-				/>
+				<ChatInputIcon icon={IoDocumentTextOutline} />
 				<input
 					type="file"
 					className="file-select-input"
@@ -328,41 +327,25 @@ export default function ChatInput({ jumpToMessage }) {
 				)}
 			</div>
 			{!currentAudioRecorder ? (
-				<BiMicrophone
-					className="chat-button"
-					size={'3em'}
-					style={{ fill: 'url(#base-gradient)' }}
-					onClick={onAudioClick}
-				/>
+				<ChatInputIcon icon={BiMicrophone} onClick={onAudioClick} />
 			) : (
-				<RiRecordCircleLine
-					className="chat-button recording"
-					size={'3em'}
-					style={{ fill: 'url(#base-gradient)' }}
+				<ChatInputIcon
+					icon={RiRecordCircleLine}
 					onClick={stopAudio}
+					className={'recording'}
 				/>
 			)}
 			{!currentVideoRecorder ? (
-				<BiCamera
-					className="chat-button"
-					size={'3em'}
-					style={{ fill: 'url(#base-gradient)' }}
-					onClick={onVideoClick}
-				/>
+				<ChatInputIcon icon={BiCamera} onClick={onVideoClick} />
 			) : (
-				<RiRecordCircleLine
-					className="chat-button recording"
-					size={'3em'}
-					style={{ fill: 'url(#base-gradient)' }}
+				<ChatInputIcon
+					icon={RiRecordCircleLine}
 					onClick={stopVideo}
+					className={'recording'}
 				/>
 			)}
 			<div className="image-select chat-button">
-				<IoImageOutline
-					size={'3em'}
-					className="file-icon"
-					style={{ stroke: 'url(#base-gradient)' }}
-				/>
+				<ChatInputIcon icon={IoImageOutline} />
 				{numberOfImages > 0 && (
 					<div className="file-count">{numberOfImages}</div>
 				)}
@@ -374,10 +357,8 @@ export default function ChatInput({ jumpToMessage }) {
 					onChange={handleImageSelected}
 				/>
 			</div>
-			<BsEmojiSmile
-				className="chat-button"
-				size={'3em'}
-				style={{ fill: 'url(#base-gradient)' }}
+			<ChatInputIcon
+				icon={BsEmojiSmile}
 				onClick={() => setShowEmoji(!showEmoji)}
 			/>
 			<textarea
@@ -386,27 +367,23 @@ export default function ChatInput({ jumpToMessage }) {
 				ref={messageRef}
 				onKeyDown={handleMessageInput}
 			></textarea>
-
-			<IoSendOutline
-				className="chat-button send"
-				size={'3em'}
-				style={{ stroke: 'url(#base-gradient)' }}
+			<ChatInputIcon
+				icon={IoSendOutline}
 				onClick={sendMessage}
+				className={'send'}
 			/>
 			{related && (
-				<BsReply
-					className="chat-button"
-					size={'3em'}
-					style={{ fill: 'url(#base-gradient)' }}
+				<ChatInputIcon
+					icon={BsReply}
 					onClick={() => setRelated('')}
+					className={'send'}
 				/>
 			)}
 			{numberOfFiles > 0 || numberOfImages > 0 ? (
-				<AiOutlineDelete
-					className="chat-button"
-					size={'3em'}
-					style={{ fill: 'url(#base-gradient)' }}
+				<ChatInputIcon
+					icon={AiOutlineDelete}
 					onClick={discardSelectedFiles}
+					className={'send'}
 				/>
 			) : null}
 		</div>
@@ -414,73 +391,94 @@ export default function ChatInput({ jumpToMessage }) {
 }
 
 /**
- * gets a mediastream from the user if one is available and saves the
- * chunks given from the stream in an array. Then returns a promise with wich you can
- * start and stop the media
+ * Provides a Mediarecorder to record audio and video
+ * @param {Boolean} audio should audio be recorded
+ * @param {Boolean} video should video be recorded
+ * @returns {Promise<Function, Function>} two functions one for starting and one for stopping the media
  */
 const record = (audio, video) => {
-	return new Promise((resolve) => {
-		navigator.mediaDevices
-			.getUserMedia({ audio: audio, video: video }) //stream bekommen
-			.then((stream) => {
-				const mediaRecorder = new MediaRecorder(stream);
-				const chunks = []; //chunks hier speichern
+	return new Promise(async (resolve) => {
+		const stream = await navigator.mediaDevices.getUserMedia({
+			audio: audio,
+			video: video,
+		});
+		const mediaRecorder = new MediaRecorder(stream);
+		const chunks = [];
 
-				mediaRecorder.addEventListener('dataavailable', (event) => {
-					chunks.push(event.data); // bei neuen chunks sie in den array einfügen
+		mediaRecorder.addEventListener('dataavailable', (event) => {
+			chunks.push(event.data);
+		});
+
+		const start = () => {
+			mediaRecorder.start();
+		};
+
+		const stop = () => {
+			return new Promise((resolve) => {
+				mediaRecorder.addEventListener('stop', () => {
+					const blob = new Blob(chunks, {
+						type: mediaRecorder.mimeType,
+					});
+
+					resolve({ blob });
 				});
 
-				const start = () => {
-					//zum starten
-					mediaRecorder.start();
-				};
-
-				const stop = () => {
-					return new Promise((resolve) => {
-						mediaRecorder.addEventListener('stop', () => {
-							const audioBlob = new Blob(chunks, {
-								type: mediaRecorder.mimeType,
-							});
-
-							resolve({ audioBlob });
-						});
-
-						mediaRecorder.stop();
-					});
-				};
-
-				resolve({ start, stop });
+				mediaRecorder.stop();
 			});
+		};
+
+		resolve({ start, stop });
 	});
 };
 
 /**
- * fetches a file to the server and returns an embedID
+ * Uploads a file to the server
+ * @param {File} file the file to upload
+ * @param {String} chatID in which chat you upload the file
+ * @param {String} fileName name of the file. Defautlt ```Date.now().toString()```
+ * @param {String} embedID if you already have on. Default ```na```
+ * @returns an embeID to attach on the next upload or null if something went wrong
  */
-const fetchFile = async (file, chatID, fileName, embedID = 'na', key) => {
-	let formData = new FormData();
-	formData.append('file', file);
+const fetchFile = async (
+	file,
+	chatID,
+	fileName = Date.now().toString(),
+	embedID = 'na'
+) => {
+	const data = new FormData();
+	data.append('file', file);
 
-	const res = await toast.promise(
-		fetch(
-			`${URL.UPLOAD.FILE}?chatID=${chatID}&fileName=${fileName}&embedID=${embedID}`,
-			{
-				headers: {
-					authorization: key,
-				},
-				method: 'POST',
-				body: formData,
-			}
-		),
-		{
-			pending: `Uploading ${fileName}...`,
-			success: `Uploaded ${fileName} 👌`,
-			error: 'Uploading error 🤯',
-		}
-	);
+	const res = await Fetch.new(URL.UPLOAD.FILE, HTTP_METHOD.POST, {
+		chatID,
+		fileName,
+		embedID,
+	})
+		.body(data)
+		.sendAndToast(
+			`Uploading ${fileName}...`,
+			`Uploaded ${fileName} successfully👌`,
+			'Error during the upload try again 🤯'
+		);
+
+	// const res = await toast.promise(
+	// 	fetch(
+	// 		`${URL.UPLOAD.FILE}?chatID=${chatID}&fileName=${fileName}&embedID=${embedID}`,
+	// 		{
+	// 			headers: {
+	// 				authorization: key,
+	// 			},
+	// 			method: 'POST',
+	// 			body: data,
+	// 		}
+	// 	),
+	// 	{
+	// 		pending: `Uploading ${fileName}...`,
+	// 		success: `Uploaded ${fileName} 👌`,
+	// 		error: 'Uploading error 🤯',
+	// 	}
+	// );
 	if (!res.ok) return null;
 
 	const { embedID: newEmbedID } = await res.json();
-
 	return newEmbedID;
 };

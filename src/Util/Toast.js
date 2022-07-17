@@ -32,7 +32,7 @@ export class Toast {
 
 	#type = Toast.DEFAULT_TYPE;
 	#message;
-	#pauseOnHover = false;
+	#pauseOnHover = true;
 	#pauseOnFocusLoss = false;
 	#options = {};
 

@@ -102,13 +102,13 @@ export default function App() {
       </SettingsContext.Provider>
       <ToastContainer
         position="top-right"
-        autoClose={2000}
+        autoClose={1500}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
         rtl={false}
         draggable
-        pauseOnHover
+        pauseOnHover={true}
         theme="dark"
         pauseOnFocusLoss="false"
       />
