@@ -1,11 +1,10 @@
 import React from "react";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import {
   ACTION
 } from "../../../../Util/Websocket";
-import Request from "./Request";
-import "./Css/RequestView.css";
 import useAction from './../../../../Hooks/useAction';
+import "./Css/RequestView.css";
+import Request from "./Request";
 
 /**
  * Component to render a sidebar view for your request.

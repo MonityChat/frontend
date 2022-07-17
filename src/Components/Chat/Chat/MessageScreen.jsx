@@ -1,18 +1,86 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { AiOutlineFileText } from 'react-icons/ai';
+import React, {
+	useContext,
+	useEffect,
+	useReducer,
+	useRef,
+	useState,
+} from 'react';
 import { IoArrowDown } from 'react-icons/io5';
 import { ChatContext, ProfileContext } from '../Messenger';
 import useAction from './../../../Hooks/useAction';
 import { PushNotification, Toast } from './../../../Util/Toast';
 import WSSYSTEM from './../../../Util/Websocket';
-import Audio from './Message/Audio';
 import { ReactContext, RelatedContext } from './Chat';
 import './Css/MessageScreen.css';
 import DayDivider from './DayDivider';
-import Message from './Message/Message';
-import Video from './Message/Video';
+import Audio from './Message/Audio';
 import File from './Message/File';
 import Image from './Message/Image';
+import Message from './Message/Message';
+import Video from './Message/Video';
+
+export const MESSAGE_ACTIONS = {
+	ADD: 'ADD',
+	SET: 'SET',
+	ADD_OLDER: 'ADD_OLDER',
+	REPLACE: 'REPLACE',
+	DELETE: 'DELETE',
+	READ: 'READ',
+	RECEIVED: 'RECEIVED',
+};
+
+function messageReducer(prev, action) {
+	switch (action.type) {
+		case MESSAGE_ACTIONS.ADD: {
+			return [...prev, action.data];
+		}
+		case MESSAGE_ACTIONS.SET: {
+			return [...action.data.reverse()];
+		}
+		case MESSAGE_ACTIONS.ADD_OLDER: {
+			return [...action.data.reverse(), ...prev];
+		}
+		case MESSAGE_ACTIONS.DELETE: {
+			return prev.reduce((result, message) => {
+				if (message.relatedTo?.messageID === action.data) {
+					delete message.relatedTo;
+				}
+				if (message.messageID !== action.data) {
+					result.push(message);
+				}
+				return result;
+			}, []);
+		}
+		case MESSAGE_ACTIONS.REPLACE: {
+			return prev.reduce((result, message) => {
+				if (message.relatedTo?.messageID === action.data.messageID) {
+					message.relatedTo = action.data;
+				}
+				if (message.messageID === action.data.messageID) {
+					message = action.data;
+				}
+
+				result.push(message);
+				return result;
+			}, []);
+		}
+		case MESSAGE_ACTIONS.READ: {
+			return prev.map((message) => ({
+				...message,
+				status: 'READ',
+			}));
+		}
+		case MESSAGE_ACTIONS.RECEIVED: {
+			return prev.map((message) => ({
+				...message,
+				status: 'RECEIVED',
+			}));
+		}
+		default: {
+			return prev;
+		}
+	}
+}
 
 /**
  * Component for displaying all the messages.
@@ -22,9 +90,10 @@ import Image from './Message/Image';
  * to the message like attached media.
  */
 export default function MessageScreen() {
-	const [messages, setMessages] = useState([]);
+	const [messages, dispatchMessages] = useReducer(messageReducer, []);
 	const [scrollTo, setScrollTo] = useState('bottom');
 	const [you, setYou] = useState(localStorage.getItem('userName'));
+	const [other, setOther] = useState();
 
 	const [showScrollDown, setShowScrollDown] = useState(false);
 
@@ -42,8 +111,15 @@ export default function MessageScreen() {
 
 	//scroll to bottom of page
 	useEffect(() => {
+		if (scrollTo === 'none') {
+			setScrollTo('bottom');
+			return;
+		}
 		if (scrollTo === 'bottom') bottomRef.current.scrollIntoView();
-		else messageRefs.current[scrollTo].scrollIntoView();
+		else {
+			if (messageRefs.current[scrollTo]?.scrollIntoView)
+				messageRefs.current[scrollTo].scrollIntoView();
+		}
 
 		setScrollTo('bottom');
 	}, [messages]);
@@ -52,91 +128,67 @@ export default function MessageScreen() {
 		setYou(profile?.userName);
 	}, [profile]);
 
-	const { sendJsonMessage } = useAction();
-
-	useAction(WSSYSTEM.ACTION.MESSAGE.GET.LATEST, (lastJsonMessage) => {
-		if (!lastJsonMessage.content.messages) return;
-		setMessages(lastJsonMessage.content.messages?.reverse());
-		setScrollTo('bottom');
-	});
+	const { sendJsonMessage } = useAction(
+		WSSYSTEM.ACTION.MESSAGE.GET.LATEST,
+		(lastJsonMessage) => {
+			if (!lastJsonMessage.content.messages) return;
+			dispatchMessages({
+				type: MESSAGE_ACTIONS.SET,
+				data: lastJsonMessage.content.messages,
+			});
+			setScrollTo('bottom');
+		}
+	);
 
 	useAction(WSSYSTEM.ACTION.MESSAGE.GET._, (lastJsonMessage) => {
-		setScrollTo(lastJsonMessage.content.messages[0].index + 1);
-		setMessages((prev) => [
-			...lastJsonMessage.content.messages?.reverse(),
-			...prev,
-		]);
+		dispatchMessages({
+			type: MESSAGE_ACTIONS.ADD_OLDER,
+			data: lastJsonMessage.content.messages,
+		});
+		setScrollTo(lastJsonMessage.content.messages[0].index || 'none');
 	});
 
 	useAction(WSSYSTEM.ACTION.MESSAGE.SEND, (lastJsonMessage) => {
-		setMessages((prev) => [...prev, lastJsonMessage.content]);
+		dispatchMessages({
+			type: MESSAGE_ACTIONS.ADD,
+			data: lastJsonMessage.content,
+		});
 		setScrollTo('bottom');
 	});
 
 	useAction(WSSYSTEM.ACTION.MESSAGE.DELETE, (lastJsonMessage) => {
-		setMessages((prev) => {
-			const deleted = prev.filter(
-				(message) =>
-					message.messageID !== lastJsonMessage.content.message
-			);
-
-			deleted.forEach((message) => {
-				if (
-					message?.relatedTo &&
-					message.relatedTo.messageID ===
-						lastJsonMessage.content.message
-				) {
-					message.relatedTo = undefined;
-				}
-			});
-
-			return deleted;
+		dispatchMessages({
+			type: MESSAGE_ACTIONS.DELETE,
+			data: lastJsonMessage.content.message,
 		});
+		setScrollTo('none');
 	});
 
 	useAction(WSSYSTEM.ACTION.MESSAGE.REACT, (lastJsonMessage) => {
 		if (selectedChat.chatId !== lastJsonMessage.content.message.chat)
 			return;
-		setMessages((prev) => {
-			for (let i = 0; i < prev.length; i++) {
-				if (
-					prev[i].messageID ===
-					lastJsonMessage.content.message.messageID
-				) {
-					prev[i] = lastJsonMessage.content.message;
-				}
 
-				if (
-					prev[i].relatedTo?.messageID ===
-					lastJsonMessage.content.message.messageID
-				) {
-					prev[i].relatedTo = lastJsonMessage.content.message;
-				}
-			}
-			return [...prev];
+		dispatchMessages({
+			type: MESSAGE_ACTIONS.REPLACE,
+			data: lastJsonMessage.content.message,
 		});
+
+		setScrollTo('none');
 	});
 
 	useAction(WSSYSTEM.ACTION.MESSAGE.EDIT, (lastJsonMessage) => {
 		if (selectedChat.chatId !== lastJsonMessage.content.message.chat)
 			return;
-		setMessages((prev) => {
-			for (let i = 0; i < prev.length; i++) {
-				if (
-					prev[i].messageID ===
-					lastJsonMessage.content.message.messageID
-				) {
-					prev[i] = lastJsonMessage.content.message;
-				}
-				if (
-					prev[i].relatedTo?.messageID ===
-					lastJsonMessage.content.message.messageID
-				) {
-					prev[i].relatedTo = lastJsonMessage.content.message;
-				}
-			}
-			return [...prev];
+
+		dispatchMessages({
+			type: MESSAGE_ACTIONS.REPLACE,
+			data: lastJsonMessage.content.message,
 		});
+		setScrollTo('none');
+	});
+
+	useAction(WSSYSTEM.ACTION.PROFILE.GET.OTHER, (lastJsonMessage) => {
+		setOther(lastJsonMessage.content);
 	});
 
 	useAction(
@@ -166,15 +218,16 @@ export default function MessageScreen() {
 						.onClick(() => window.focus())
 				);
 			}
-			setMessages((prev) => [
-				...prev,
-				{
+
+			dispatchMessages({
+				type: MESSAGE_ACTIONS.ADD,
+				data: {
 					...lastJsonMessage.content.message,
 					author: lastJsonMessage.content.from,
 				},
-			]);
+			});
 
-			bottomRef.current.scrollIntoView();
+			setScrollTo('bottom');
 
 			sendJsonMessage({
 				action: WSSYSTEM.ACTION.MESSAGE.READ,
@@ -186,24 +239,18 @@ export default function MessageScreen() {
 
 	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.READ, (lastJsonMessage) => {
 		if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
-		setMessages((prev) => {
-			const newMessages = prev.map((message) => ({
-				...message,
-				status: 'READ',
-			}));
-			return [...newMessages];
+
+		dispatchMessages({
+			type: MESSAGE_ACTIONS.READ,
 		});
+		setScrollTo('none');
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.RECEIVED, (lastJsonMessage) => {
 		if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
-		setMessages((prev) => {
-			const newMessages = prev.map((message) => ({
-				...message,
-				status: 'RECEIVED',
-			}));
-			return [...newMessages];
-		});
+
+		dispatchMessages({ type: MESSAGE_ACTIONS.RECEIVED });
+		setScrollTo('none');
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.DELETE, (lastJsonMessage) => {
@@ -213,24 +260,12 @@ export default function MessageScreen() {
 			).send();
 		}
 		if (selectedChat.chatId !== lastJsonMessage.content.chat) return;
-		setMessages((prev) => {
-			const deleted = prev.filter(
-				(message) =>
-					message.messageID !== lastJsonMessage.content.messageID
-			);
 
-			deleted.forEach((message) => {
-				if (
-					message?.relatedTo &&
-					message.relatedTo.messageID ===
-						lastJsonMessage.content.messageID
-				) {
-					message.relatedTo = undefined;
-				}
-			});
-
-			return deleted;
+		dispatchMessages({
+			type: MESSAGE_ACTIONS.DELETE,
+			data: lastJsonMessage.content.messageID,
 		});
+		setScrollTo('none');
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.REACTED, (lastJsonMessage) => {
@@ -243,23 +278,12 @@ export default function MessageScreen() {
 			selectedChat.chatId !== lastJsonMessage.content.message.message.chat
 		)
 			return;
-		setMessages((prev) => {
-			for (let i = 0; i < prev.length; i++) {
-				if (
-					prev[i].messageID ===
-					lastJsonMessage.content.message.message.messageID
-				) {
-					prev[i] = lastJsonMessage.content.message.message;
-				}
-				if (
-					prev[i].relatedTo?.messageID ===
-					lastJsonMessage.content.message.message.messageID
-				) {
-					prev[i].relatedTo = lastJsonMessage.content.message.message;
-				}
-			}
-			return [...prev];
+
+		dispatchMessages({
+			type: MESSAGE_ACTIONS.REPLACE,
+			data: lastJsonMessage.content.message.message,
 		});
+		setScrollTo('none');
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.MESSAGE.EDITED, (lastJsonMessage) => {
@@ -272,23 +296,12 @@ export default function MessageScreen() {
 			selectedChat.chatId !== lastJsonMessage.content.message.message.chat
 		)
 			return;
-		setMessages((prev) => {
-			for (let i = 0; i < prev.length; i++) {
-				if (
-					prev[i].messageID ===
-					lastJsonMessage.content.message.message.messageID
-				) {
-					prev[i] = lastJsonMessage.content.message.message;
-				}
-				if (
-					prev[i].relatedTo?.messageID ===
-					lastJsonMessage.content.message.message.messageID
-				) {
-					prev[i].relatedTo = lastJsonMessage.content.message.message;
-				}
-			}
-			return [...prev];
+
+		dispatchMessages({
+			type: MESSAGE_ACTIONS.REPLACE,
+			data: lastJsonMessage.content.message.message,
 		});
+		setScrollTo('none');
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.USER.TYPING.STARTED, (lastJsonMessage) => {
@@ -304,14 +317,14 @@ export default function MessageScreen() {
 	useAction(WSSYSTEM.NOTIFICATION.USER.ONLINE, (lastJsonMessage) => {
 		if (doNotDisturbMode) return;
 		Toast.info(
-			`${lastJsonMessage.content.from.userName} is now offline`
+			`${lastJsonMessage.content.from.userName} is now online`
 		).send();
 	});
 
 	useAction(WSSYSTEM.NOTIFICATION.USER.OFFLINE, (lastJsonMessage) => {
 		if (doNotDisturbMode) return;
 		Toast.info(
-			`${lastJsonMessage.content.from.userName} is now online`
+			`${lastJsonMessage.content.from.userName} is now offline`
 		).send();
 	});
 
@@ -325,15 +338,16 @@ export default function MessageScreen() {
 				start: messages[0].index - 1,
 				amount: messages[0].index - i,
 			});
-		}
-		try {
-			messageRefs.current[i].scrollIntoView({ behavior: 'smooth' });
-			messageRefs.current[i].classList.add('highlighted');
-			messageRefs.current[i].addEventListener('animationend', () =>
-				messageRefs.current[i].classList.remove('highlighted')
-			);
-		} catch (err) {
-			console.log(err);
+		} else {
+			try {
+				messageRefs.current[i].scrollIntoView({ behavior: 'smooth' });
+				messageRefs.current[i].classList.add('highlighted');
+				messageRefs.current[i].addEventListener('animationend', () =>
+					messageRefs.current[i].classList.remove('highlighted')
+				);
+			} catch (err) {
+				console.log(err);
+			}
 		}
 	};
 
@@ -390,6 +404,13 @@ export default function MessageScreen() {
 		}
 	};
 
+	const onClicks = {
+		onDelete: deleteMessage,
+		onReact: reactToMessage,
+		onRelate: relateToMessage,
+		onEdit: editMessage,
+	};
+
 	return (
 		<div className="message-screen">
 			<div className="scroll-down" onClick={scrollDown}>
@@ -402,10 +423,15 @@ export default function MessageScreen() {
 					/>
 				)}
 			</div>
+			<div className="profile">
+				<div className="username">{other?.userName}</div>
+				<div className="dot"></div>
+				<div className="status">{other?.status}</div>
+			</div>
 			<div className="typing" ref={typingRef}></div>
 			<div className="scroll" onScroll={onScroll} ref={messageScreenRef}>
 				{messages.map((message, i) => (
-					<>
+					<React.Fragment key={i}>
 						{i === 0 ? (
 							<DayDivider
 								date={message.sent}
@@ -421,20 +447,14 @@ export default function MessageScreen() {
 							ref={(el) =>
 								(messageRefs.current[message.index] = el)
 							}
-							key={i}
 							uuid={message.messageID}
 							index={message.index}
 							you={message.author === you ? true : false}
-							author={message.author} //...
+							author={message.author}
 							time={message.sent}
 							read={message.status}
 							reactions={message.reactions}
-							onClicks={{
-								onDelete: deleteMessage,
-								onReact: reactToMessage,
-								onRelate: relateToMessage,
-								onEdit: editMessage,
-							}}
+							onClicks={onClicks}
 							message={message.content}
 							moreOptions
 							edited={message.edited}
@@ -481,12 +501,12 @@ export default function MessageScreen() {
 								)}
 
 								{message.attachedMedia?.length !== 0 &&
-									message.attachedMedia.map((media) =>
+									message.attachedMedia?.map((media) =>
 										mapMedia(media.filePath, media.id)
 									)}
 							</>
 						</Message>
-					</>
+					</React.Fragment>
 				))}
 
 				<div className="bottom-ref" ref={bottomRef}></div>
