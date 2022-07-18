@@ -217,6 +217,7 @@ export default function MessageScreen() {
 						.image(mediaPath)
 						.onClick(() => window.focus())
 				);
+				return;
 			}
 
 			dispatchMessages({
