@@ -1,0 +1,64 @@
+.media-select-bin{
+    position: absolute;
+    border-radius: var(--b-r);
+    width: min(350%, 50vw);
+    height: 300%;
+    right: 0%;
+    top: -300%;
+    background-color: black;
+    opacity: 0;
+    pointer-events: none;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    scrollbar-width: 0.5rem;
+    padding: var(--p-2);
+    z-index: 100;
+}
+
+.media-select-bin.show-delete{
+    opacity: 1;
+    pointer-events: initial;
+}
+
+.media-select-bin::-webkit-scrollbar {
+    background-color: transparent;
+	width: 0.5rem;
+}
+.media-select-bin::-webkit-scrollbar-thumb {
+    background-color: #555555;
+	border-radius: var(--b-r);
+}
+
+.media-select-bin .media{
+    margin-block: var(--m-1);
+    background-color: black;
+    font-size: 1em;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    border-bottom: var(--b-w) solid var(--c-gradient-1);
+}
+
+.media-select-bin .media .media-name{
+    font-size: 0.8rem;
+    width: 80%;
+    /* word-break:break-all; */
+    word-wrap: break-word;
+}
+
+.media-select-bin .media .media-delete{
+    width: 20%;
+    height: 100%;
+    transition: transform 200ms ease-out;
+    cursor: pointer;
+}
+
+.media-select-bin .media .media-delete svg{
+    width: 100%;
+    height: 100%;
+}
+
+.media-select-bin .media:hover .media-delete{
+    transform: scale(1.1);
+}

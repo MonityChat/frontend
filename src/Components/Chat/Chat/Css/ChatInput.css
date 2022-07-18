@@ -21,6 +21,7 @@
 }
 
 .chat-input .chat-button {
+  position: relative;
   cursor: pointer;
   flex: 1 1 auto;
   margin: 0 var(--m-1);
@@ -127,4 +128,32 @@
   border: none;
   opacity: 0;
   cursor: pointer;
+}
+
+.chat-input.disabled{
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.chat-input.dropping{
+  border-radius: var(--b-r);
+  animation: dropping 0.5s ease-in-out infinite alternate-reverse;
+  position: relative;
+ }
+
+@keyframes dropping {
+  from{
+    transform: scale(1);
+  }
+  to{
+    transform: scale(1.02);
+  }
+}
+
+.chat-input .number-count{
+  position: relative;
+}
+
+.chat-input .delete-count{
+  position: relative;
 }

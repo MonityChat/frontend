@@ -6,7 +6,7 @@ export default function ChatInputIcon({ icon, size = '3rem', onClick, className 
 	return (
 		<>
 			<Icon
-				className={`chat-button ${className}`}
+				className={`chat-button ${className || ''}`}
 				size={size}
 				style={{
 					fill: 'url(#base-gradient)',

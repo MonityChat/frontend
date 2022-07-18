@@ -145,7 +145,7 @@ export default function MessageScreen() {
 			type: MESSAGE_ACTIONS.ADD_OLDER,
 			data: lastJsonMessage.content.messages,
 		});
-		setScrollTo(lastJsonMessage.content.messages[0].index || 'none');
+		setScrollTo(lastJsonMessage.content.messages[0]?.index || 'none');
 	});
 
 	useAction(WSSYSTEM.ACTION.MESSAGE.SEND, (lastJsonMessage) => {
@@ -383,6 +383,7 @@ export default function MessageScreen() {
 
 	//checks if the user scrolled completly down, if not display a arrow to scroll down faster
 	const onScroll = () => {
+		// debugger;
 		if (
 			messageScreenRef.current.scrollTop +
 				messageScreenRef.current.clientHeight >=
@@ -394,7 +395,7 @@ export default function MessageScreen() {
 		}
 
 		if (messageScreenRef.current.scrollTop == 0) {
-			if (messages[0].index <= 0) return;
+			if (messages.length === 0 || messages[0].index <= 0) return;
 			sendJsonMessage({
 				action: WSSYSTEM.ACTION.MESSAGE.GET._,
 				chatID: selectedChat.chatId,
