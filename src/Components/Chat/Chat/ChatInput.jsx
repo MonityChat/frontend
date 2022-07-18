@@ -67,17 +67,6 @@ export default function ChatInput() {
 			),
 		[medias]
 	);
-	//  = medias.reduce(
-	// 	(result, file) => {
-	// 		if (file.type in result) {
-	// 			result[file.type] += 1;
-	// 		} else {
-	// 			result[file.type] = 1;
-	// 		}
-	// 		return result;
-	// 	},
-	// 	{ total: medias.length }
-	// );
 
 	useEffect(() => {
 		setRelated('');
@@ -86,9 +75,6 @@ export default function ChatInput() {
 		setRecorder(null);
 		setRecorderType(null);
 		setShowDelete(false);
-		// setFiles([]);
-		// setNumberOfFiles(0);
-		// setNumberOfImages(0);
 	}, [selectedChat]);
 
 	useEffect(() => {
@@ -119,7 +105,6 @@ export default function ChatInput() {
 		setShowEmoji(false);
 	};
 
-	//upload the images first, then send the message
 	const sendMessage = async () => {
 		const message = messageRef.current.value;
 		messageRef.current.value = '';
@@ -175,40 +160,6 @@ export default function ChatInput() {
 			}
 		}
 
-		// if (files.length > 0) {
-		// 	const [key] = useAuthentication();
-
-		// 	embedID = await fetchFile(
-		// 		files[0],
-		// 		selectedChat.chatId,
-		// 		files[0].name,
-		// 		'na',
-		// 		key
-		// 	);
-
-		// 	if (embedID === null) {
-		// 		Toast.error('Uploading error').send();
-		// 		return;
-		// 	}
-
-		// 	if (files.length > 1) {
-		// 		for (let i = 0; i < files.length; i++) {
-		// 			if (i === 0) continue;
-		// 			const res = await fetchFile(
-		// 				files[i],
-		// 				selectedChat.chatId,
-		// 				files[i].name,
-		// 				embedID,
-		// 				key
-		// 			);
-		// 			if (res === null) {
-		// 				Toast.error('Uploading error').send();
-		// 				return;
-		// 			}
-		// 		}
-		// 	}
-		// }
-
 		sendJsonMessage({
 			action: ACTION.MESSAGE.SEND,
 			target: selectedChat.targetId,
@@ -221,9 +172,6 @@ export default function ChatInput() {
 		setRelated('');
 		setMedias([]);
 		setDisabled(false);
-		// setFiles([]);
-		// setNumberOfFiles(0);
-		// setNumberOfImages(0);
 	};
 
 	const handleImageSelected = (e) => {
@@ -237,8 +185,6 @@ export default function ChatInput() {
 				type: 'image',
 			})),
 		]);
-		// setFiles((prev) => [...prev, ...e.target.files]);
-		// setNumberOfImages((prev) => prev + e.target.files.length);
 	};
 
 	const handleFileSelected = (e) => {
@@ -252,9 +198,6 @@ export default function ChatInput() {
 				type: 'file',
 			})),
 		]);
-
-		// setFiles((prev) => [...prev, ...e.target.files]);
-		// setNumberOfFiles((prev) => prev + e.target.files.length);
 	};
 
 	const dropFile = (e) => {
@@ -271,7 +214,6 @@ export default function ChatInput() {
 							type: 'file',
 						},
 					]);
-					// setNumberOfFiles((prev) => prev + 1);
 				}
 			}
 		} else {
@@ -284,7 +226,6 @@ export default function ChatInput() {
 						type: 'file',
 					},
 				]);
-				// setNumberOfFiles((prev) => prev + 1);
 			}
 		}
 		setDraggingOver(false);
@@ -307,42 +248,6 @@ export default function ChatInput() {
 
 		setRecorder(null);
 		setRecorderType(null);
-		// const [key] = useAuthentication();
-
-		// let formData = new FormData();
-		// formData.append('audio-file', blob);
-
-		// const res = await toast.promise(
-		// 	fetch(
-		// 		`${URL.UPLOAD.FILE}?chatID=${
-		// 			selectedChat.chatId
-		// 		}&fileName=${Date.now()}.webm&embedID=na`,
-		// 		{
-		// 			headers: {
-		// 				authorization: key,
-		// 			},
-		// 			method: 'POST',
-		// 			body: formData,
-		// 		}
-		// 	),
-		// 	{
-		// 		pending: `Uploading audio ...`,
-		// 		success: `Uploaded audio👌`,
-		// 		error: 'Uploading error 🤯',
-		// 	}
-		// );
-		// const { embedID } = await res.json();
-
-		// sendJsonMessage({
-		// 	action: ACTION.MESSAGE.SEND,
-		// 	target: selectedChat.targetId,
-		// 	embedID: embedID,
-		// 	content: '',
-		// 	sent: Date.now(),
-		// 	related: related,
-		// });
-
-		// setCurrentAudioRecorder(null);
 	};
 
 	const stopVideo = async () => {
@@ -362,42 +267,6 @@ export default function ChatInput() {
 
 		setRecorder(null);
 		setRecorderType(null);
-		// const [key] = useAuthentication();
-
-		// let formData = new FormData();
-		// formData.append('audio-file', audioBlob);
-
-		// const res = await toast.promise(
-		// 	fetch(
-		// 		`${URL.UPLOAD.FILE}?chatID=${
-		// 			selectedChat.chatId
-		// 		}&fileName=${Date.now()}.mp4&embedID=na`,
-		// 		{
-		// 			headers: {
-		// 				authorization: key,
-		// 			},
-		// 			method: 'POST',
-		// 			body: formData,
-		// 		}
-		// 	),
-		// 	{
-		// 		pending: `Uploading video...`,
-		// 		success: `Uploaded video 👌`,
-		// 		error: 'Uploading error 🤯',
-		// 	}
-		// );
-		// const { embedID } = await res.json();
-
-		// sendJsonMessage({
-		// 	action: ACTION.MESSAGE.SEND,
-		// 	target: selectedChat.targetId,
-		// 	embedID: embedID,
-		// 	content: '',
-		// 	sent: Date.now(),
-		// 	related: related,
-		// });
-
-		// setCurrentVideoRecorder(null);
 	};
 
 	const onAudioClick = async () => {
@@ -405,7 +274,6 @@ export default function ChatInput() {
 		recorder.start();
 		setRecorder(recorder);
 		setRecorderType('audio');
-		// setCurrentAudioRecorder(recorder);
 	};
 
 	const onVideoClick = async () => {
@@ -413,7 +281,6 @@ export default function ChatInput() {
 		recorder.start();
 		setRecorder(recorder);
 		setRecorderType('video');
-		// setCurrentVideoRecorder(recorder);
 	};
 
 	const discardFile = (fileName) => {
@@ -554,7 +421,11 @@ export default function ChatInput() {
 						onClick={() => setShowDelete(!showDelete)}
 						className="delete"
 					/>
-					<MediaSelectBin medias={medias} onClick={discardFile} className={showDelete ?'show-delete ' : ''} />
+					<MediaSelectBin
+						medias={medias}
+						onClick={discardFile}
+						className={showDelete ? 'show-delete ' : ''}
+					/>
 				</div>
 			)}
 		</div>
