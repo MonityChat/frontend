@@ -1,12 +1,10 @@
 import React from "react";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
 import {
-  WEBSOCKET_URL,
-  ACTION_CONTACT_DECLINE,
-  ACTION_CONTACT_ADD,
+  ACTION
 } from "../../../../Util/Websocket";
-import Request from "./Request";
+import useAction from './../../../../Hooks/useAction';
 import "./Css/RequestView.css";
+import Request from "./Request";
 
 /**
  * Component to render a sidebar view for your request.
@@ -14,16 +12,14 @@ import "./Css/RequestView.css";
  * this view and see the request.
  */
 export default function RequestView({ requests, removeRequest }) {
-  const { sendJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-    share: true,
-  });
+  const { sendJsonMessage } = useAction();
 
   const onRequestConfirm = (uuid) => {
-    handleRequest(uuid, ACTION_CONTACT_ADD);
+    handleRequest(uuid, ACTION.CONTACT.ADD);
   };
 
   const onRequestDecline = (uuid) => {
-    handleRequest(uuid, ACTION_CONTACT_DECLINE);
+    handleRequest(uuid, ACTION.CONTACT.DECLINE);
   };
 
   const handleRequest = (uuid, action) => {

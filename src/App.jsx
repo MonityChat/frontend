@@ -1,17 +1,18 @@
 import { createContext, useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Authentication from "./Components/Authentication/Authentication";
-import FileNotFound from "./Components/NotFound/FileNotFound";
 import ForgotPassword from "./Components/Authentication/ForgotPassword";
+import NewAccount from "./Components/Authentication/NewAccount";
 import ResetPassword from "./Components/Authentication/ResetPassword";
 import Messenger from "./Components/Chat/Messenger";
 import Home from "./Components/Home/Home";
-import "react-toastify/dist/ReactToastify.css";
-import { getNewKey } from "./Util/Auth";
+import FileNotFound from "./Components/NotFound/FileNotFound";
 import "./Css/Forms.css";
 import "./Css/Index.css";
-import NewAccount from "./Components/Authentication/NewAccount";
+import { getNewKey } from "./Util/Auth";
+import Fetch from "./Util/Fetch";
 
 /**
  * Context for color scheme and message modes
@@ -101,13 +102,13 @@ export default function App() {
       </SettingsContext.Provider>
       <ToastContainer
         position="top-right"
-        autoClose={2000}
+        autoClose={1500}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
         rtl={false}
         draggable
-        pauseOnHover
+        pauseOnHover={true}
         theme="dark"
         pauseOnFocusLoss="false"
       />

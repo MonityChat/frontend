@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
-import './Css/PasswordField.css';
+import React, { useEffect, useRef, useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+import './Css/PasswordField.css';
 
 /**
  * Component  to display a password field with

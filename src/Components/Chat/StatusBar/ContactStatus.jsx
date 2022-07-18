@@ -1,9 +1,7 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { BiBlock } from "react-icons/bi";
-import { AiOutlineUsergroupAdd } from "react-icons/ai";
-import ProfilePicture from "../Sidebar/Profile/ProfilePicture";
+import ProfilePicture from "../../General/ProfilePicture";
 import "./Css/ContactStatus.css";
 
 /**

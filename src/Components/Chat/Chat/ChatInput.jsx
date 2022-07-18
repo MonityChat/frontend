@@ -1,29 +1,24 @@
-import React, { useRef, useState, useContext, useEffect } from "react";
-import { toast } from "react-toastify";
+import Picker from 'emoji-picker-react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { AiOutlineDelete } from 'react-icons/ai';
+import { BiCamera, BiMicrophone } from 'react-icons/bi';
+import { BsEmojiSmile, BsReply } from 'react-icons/bs';
 import {
-  IoSendOutline,
-  IoDocumentTextOutline,
-  IoImageOutline,
-} from "react-icons/io5";
-import { BiMicrophone, BiCamera } from "react-icons/bi";
-import { AiOutlineDelete } from "react-icons/ai";
-import { BsEmojiSmile } from "react-icons/bs";
-import { BsReply } from "react-icons/bs";
-import { RiRecordCircleLine } from "react-icons/ri";
-import "./Css/ChatInput.css";
-import Picker from "emoji-picker-react";
-import { useWebSocket } from "react-use-websocket/dist/lib/use-websocket";
-import {
-  WEBSOCKET_URL,
-  ACTION_MESSAGE_SEND,
-  FILE_UPLOAD_URL,
-  ACTION_USER_TYPING,
-  ACTION_MESSAGE_REACT,
-} from "../../../Util/Websocket.js";
-import useAuthentication from "../../../Util/UseAuth";
-import { SettingsContext, MESSAGE_MODES } from "../../../App";
-import { ChatContext } from "../Messenger";
-import { RelatedContext, ReactContext } from "./Chat";
+	IoDocumentTextOutline,
+	IoImageOutline,
+	IoSendOutline,
+} from 'react-icons/io5';
+import { RiRecordCircleLine } from 'react-icons/ri';
+import { MESSAGE_MODES, SettingsContext } from '../../../App';
+import Fetch, { HTTP_METHOD } from '../../../Util/Fetch';
+import { ACTION, URL } from '../../../Util/Websocket.js';
+import { ChatContext } from '../Messenger';
+import useAction from './../../../Hooks/useAction';
+import { Toast } from './../../../Util/Toast';
+import { ReactContext, RelatedContext } from './Chat';
+import ChatInputIcon from './ChatInputIcon';
+import './Css/ChatInput.css';
+import MediaSelectBin from './MediaSelectBin';
 
 /**
  * Component for the user input in the chat.
@@ -31,456 +26,484 @@ import { RelatedContext, ReactContext } from "./Chat";
  * It also creates the media stream if a user records audio or video.
  * It holds the files which get selected by the user and will send them with the message.
  */
-export default function ChatInput({ jumpToMessage }) {
-  const [showEmoji, setShowEmoji] = useState(false);
-  const [height, setHeight] = useState("4rem");
-  const [files, setFiles] = useState([]);
-  const [currentAudioRecorder, setCurrentAudioRecorder] = useState();
-  const [currentVideoRecorder, setCurrentVideoRecorder] = useState();
-  const [numberOfFiles, setNumberOfFiles] = useState(0);
-  const [numberOfImages, setNumberOfImages] = useState(0);
+export default function ChatInput() {
+	const [showEmoji, setShowEmoji] = useState(false);
+	const [files, setFiles] = useState([]);
+	const [currentAudioRecorder, setCurrentAudioRecorder] = useState();
+	const [currentVideoRecorder, setCurrentVideoRecorder] = useState();
+	const [numberOfFiles, setNumberOfFiles] = useState(0);
+	const [numberOfImages, setNumberOfImages] = useState(0);
 
-  const messageRef = useRef();
+	const [recorder, setRecorder] = useState(null);
+	const [recorderType, setRecorderType] = useState(null);
+	const [medias, setMedias] = useState([]);
 
-  const { selectedChat } = useContext(ChatContext);
-  const { related, setRelated } = useContext(RelatedContext);
-  const { reactedMessage, setReactedMessage } = useContext(ReactContext);
+	const [disabled, setDisabled] = useState(false);
+	const [draggingOver, setDraggingOver] = useState(false);
+	const [showDelete, setShowDelete] = useState(false);
 
-  const { sendJsonMessage } = useWebSocket(WEBSOCKET_URL, {
-    share: true,
-  });
+	const messageRef = useRef();
 
-  const { messageMode } = useContext(SettingsContext);
+	const { selectedChat } = useContext(ChatContext);
+	const { related, setRelated } = useContext(RelatedContext);
+	const { reactedMessage, setReactedMessage } = useContext(ReactContext);
 
-  useEffect(() => {
-    setRelated("");
-    setFiles([]);
-    setNumberOfFiles(0);
-    setNumberOfImages(0);
-  }, [selectedChat]);
+	const { sendJsonMessage } = useAction();
 
-  useEffect(() => {
-    if (reactedMessage === "") return;
-    setShowEmoji(true);
-  }, [reactedMessage]);
+	const { messageMode } = useContext(SettingsContext);
 
-  useEffect(() => {
-    if (showEmoji) return;
-    setReactedMessage("");
-  }, [showEmoji]);
+	const mediaCount = useMemo(
+		() =>
+			medias.reduce(
+				(result, file) => {
+					if (file.type in result) {
+						result[file.type] += 1;
+					} else {
+						result[file.type] = 1;
+					}
+					return result;
+				},
+				{ total: medias.length }
+			),
+		[medias]
+	);
 
-  const onEmojiClicked = (e, emojiObject) => {
-    const emoji = emojiObject.emoji;
+	useEffect(() => {
+		setRelated('');
+		setReactedMessage('');
+		setMedias([]);
+		setRecorder(null);
+		setRecorderType(null);
+		setShowDelete(false);
+	}, [selectedChat]);
 
-    if (reactedMessage === "") {
-      messageRef.current.value += emoji;
-      messageRef.current.focus();
-    } else {
-      sendJsonMessage({
-        action: ACTION_MESSAGE_REACT,
-        messageID: reactedMessage,
-        reaction: emoji.codePointAt(0).toString(16),
-      });
-    }
+	useEffect(() => {
+		if (reactedMessage === '') return;
+		setShowEmoji(true);
+	}, [reactedMessage]);
 
-    setReactedMessage("");
-    setShowEmoji(false);
-  };
+	useEffect(() => {
+		if (showEmoji) return;
+		setReactedMessage('');
+	}, [showEmoji]);
 
-  //upload the images first, then send the message
-  const sendMessage = async () => {
-    const message = messageRef.current.value;
-    messageRef.current.value = "";
+	const onEmojiClicked = (_, emojiObject) => {
+		const emoji = emojiObject.emoji;
 
-    if (message.length <= 0 && files.length <= 0) return;
+		if (reactedMessage === '') {
+			messageRef.current.value += emoji;
+			messageRef.current.focus();
+		} else {
+			sendJsonMessage({
+				action: ACTION.MESSAGE.REACT,
+				messageID: reactedMessage,
+				reaction: emoji.codePointAt(0).toString(16),
+			});
+		}
 
-    if (selectedChat.targetId === undefined) return;
+		setReactedMessage('');
+		setShowEmoji(false);
+	};
 
-    let embedID = "";
+	const sendMessage = async () => {
+		const message = messageRef.current.value;
+		messageRef.current.value = '';
 
-    if (files.length > 0) {
-      const [key] = useAuthentication();
+		if (recorder) {
+			Toast.info('The Browser is still recording, stop the record first');
+			return;
+		}
 
-      embedID = await fetchFile(
-        files[0],
-        selectedChat.chatId,
-        files[0].name,
-        "na",
-        key
-      );
+		if (message.length <= 0 && medias.length <= 0) return;
 
-      if (embedID === null) {
-        toast.error("Uploading error");
-        return;
-      }
+		if (selectedChat.targetId === undefined) return;
 
-      if (files.length > 1) {
-        for (let i = 0; i < files.length; i++) {
-          if (i === 0) continue;
-          const res = await fetchFile(
-            files[i],
-            selectedChat.chatId,
-            files[i].name,
-            embedID,
-            key
-          );
-          if (res === null) {
-            toast.error("Uploading error");
-            return;
-          }
-        }
-      }
-    }
+		setDisabled(true);
+		let embedID = '';
 
-    sendJsonMessage({
-      action: ACTION_MESSAGE_SEND,
-      target: selectedChat.targetId,
-      embedID: embedID,
-      content: message,
-      sent: Date.now(),
-      related: related,
-    });
+		if (medias.length > 0) {
+			embedID = await fetchFile(
+				medias[0].data,
+				selectedChat.chatId,
+				medias[0].name
+			);
 
-    setRelated("");
-    setFiles([]);
-    setNumberOfFiles(0);
-    setNumberOfImages(0);
-  };
+			if (embedID === null) {
+				Toast.error('Uploading error, can not send message').send();
+				setDisabled(false);
+				return;
+			}
 
-  const handleImageSelected = (e) => {
-    setFiles((prev) => [...prev, ...e.target.files]);
-    setNumberOfImages((prev) => prev + e.target.files.length);
-  };
+			Toast.success(`Uploaded ${medias[0].name} successfully👌`);
 
-  const handleFileSelected = (e) => {
-    setFiles((prev) => [...prev, ...e.target.files]);
-    setNumberOfFiles((prev) => prev + e.target.files.length);
-  };
+			if (medias.length > 1) {
+				medias.forEach(async (media, i) => {
+					if (i === 0) return;
 
-  const dropFile = (e) => {
-    e.preventDefault();
-    if (e.dataTransfer.items) {
-      for (let i = 0; i < e.dataTransfer.items.length; i++) {
-        if (e.dataTransfer.items[i].kind === "file") {
-          const file = e.dataTransfer.items[i].getAsFile();
-          setFiles((prev) => [...prev, file]);
-          setNumberOfFiles((prev) => prev + 1);
-        }
-      }
-    } else {
-      for (let i = 0; i < e.dataTransfer.files.length; i++) {
-        setFiles((prev) => [...prev, e.dataTransfer.files[i]]);
-        setNumberOfFiles((prev) => prev + 1);
-      }
-    }
-  };
+					const res = await fetchFile(
+						media.data,
+						selectedChat.chatId,
+						media.name,
+						embedID
+					);
 
-  const stopAudio = async () => {
-    if (currentAudioRecorder === null) return;
+					if (res === null) {
+						Toast.error(
+							'Uploading error, can not send message'
+						).send();
+						setDisabled(false);
+						return;
+					}
 
-    const { audioBlob } = await currentAudioRecorder.stop();
+					Toast.success(`Uploaded ${media.name} successfully👌`);
+				});
+			}
+		}
 
-    const [key] = useAuthentication();
+		sendJsonMessage({
+			action: ACTION.MESSAGE.SEND,
+			target: selectedChat.targetId,
+			embedID: embedID,
+			content: message,
+			sent: Date.now(),
+			related: related,
+		});
 
-    let formData = new FormData();
-    formData.append("audio-file", audioBlob);
+		setRelated('');
+		setMedias([]);
+		setDisabled(false);
+	};
 
-    const res = await toast.promise(
-      fetch(
-        `${FILE_UPLOAD_URL}?chatID=${
-          selectedChat.chatId
-        }&fileName=${Date.now()}.webm&embedID=na`,
-        {
-          headers: {
-            authorization: key,
-          },
-          method: "POST",
-          body: formData,
-        }
-      ),
-      {
-        pending: `Uploading audio ...`,
-        success: `Uploaded audio👌`,
-        error: "Uploading error 🤯",
-      }
-    );
-    const { embedID } = await res.json();
+	const handleImageSelected = (e) => {
+		const files = [...e.target.files];
 
-    sendJsonMessage({
-      action: ACTION_MESSAGE_SEND,
-      target: selectedChat.targetId,
-      embedID: embedID,
-      content: "",
-      sent: Date.now(),
-      related: related,
-    });
+		setMedias((prev) => [
+			...prev,
+			...files.map((file) => ({
+				name: file.name,
+				data: file,
+				type: 'image',
+			})),
+		]);
+	};
 
-    setCurrentAudioRecorder(null);
-  };
+	const handleFileSelected = (e) => {
+		const files = [...e.target.files];
 
-  const stopVideo = async () => {
-    if (currentVideoRecorder === null) return;
+		setMedias((prev) => [
+			...prev,
+			...files.map((file) => ({
+				name: file.name,
+				data: file,
+				type: 'file',
+			})),
+		]);
+	};
 
-    const { audioBlob } = await currentVideoRecorder.stop();
+	const dropFile = (e) => {
+		e.preventDefault();
+		if (e.dataTransfer.items) {
+			for (let i = 0; i < e.dataTransfer.items.length; i++) {
+				if (e.dataTransfer.items[i].kind === 'file') {
+					const file = e.dataTransfer.items[i].getAsFile();
+					setFiles((prev) => [
+						...prev,
+						{
+							name: Date.now().toString(),
+							data: file,
+							type: 'file',
+						},
+					]);
+				}
+			}
+		} else {
+			for (let i = 0; i < e.dataTransfer.files.length; i++) {
+				setFiles((prev) => [
+					...prev,
+					{
+						name: Date.now().toString(),
+						data: e.dataTransfer.files[i],
+						type: 'file',
+					},
+				]);
+			}
+		}
+		setDraggingOver(false);
+	};
 
-    const [key] = useAuthentication();
+	const stopAudio = async () => {
+		if (recorder === null) return;
+		if (recorderType !== 'audio') return;
 
-    let formData = new FormData();
-    formData.append("audio-file", audioBlob);
+		const blob = await recorder.stop();
 
-    const res = await toast.promise(
-      fetch(
-        `${FILE_UPLOAD_URL}?chatID=${
-          selectedChat.chatId
-        }&fileName=${Date.now()}.mp4&embedID=na`,
-        {
-          headers: {
-            authorization: key,
-          },
-          method: "POST",
-          body: formData,
-        }
-      ),
-      {
-        pending: `Uploading video...`,
-        success: `Uploaded video 👌`,
-        error: "Uploading error 🤯",
-      }
-    );
-    const { embedID } = await res.json();
+		setMedias((prev) => [
+			...prev,
+			{
+				name: 'Audio_' + Date.now().toString(),
+				data: blob,
+				type: 'audio',
+			},
+		]);
 
-    sendJsonMessage({
-      action: ACTION_MESSAGE_SEND,
-      target: selectedChat.targetId,
-      embedID: embedID,
-      content: "",
-      sent: Date.now(),
-      related: related,
-    });
+		setRecorder(null);
+		setRecorderType(null);
+	};
 
-    setCurrentVideoRecorder(null);
-  };
+	const stopVideo = async () => {
+		if (recorder === null) return;
+		if (recorderType !== 'video') return;
 
-  const onAudioClick = async () => {
-    const recorder = await record(true, false);
-    recorder.start();
-    setCurrentAudioRecorder(recorder);
-  };
+		const blob = await recorder.stop();
 
-  const discardSelectedFiles = () => {
-    setFiles([]);
-    setNumberOfFiles(0);
-    setNumberOfImages(0);
-  };
+		setMedias((prev) => [
+			...prev,
+			{
+				name: 'Video_' + Date.now().toString(),
+				data: blob,
+				type: 'video',
+			},
+		]);
 
-  const onVideoClick = async () => {
-    const recorder = await record(true, true);
-    recorder.start();
-    setCurrentVideoRecorder(recorder);
-  };
+		setRecorder(null);
+		setRecorderType(null);
+	};
 
-  const handleMessageInput = (e) => {
-    if (selectedChat.chatId !== undefined) {
-      sendJsonMessage({
-        action: ACTION_USER_TYPING,
-        target: selectedChat.targetId,
-        chatID: selectedChat.chatId,
-      });
-    }
+	const onAudioClick = async () => {
+		const recorder = await record(true, false);
+		recorder.start();
+		setRecorder(recorder);
+		setRecorderType('audio');
+	};
 
-    if (e.key === "Enter") {
-      if (e.ctrlKey && messageMode === MESSAGE_MODES.ENTER_CTRL) {
-        sendMessage();
-      } else if (e.shiftKey && messageMode === MESSAGE_MODES.ENTER_SHIFT) {
-        sendMessage();
-      } else if (
-        messageMode === MESSAGE_MODES.ENTER &&
-        !e.ctrlKey &&
-        !e.shiftKey
-      ) {
-        sendMessage();
-        e.preventDefault();
-      }
-    }
-  };
+	const onVideoClick = async () => {
+		const recorder = await record(true, true);
+		recorder.start();
+		setRecorder(recorder);
+		setRecorderType('video');
+	};
 
-  return (
-    <div className="chat-input" style={{ height: height }} onDrop={dropFile}>
-      {showEmoji && (
-        <div onMouseLeave={() => setShowEmoji(true)}>
-          <Picker
-            onEmojiClick={onEmojiClicked}
-            searchPlaceholder={"Search..."}
-          />
-        </div>
-      )}
-      <div className="file-select chat-button">
-        <IoDocumentTextOutline
-          size={"3em"}
-          style={{ stroke: "url(#base-gradient)" }}
-        />
-        <input
-          type="file"
-          className="file-select-input"
-          multiple="multiple"
-          onChange={handleFileSelected}
-        />
-        {numberOfFiles > 0 && <div className="file-count">{numberOfFiles}</div>}
-      </div>
-      {!currentAudioRecorder ? (
-        <BiMicrophone
-          className="chat-button"
-          size={"3em"}
-          style={{ fill: "url(#base-gradient)" }}
-          onClick={onAudioClick}
-        />
-      ) : (
-        <RiRecordCircleLine
-          className="chat-button recording"
-          size={"3em"}
-          style={{ fill: "url(#base-gradient)" }}
-          onClick={stopAudio}
-        />
-      )}
-      {!currentVideoRecorder ? (
-        <BiCamera
-          className="chat-button"
-          size={"3em"}
-          style={{ fill: "url(#base-gradient)" }}
-          onClick={onVideoClick}
-        />
-      ) : (
-        <RiRecordCircleLine
-          className="chat-button recording"
-          size={"3em"}
-          style={{ fill: "url(#base-gradient)" }}
-          onClick={stopVideo}
-        />
-      )}
-      <div className="image-select chat-button">
-        <IoImageOutline
-          size={"3em"}
-          className="file-icon"
-          style={{ stroke: "url(#base-gradient)" }}
-        />
-        {numberOfImages > 0 && (
-          <div className="file-count">{numberOfImages}</div>
-        )}
-        <input
-          type="file"
-          className="image-select-input"
-          accept=".png, .jpeg, .jpg, .gif"
-          multiple="multiple"
-          onChange={handleImageSelected}
-        />
-      </div>
-      <BsEmojiSmile
-        className="chat-button"
-        size={"3em"}
-        style={{ fill: "url(#base-gradient)" }}
-        onClick={() => setShowEmoji(!showEmoji)}
-      />
-      <textarea
-        rows={1}
-        className="message-input"
-        ref={messageRef}
-        onKeyDown={handleMessageInput}
-      ></textarea>
+	const discardFile = (fileName) => {
+		if (!fileName) {
+			setMedias([]);
+		} else {
+			setMedias((prev) =>
+				prev.filter((media) => media.name !== fileName)
+			);
+		}
+	};
 
-      <IoSendOutline
-        className="chat-button send"
-        size={"3em"}
-        style={{ stroke: "url(#base-gradient)" }}
-        onClick={sendMessage}
-      />
-      {related && (
-        <BsReply
-          className="chat-button"
-          size={"3em"}
-          style={{ fill: "url(#base-gradient)" }}
-          onClick={() => setRelated("")}
-        />
-      )}
-      {numberOfFiles > 0 || numberOfImages > 0 ? (
-        <AiOutlineDelete
-          className="chat-button"
-          size={"3em"}
-          style={{ fill: "url(#base-gradient)" }}
-          onClick={discardSelectedFiles}
-        />
-      ) : null}
-    </div>
-  );
+	const handleMessageInput = (e) => {
+		if (selectedChat.chatId !== undefined) {
+			sendJsonMessage({
+				action: ACTION.USER.TYPING,
+				target: selectedChat.targetId,
+				chatID: selectedChat.chatId,
+			});
+		}
+
+		if (e.key === 'Enter') {
+			if (e.ctrlKey && messageMode === MESSAGE_MODES.ENTER_CTRL) {
+				sendMessage();
+			} else if (
+				e.shiftKey &&
+				messageMode === MESSAGE_MODES.ENTER_SHIFT
+			) {
+				sendMessage();
+			} else if (
+				messageMode === MESSAGE_MODES.ENTER &&
+				!e.ctrlKey &&
+				!e.shiftKey
+			) {
+				sendMessage();
+				e.preventDefault();
+			}
+		}
+	};
+
+	return (
+		<div
+			className={`chat-input ${(disabled && 'disabled') || ''} ${
+				(draggingOver && 'dropping') || ''
+			}`}
+			onDrop={dropFile}
+			onDragOver={() => setDraggingOver(true)}
+			onDragLeave={() => setDraggingOver(false)}
+			onDragEnd={() => setDraggingOver(false)}
+		>
+			{showEmoji && (
+				<div onMouseLeave={() => setShowEmoji(false)}>
+					<Picker
+						onEmojiClick={onEmojiClicked}
+						searchPlaceholder={'Search...'}
+					/>
+				</div>
+			)}
+			<div className="file-select chat-button">
+				<ChatInputIcon icon={IoDocumentTextOutline} />
+				<input
+					type="file"
+					className="file-select-input"
+					multiple="multiple"
+					onChange={handleFileSelected}
+				/>
+				{mediaCount.file > 0 && (
+					<div className="file-count">{mediaCount.file}</div>
+				)}
+			</div>
+			{recorderType !== 'audio' ? (
+				<div className="number-count">
+					<ChatInputIcon icon={BiMicrophone} onClick={onAudioClick} />
+					{mediaCount.audio > 0 && (
+						<div className="file-count">{mediaCount.audio}</div>
+					)}
+				</div>
+			) : (
+				<ChatInputIcon
+					icon={RiRecordCircleLine}
+					onClick={stopAudio}
+					className={'recording'}
+				/>
+			)}
+			{recorderType !== 'video' ? (
+				<div className="number-count">
+					<ChatInputIcon icon={BiCamera} onClick={onVideoClick} />
+					{mediaCount.video > 0 && (
+						<div className="file-count">{mediaCount.video}</div>
+					)}
+				</div>
+			) : (
+				<ChatInputIcon
+					icon={RiRecordCircleLine}
+					onClick={stopVideo}
+					className={'recording'}
+				/>
+			)}
+			<div className="image-select chat-button">
+				<ChatInputIcon icon={IoImageOutline} />
+				{mediaCount.image > 0 && (
+					<div className="file-count">{mediaCount.image}</div>
+				)}
+				<input
+					type="file"
+					className="image-select-input"
+					accept=".png, .jpeg, .jpg, .gif"
+					multiple="multiple"
+					onChange={handleImageSelected}
+				/>
+			</div>
+			<ChatInputIcon
+				icon={BsEmojiSmile}
+				onClick={() => setShowEmoji(!showEmoji)}
+			/>
+			<textarea
+				rows={1}
+				className="message-input"
+				ref={messageRef}
+				onKeyDown={handleMessageInput}
+			></textarea>
+			<ChatInputIcon
+				icon={IoSendOutline}
+				onClick={sendMessage}
+				className={'send'}
+			/>
+			{related && (
+				<ChatInputIcon
+					icon={BsReply}
+					onClick={() => setRelated('')}
+					className={'send'}
+				/>
+			)}
+			{mediaCount.total > 0 && (
+				<div className="number-count delete-count">
+					<ChatInputIcon
+						icon={AiOutlineDelete}
+						onClick={() => setShowDelete(!showDelete)}
+						className="delete"
+					/>
+					<MediaSelectBin
+						medias={medias}
+						onClick={discardFile}
+						className={showDelete ? 'show-delete ' : ''}
+					/>
+				</div>
+			)}
+		</div>
+	);
 }
 
 /**
- * gets a mediastream from the user if one is available and saves the
- * chunks given from the stream in an array. Then returns a promise with wich you can
- * start and stop the media
+ * Provides a Mediarecorder to record audio and video
+ * @param {Boolean} audio should audio be recorded
+ * @param {Boolean} video should video be recorded
+ * @returns {Promise<Function, Function>} two functions one for starting and one for stopping the media
  */
 const record = (audio, video) => {
-  return new Promise((resolve) => {
-    navigator.mediaDevices
-      .getUserMedia({ audio: audio, video: video }) //stream bekommen
-      .then((stream) => {
-        const mediaRecorder = new MediaRecorder(stream);
-        const chunks = []; //chunks hier speichern
+	return new Promise(async (resolve) => {
+		const stream = await navigator.mediaDevices.getUserMedia({
+			audio: audio,
+			video: video,
+		});
+		const mediaRecorder = new MediaRecorder(stream);
+		const chunks = [];
 
-        mediaRecorder.addEventListener("dataavailable", (event) => {
-          chunks.push(event.data); // bei neuen chunks sie in den array einfügen
-        });
+		mediaRecorder.addEventListener('dataavailable', (event) => {
+			chunks.push(event.data);
+		});
 
-        const start = () => {
-          //zum starten
-          mediaRecorder.start();
-        };
+		const start = () => {
+			mediaRecorder.start();
+		};
 
-        const stop = () => {
-          return new Promise((resolve) => {
-            mediaRecorder.addEventListener("stop", () => {
-              const audioBlob = new Blob(chunks, {
-                type: mediaRecorder.mimeType,
-              });
+		const stop = () => {
+			return new Promise((resolve) => {
+				mediaRecorder.addEventListener('stop', () => {
+					const blob = new Blob(chunks, {
+						type: mediaRecorder.mimeType,
+					});
 
-              resolve({ audioBlob });
-            });
+					resolve(blob);
+				});
 
-            mediaRecorder.stop();
-          });
-        };
+				mediaRecorder.stop();
+			});
+		};
 
-        resolve({ start, stop });
-      });
-  });
+		resolve({ start, stop });
+	});
 };
 
 /**
- * fetches a file to the server and returns an embedID
+ * Uploads a file to the server
+ * @param {File} file the file to upload
+ * @param {String} chatID in which chat you upload the file
+ * @param {String} fileName name of the file. Defautlt ```Date.now().toString()```
+ * @param {String} embedID if you already have on. Default ```na```
+ * @returns an embeID to attach on the next upload or null if something went wrong
  */
-const fetchFile = async (file, chatID, fileName, embedID = "na", key) => {
-  let formData = new FormData();
-  formData.append("file", file);
+const fetchFile = async (
+	file,
+	chatID,
+	fileName = Date.now().toString(),
+	embedID = 'na'
+) => {
+	const data = new FormData();
+	data.append('file', file);
 
-  const res = await toast.promise(
-    fetch(
-      `${FILE_UPLOAD_URL}?chatID=${chatID}&fileName=${fileName}&embedID=${embedID}`,
-      {
-        headers: {
-          authorization: key,
-        },
-        method: "POST",
-        body: formData,
-      }
-    ),
-    {
-      pending: `Uploading ${fileName}...`,
-      success: `Uploaded ${fileName} 👌`,
-      error: "Uploading error 🤯",
-    }
-  );
-  if (!res.ok) return null;
+	const res = await Fetch.new(URL.UPLOAD.FILE, HTTP_METHOD.POST, {
+		chatID,
+		fileName,
+		embedID,
+	})
+		.body(data)
+		.sendAndToast(
+			`Uploading ${fileName}...`,
+			undefined,
+			'Error during the upload try again 🤯'
+		);
 
-  const { embedID: newEmbedID } = await res.json();
+	if (!res.ok) return null;
 
-  return newEmbedID;
+	const { embedID: newEmbedID } = await res.json();
+	return newEmbedID;
 };

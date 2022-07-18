@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import ProfilePicture from "../Sidebar/Profile/ProfilePicture";
+import ProfilePicture from "../../General/ProfilePicture";
 import "./Css/GroupStatus.css";
 import GroupMember from "./GroupMember";
 

@@ -4,8 +4,8 @@ export default function ReactionContainer({reactions}) {
     
 	return (
 		<div className="reaction-container">
-			{reactions?.map((reaction) => (
-				<div className="reaction">
+			{reactions?.map((reaction, i) => (
+				<div className="reaction" key={i}>
 					{toEmoji(reaction.reaction)}
 					{reaction.count > 1 && (
 						<span className="count">{reaction.count}</span>

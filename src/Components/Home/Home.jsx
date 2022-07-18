@@ -1,17 +1,19 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { FaBolt } from "react-icons/fa";
 import { IoMdLogIn } from "react-icons/io";
 import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { MdMonitor } from "react-icons/md";
 import { RiOpenSourceLine } from "react-icons/ri";
-import { FaBolt } from "react-icons/fa";
-import BaseGradient from "../Chat/Sidebar/BaseGradient";
+import { Link } from "react-router-dom";
+import BaseGradient from './../General/BaseGradient';
 import "./Css/Home.css";
+
 
 /**
  * Component for the home page. Displays some data about the project.
  */
 export default function Home() {
+
   return (
     <div className="home-container">
       <BaseGradient />

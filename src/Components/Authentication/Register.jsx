@@ -1,10 +1,15 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import PasswordField from './PasswordField';
-import { REGISTER_URL, SESSION_AUTH, getNewKey } from '../../Util/Auth.js';
+import useAuthentication from '../../Hooks/UseAuth.js';
+import { generateNewSalt, hash } from '../../Util/Encryption';
+import { isValidEmail, isValidPassword } from '../../Util/Helpers';
+import AUTHENTICATION_URL from './../../Util/Auth';
 import './Css/Register.css';
-import { generateNewSalt, hash } from '../../Util/Encrypt';
-import useAuthentication from '../../Util/UseAuth.js';
+import PasswordField from './PasswordField';
+import ERROR from './../../Util/Errors';
+import { Toast } from './../../Util/Toast';
+import Fetch from '../../Util/Fetch.js';
+import { HTTP_METHOD } from './../../Util/Fetch';
 
 /**
  * Component  to display a register field.
@@ -83,13 +88,13 @@ export default function Register() {
 
 		const result = await register(userName, email, password);
 
-		if (result === 'USERNAME_ALREADY_IN_USE') {
+		if (result === ERROR.USERNAME_IN_USE) {
 			setMessage('Username already taken');
 			userNameRef.current.classList.add('error');
 			return;
 		}
 
-		if (result === 'EMAIL_NOT_FOUND') {
+		if (result === ERROR.EMAIL_NOT_FOUND) {
 			setMessage('Email does not exits');
 			emailRef.current.classList.add('error');
 			return;
@@ -98,7 +103,7 @@ export default function Register() {
 		setMessage(
 			'Registration Email sent, open the email to end registration'
 		);
-		toast.success('Registration successfull');
+		Toast.success('Registration successfull').send();
 	};
 
 	return (
@@ -137,39 +142,16 @@ export default function Register() {
 	);
 }
 
-function isValidEmail(email) {
-	const regExEmail =
-		/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/g;
-	return email.match(regExEmail) != null;
-}
-
-function isValidPassword(password) {
-	const regExPassword =
-		/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/g;
-	return password.match(regExPassword) != null;
-}
-
 async function register(userName, email, password) {
 	const salt = generateNewSalt();
 	const hashedPassword = await hash(password, salt);
-	const [key, setKey, isLogedIn, setLogedIn] = useAuthentication();
+	const [key,,,] = useAuthentication();
 
-	const registerOptions = {
-		method: 'POST',
-		headers: {
-			authorization: key,
-			Accept: 'application/json',
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({
-			username: userName,
-			email,
-			password: hashedPassword.toString(),
-			salt: salt.toString(),
-		}),
-	};
-
-	const res = await fetch(REGISTER_URL, registerOptions);
-	const data = await res.json();
+	const data = await Fetch.new(AUTHENTICATION_URL.REGISTER, HTTP_METHOD.POST).body({
+		username: userName,
+		email,
+		password: hashedPassword.toString(),
+		salt: salt.toString(),
+	}).sendAndToast("Registration in progress", undefined, undefined, true);
 	return data;
 }
